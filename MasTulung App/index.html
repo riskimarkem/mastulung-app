@@ -8,64 +8,56 @@
     <link rel="manifest" href="manifest-customer.json">
     <meta name="theme-color" content="#00a859">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3063/3063822.png">
+
     <style>
-        /* PENGUNCIAN LAYAR (ANTI NAIK TURUN) */
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; margin: 0; display: flex; justify-content: center; height: 100vh; overflow: hidden; }
-        .app-container { width: 100%; max-width: 480px; background-color: white; height: 100vh; box-shadow: 0 0 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; overflow: hidden; }
+        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #ffffff; margin: 0; padding: 0; height: 100vh; overflow: hidden; display: flex; justify-content: center; }
+        .app-container { width: 100vw; max-width: 600px; background-color: white; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
-        /* Header Fix Di Atas */
-        .header { background-color: #00a859; color: white; padding: 15px; text-align: center; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; position: relative; flex-shrink: 0; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .header h2 { margin: 0; font-size: 20px; }
+        .header { background-color: #00a859; color: white; padding: 20px 15px; text-align: center; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; position: relative; flex-shrink: 0; z-index: 10; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .header h2 { margin: 0; font-size: 24px; letter-spacing: 1px; }
         
-        .lang-switcher { position: absolute; top: 12px; right: 15px; background: rgba(255,255,255,0.2); padding: 3px; border-radius: 6px; display: flex; gap: 3px; }
-        .lang-btn { background: none; border: none; color: white; font-size: 10px; cursor: pointer; padding: 4px 6px; border-radius: 4px; font-weight: bold; opacity: 0.6; transition: 0.2s; }
-        .lang-btn.active { background: white; color: #00a859; opacity: 1; }
+        .lang-switcher { position: absolute; top: 18px; right: 15px; background: rgba(0,0,0,0.15); padding: 4px; border-radius: 10px; display: flex; gap: 4px; }
+        .lang-btn { background: none; border: none; color: white; font-size: 11px; cursor: pointer; padding: 5px 10px; border-radius: 7px; font-weight: bold; opacity: 0.7; }
+        .lang-btn.active { background: white; color: #00a859; opacity: 1; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
 
-        /* Area Konten Tengah */
-        .content { padding: 15px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
-        .content::-webkit-scrollbar { width: 0px; background: transparent; } 
+        .content { padding: 20px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+        .content::-webkit-scrollbar { width: 0px; }
         
-        /* Form & Input */
-        .form-group { margin-bottom: 10px; }
-        label { display: block; margin-bottom: 4px; font-weight: bold; font-size: 13px; color: #333; }
-        input, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 13px; }
-        button { background-color: #00a859; color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 5px; transition: 0.2s; }
-        button:hover { background-color: #008f4c; }
-        button:disabled { background-color: #ccc; cursor: not-allowed; }
+        /* TOMBOL INSTAL KHUSUS */
+        #install-banner { background-color: #e8f5e9; border: 2px dashed #00a859; padding: 15px; border-radius: 15px; text-align: center; margin-bottom: 5px; display: none; }
+        #btn-install-pwa { background-color: #2c3e50; color: white; padding: 10px 20px; border-radius: 10px; font-weight: bold; border: none; cursor: pointer; margin-top: 10px; font-size: 14px; }
+
+        label { display: block; margin-bottom: 6px; font-weight: bold; font-size: 16px; color: #2c3e50; }
+        input, textarea { width: 100%; padding: 15px; border: 2px solid #ecf0f1; border-radius: 12px; box-sizing: border-box; font-size: 16px; background-color: #f9f9f9; }
+        input:focus, textarea:focus { border-color: #00a859; outline: none; background-color: #fff; }
+
+        button { background-color: #00a859; color: white; border: none; padding: 18px; width: 100%; border-radius: 15px; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 6px rgba(0,168,89,0.3); }
+        .back-btn { background-color: #f1f2f6; color: #2f3542; border: none; padding: 15px; width: 100%; border-radius: 12px; font-size: 16px; font-weight: bold; display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 5px; }
         
-        .back-btn { background-color: #f1f2f6; color: #2f3542; border: 1px solid #ced6e0; padding: 10px 15px; width: 100%; border-radius: 8px; font-size: 13px; font-weight: bold; margin-bottom: 15px; text-align: center; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; }
-        
-        .btn-history { background-color: #34495e; margin-top: 15px; font-size: 13px; display: flex; justify-content: center; align-items: center; gap: 8px; padding: 12px; }
-        .btn-secondary { background-color: #7f8c8d; }
+        .category-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        .category-card { background: #ffffff; border: 2px solid #f1f2f6; border-radius: 18px; padding: 20px 10px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        .category-card:active { transform: scale(0.95); background-color: #e8f5e9; }
+        .category-icon { font-size: 36px; margin-bottom: 10px; display: block; }
+        .category-title { font-size: 15px; font-weight: bold; color: #333; line-height: 1.2; }
 
-        /* Grid Kategori */
-        .category-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px; }
-        .category-card { background: #f8f9fa; border: 1px solid #eee; border-radius: 10px; padding: 10px; text-align: center; cursor: pointer; transition: 0.2s; }
-        .category-card:hover { background: #e8f5e9; border-color: #00a859; }
-        .category-icon { font-size: 24px; margin-bottom: 5px; }
-        .category-title { font-size: 12px; font-weight: bold; color: #333; }
+        .btn-history { background-color: #34495e; font-size: 16px; padding: 15px; display: flex; justify-content: center; align-items: center; gap: 10px; }
+        .info-tarif-box { background-color: #eef7ff; border-left: 5px solid #3498db; padding: 15px; border-radius: 10px; font-size: 14px; color: #2c3e50; line-height: 1.5; }
 
-        /* Info Tarif & Tracking */
-        .info-tarif-box { background-color: #e8f4fd; border-left: 4px solid #3498db; padding: 10px; border-radius: 4px; margin-bottom: 12px; font-size: 12px; color: #2c3e50; line-height: 1.3; }
-        .track-box { background: #f8f9fa; border: 1px solid #ddd; border-radius: 12px; padding: 15px; text-align: center; margin-top: 10px; }
-        .driver-info { background: #e8f5e9; padding: 12px; border-radius: 8px; margin-top: 12px; border: 1px solid #27ae60; }
-        .history-card { background: white; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .admin-support { background-color: #fff9e6; border: 2px solid #ffecb3; border-radius: 18px; padding: 20px; text-align: center; }
+        .btn-wa-admin { background-color: #25D366; color: white; padding: 12px; border-radius: 12px; font-weight: bold; font-size: 16px; text-decoration: none; display: block; margin-top: 10px; box-shadow: 0 4px 6px rgba(37,211,102,0.2); }
 
-        /* Bantuan Admin */
-        .admin-support { background-color: #fff3cd; border: 1px solid #ffeeba; border-radius: 10px; padding: 12px; text-align: center; margin-top: 15px; }
-        .btn-wa-admin { display: inline-block; background-color: #25D366; color: white; padding: 8px 15px; border-radius: 20px; text-decoration: none; font-weight: bold; font-size: 13px; margin-top: 8px; border: none; cursor: pointer; width: 100%; box-sizing: border-box; }
-
-        /* Watermark Fix Di Bawah */
-        .watermark { text-align: center; padding: 10px 15px; font-size: 11px; color: #7f8c8d; border-top: 1px dashed #ddd; background-color: #fdfdfd; flex-shrink: 0; z-index: 10; }
-        .watermark a { color: #00a859; font-weight: bold; text-decoration: none; display: inline-block; margin-top: 3px; }
+        .watermark { text-align: center; padding: 15px; font-size: 13px; color: #95a5a6; border-top: 1px solid #f1f2f6; background-color: #fafafa; }
+        .watermark a { color: #00a859; font-weight: bold; text-decoration: none; }
 
         .hidden { display: none !important; }
+        .track-box { background: #fdfdfd; border: 2px solid #f1f2f6; border-radius: 20px; padding: 30px 20px; text-align: center; margin: auto 0; }
+        .driver-info { background: #e8f5e9; padding: 20px; border-radius: 15px; margin-top: 20px; border: 2px solid #27ae60; }
+        .history-card { background: white; border: 2px solid #f1f2f6; border-radius: 15px; padding: 18px; margin-bottom: 15px; }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-    
     <div class="header">
         <div class="lang-switcher">
             <button class="lang-btn active" onclick="setLang('ngapak')" id="btn-ngapak">Ngapak</button>
@@ -73,12 +65,17 @@
             <button class="lang-btn" onclick="setLang('en')" id="btn-en">EN</button>
         </div>
         <h2>Mas Tulung</h2>
-        <p id="ui-subtitle" style="font-size: 12px; margin: 2px 0 0 0;">Layanan Asli Wong Gombong</p>
+        <p id="ui-subtitle" style="font-size: 14px; margin: 5px 0 0 0; opacity: 0.9;">Layanan Asli Wong Gombong</p>
     </div>
 
     <div id="page-login" class="content">
         <div style="margin: auto 0;">
-            <p id="ui-login-desc" style="text-align: center; font-size: 14px; margin-bottom: 20px;">Halo lur! Lebokna data sedela nggo mulai pesen:</p>
+            <div id="install-banner">
+                <div style="font-weight: bold; font-size: 15px; color: #00a859;" id="ui-install-txt">Pasang Aplikasi Mas Tulung nang HP-mu lur!</div>
+                <button id="btn-install-pwa">PASANG SIKI (INSTALL) 📲</button>
+            </div>
+
+            <p id="ui-login-desc" style="text-align: center; font-size: 18px; margin-bottom: 30px; color: #555;">Halo lur! Lebokna data sedela nggo mulai pesen:</p>
             <div class="form-group">
                 <label id="ui-label-nama">Jeneng (Panggilan)</label>
                 <input type="text" id="inputNama" placeholder="Contoh: Riski">
@@ -87,57 +84,52 @@
                 <label id="ui-label-wa">Nomer WhatsApp Aktif</label>
                 <input type="number" id="inputWA" placeholder="Contoh: 081234567890">
             </div>
-            <button id="ui-btn-login" onclick="masukAplikasi()" style="margin-top: 15px;">Mulai Pesen 🚀</button>
+            <button id="ui-btn-login" onclick="masukAplikasi()" style="margin-top: 20px;">Mulai Pesen 🚀</button>
         </div>
     </div>
 
     <div id="page-kategori" class="content hidden">
-        <h3 style="margin:0; font-size: 16px;"><span id="ui-greet">Halo</span>, <span id="displayNama"></span>! 👋</h3>
-        <p id="ui-ask" style="font-size: 13px; margin: 3px 0 0 0;">Dina kiye arep njaluk tulung apa lur?</p>
+        <h3 style="margin:0; font-size: 22px;"><span id="ui-greet">Halo</span>, <span id="displayNama"></span>! 👋</h3>
+        <p id="ui-ask" style="font-size: 16px; margin: 5px 0 10px 0; color: #666;">Dina kiye arep njaluk tulung apa lur?</p>
         
         <div class="category-grid">
             <div class="category-card" onclick="bukaForm('Antar Jemput')">
-                <div class="category-icon">🏍️</div>
+                <span class="category-icon">🏍️</span>
                 <div class="category-title" id="cat-1">Ngeter & Methuk</div>
             </div>
             <div class="category-card" onclick="bukaForm('Kirim Barang')">
-                <div class="category-icon">📦</div>
+                <span class="category-icon">📦</span>
                 <div class="category-title" id="cat-2">Kirim Barang</div>
             </div>
             <div class="category-card" onclick="bukaForm('Titip Belanja')">
-                <div class="category-icon">🛒</div>
+                <span class="category-icon">🛒</span>
                 <div class="category-title" id="cat-3">Titip Tuku (Belanja)</div>
             </div>
             <div class="category-card" onclick="bukaForm('Bantu Bersih')">
-                <div class="category-icon">🧹</div>
+                <span class="category-icon">🧹</span>
                 <div class="category-title" id="cat-4">Bantu Resik-resik</div>
             </div>
             <div class="category-card" style="grid-column: span 2;" onclick="bukaForm('Jasa Unik')">
-                <div class="category-icon">✨</div>
+                <span class="category-icon">✨</span>
                 <div class="category-title" id="cat-5">Jasa Liya-liyane</div>
             </div>
         </div>
 
         <button class="btn-history" onclick="bukaRiwayat()">
-            <span style="font-size: 16px;">📜</span> <span id="ui-btn-history">Deleng Riwayat Pesenanku</span>
+            <span>📜</span> <span id="ui-btn-history">Deleng Riwayat Pesenanku</span>
         </button>
 
         <div class="admin-support">
-            <div id="ui-help-title" style="font-weight: bold; font-size: 13px; color: #856404; margin-bottom: 3px;">📞 Butuh Bantuan?</div>
-            <div id="ui-help-desc" style="font-size: 11px; color: #856404; margin-bottom: 8px;">Ana masalah utawa arep takon? Chat bae maring admin.</div>
-            <button onclick="chatAdminTemplate()" class="btn-wa-admin" id="ui-btn-admin">💬 Chat Admin Mas Tulung</button>
+            <div id="ui-help-title" style="font-weight: bold; font-size: 16px; color: #856404;">📞 Butuh Bantuan?</div>
+            <div id="ui-help-desc" style="font-size: 14px; color: #856404; margin-top: 5px;">Ana masalah utawa arep takon? Chat bae maring admin.</div>
+            <a href="#" onclick="chatAdminTemplate()" class="btn-wa-admin" id="ui-btn-admin">💬 Chat Admin Mas Tulung</a>
         </div>
     </div>
 
     <div id="page-form" class="content hidden">
-        <h3 style="margin:0 0 10px 0; font-size: 16px;" id="judulFormTitle">Detail Pesenan</h3>
-        
-        <button class="back-btn" onclick="kembaliKeKategori()">
-            <span style="font-size: 16px;">⬅</span> <span id="ui-btn-back1">Bali Milih Layanan</span>
-        </button>
-        
+        <h3 style="margin:0 0 5px 0; font-size: 20px;" id="judulFormTitle">Detail Pesenan</h3>
+        <button class="back-btn" onclick="kembaliKeKategori()"><span>⬅</span> <span id="ui-btn-back1">Bali Milih Layanan</span></button>
         <div id="boxInfoTarif" class="info-tarif-box"></div>
-        
         <div class="form-group">
             <label id="labelDetail1">Detail 1</label>
             <textarea id="inputDetail1" rows="2" placeholder="..."></textarea>
@@ -150,54 +142,35 @@
             <label id="ui-label-catatan">Catetan Tambahan (Nek Ana)</label>
             <input type="text" id="inputCatatan" placeholder="...">
         </div>
-        
-        <button id="btnKirim" onclick="kirimPesananFirebase()" style="margin-top:auto;">Pesen Siki 🚀</button>
+        <button id="btnKirim" onclick="kirimPesananFirebase()" style="margin-top: auto; margin-bottom: 10px;">Pesen Siki 🚀</button>
     </div>
 
     <div id="page-tracking" class="content hidden">
-        <h3 style="margin:0; font-size: 16px;" id="ui-track-title">Status Pesenane Rika</h3>
-        <div class="track-box" style="margin: auto 0;">
-            <div id="track-icon" style="font-size: 45px; margin-bottom: 10px;">⏳</div>
-            <h3 id="track-status" style="margin: 5px 0;">Lagi Golek Driver...</h3>
-            <p id="track-desc" style="font-size: 13px; color: #555; margin-bottom: 0;">Dienteni sedela ya lur, sistem lagi nawakna pesenanmu maring driver Mas Tulung sing paling pedhek.</p>
-            
+        <h3 style="margin:0; font-size: 20px; text-align: center;" id="ui-track-title">Status Pesenane Rika</h3>
+        <div class="track-box">
+            <div id="track-icon" style="font-size: 60px; margin-bottom: 15px;">⏳</div>
+            <h3 id="track-status" style="margin: 10px 0; font-size: 24px;">Lagi Golek Driver...</h3>
+            <p id="track-desc" style="font-size: 16px; color: #666; line-height: 1.4;">Dienteni sedela ya lur, sistem lagi nawakna pesenanmu maring driver Mas Tulung sing paling pedhek.</p>
             <div id="track-driver-info" class="driver-info hidden">
-                <p style="margin: 0; font-size: 12px;" id="ui-track-driver-label">Pesenan dijikot nang:</p>
-                <h2 style="margin: 5px 0; font-size: 20px; color: #27ae60;" id="track-driver-name">Nama Driver</h2>
-                <p style="margin: 0; font-size: 12px;" id="ui-track-driver-note"><b>Driver arep ngirim pesen WA nggo konfirmasi rega karo lokasi.</b></p>
+                <p style="margin: 0; font-size: 14px;" id="ui-track-driver-label">Pesenan dijikot nang:</p>
+                <h2 style="margin: 8px 0; font-size: 26px; color: #27ae60;" id="track-driver-name">Nama Driver</h2>
+                <p style="margin: 0; font-size: 14px;" id="ui-track-driver-note"><b>Driver arep ngirim pesen WA nggo konfirmasi rega karo lokasi.</b></p>
             </div>
         </div>
-        <button class="btn-secondary" style="width: 100%; margin-top: auto; padding: 12px; border:none; border-radius:8px; color:white; font-weight:bold; cursor:pointer;" onclick="pesanLagi()" id="ui-btn-menu">Bali Maring Menu Utama</button>
+        <button class="btn-secondary" style="width: 100%; margin-top: auto; padding: 18px; border:none; border-radius:15px; color:white; font-weight:bold; font-size: 16px; cursor:pointer;" onclick="pesanLagi()" id="ui-btn-menu">Bali Maring Menu Utama</button>
     </div>
 
     <div id="page-history" class="content hidden">
-        <h3 style="margin:0 0 10px 0; font-size: 16px;" id="ui-history-title">Riwayat Pesenan</h3>
-        <button class="back-btn" onclick="tutupRiwayat()">
-            <span style="font-size: 16px;">⬅</span> <span id="ui-btn-back2">Bali Maring Menu</span>
-        </button>
-        <div id="listHistory" style="padding-bottom: 10px;"></div>
+        <h3 style="margin:0 0 15px 0; font-size: 20px;" id="ui-history-title">Riwayat Pesenan</h3>
+        <button class="back-btn" onclick="tutupRiwayat()"><span>⬅</span> <span id="ui-btn-back2">Bali Maring Menu</span></button>
+        <div id="listHistory" style="padding-bottom: 20px;"></div>
     </div>
 
     <div class="watermark" id="ui-watermark">
         💡 <i>Pengin duwe aplikasi pesenan kaya kiye?</i><br>
         <a href="https://wa.me/6281383179209" target="_blank">📞 Hubungi Jasa Pembuatan Web: 081383179209</a>
     </div>
-
 </div>
-
-<script>
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('sw-customer.js')
-                .then(registration => {
-                    console.log('PWA Customer berhasil didaftarkan:', registration.scope);
-                })
-                .catch(error => {
-                    console.log('PWA Customer gagal didaftarkan:', error);
-                });
-        });
-    }
-</script>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
@@ -220,6 +193,42 @@
     let layananAktif = "";
     let currentLang = "ngapak"; 
 
+    // LOGIKA INSTALASI PWA
+    let deferredPrompt;
+    const installBanner = document.getElementById('install-banner');
+    const btnInstall = document.getElementById('btn-install-pwa');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        // Mencegah browser menampilkan prompt default otomatis
+        e.preventDefault();
+        // Simpan event agar bisa dipicu nanti
+        deferredPrompt = e;
+        // Munculkan banner custom kita
+        installBanner.style.display = 'block';
+    });
+
+    btnInstall.addEventListener('click', async () => {
+        if (deferredPrompt) {
+            // Munculkan prompt instalasi
+            deferredPrompt.prompt();
+            // Tunggu respon user
+            const { outcome } = await deferredPrompt.userChoice;
+            if (outcome === 'accepted') {
+                console.log('User menginstal aplikasi');
+            }
+            // Sembunyikan banner karena sudah direspon
+            installBanner.style.display = 'none';
+            deferredPrompt = null;
+        }
+    });
+
+    window.addEventListener('appinstalled', () => {
+        // Sembunyikan banner jika sudah terinstal
+        installBanner.style.display = 'none';
+        console.log('Aplikasi berhasil dipasang!');
+    });
+
+    // KAMUS BAHASA & LOGIKA FIREBASE (SAMA SEPERTI SEBELUMNYA)
     const langDict = {
         ngapak: {
             subtitle: "Layanan Asli Wong Gombong", loginDesc: "Halo lur! Lebokna data sedela nggo mulai pesen:",
@@ -236,7 +245,8 @@
             tarif5: "✨ <b>Rega Jasa Khusus:</b> Bebas (Nego).<br>Gumantung kangelane pesenane rika. Driver arep ngubungi via WhatsApp.",
             t_formTitle: "Detail Pesenan: ", t_jemput: "Lokasi Methuk", t_antar: "Lokasi Ngeter", t_ambil: "Njukut Barang Nang", t_kirim: "Kirim Barang Maring", t_daftar: "Daftar Sing Arep Dituku", t_alamat: "Alamat Ngirim", t_resik: "Apa sing arep diresiki?", t_lokasi: "Lokasine nang endi?", t_unik: "Sebutna Penjalukmu", t_waktu: "Alamat / Jam Pira",
             watermark: "💡 <i>Pengin duwe aplikasi pesenan kaya kiye?</i><br><a href='https://wa.me/6281383179209' target='_blank'>📞 Hubungi Jasa Pembuatan Web: 081383179209</a>",
-            templateWA: "Halo Admin Mas Tulung, nyong [NAMA]. Nyong arep njaluk tulung soal: "
+            templateWA: "Halo Admin Mas Tulung, nyong [NAMA]. Nyong arep njaluk tulung soal: ",
+            installTxt: "Pasang Aplikasi Mas Tulung nang HP-mu lur!", btnInstall: "PASANG SIKI (INSTALL) 📲"
         },
         id: {
             subtitle: "Layanan Warga Lokal Terpercaya", loginDesc: "Halo! Masukkan data singkat untuk mulai pesan:",
@@ -253,7 +263,8 @@
             tarif5: "✨ <b>Tarif Jasa Khusus:</b> Fleksibel.<br>Berdasarkan kesulitan permintaan. Driver akan menghubungi via WhatsApp.",
             t_formTitle: "Pesan: ", t_jemput: "Titik Jemput", t_antar: "Titik Tujuan", t_ambil: "Ambil Barang Di", t_kirim: "Kirim Barang Ke", t_daftar: "Daftar Belanjaan", t_alamat: "Alamat Pengiriman", t_resik: "Apa yang dibersihkan?", t_lokasi: "Alamat Lokasi", t_unik: "Sebutkan Permintaanmu", t_waktu: "Alamat / Detail Waktu",
             watermark: "💡 <i>Ingin punya sistem aplikasi pemesanan seperti ini?</i><br><a href='https://wa.me/6281383179209' target='_blank'>📞 Hubungi Jasa Pembuatan Web: 081383179209</a>",
-            templateWA: "Halo Admin Mas Tulung, saya [NAMA]. Saya ingin meminta bantuan terkait kendala: "
+            templateWA: "Halo Admin Mas Tulung, saya [NAMA]. Saya ingin meminta bantuan terkait kendala: ",
+            installTxt: "Pasang Aplikasi Mas Tulung di HP-mu!", btnInstall: "PASANG SEKARANG (INSTALL) 📲"
         },
         en: {
             subtitle: "Trusted Local Services", loginDesc: "Hello! Enter short details to start ordering:",
@@ -270,7 +281,8 @@
             tarif5: "✨ <b>Custom Fee:</b> Flexible.<br>Based on task difficulty. Driver will contact you via WhatsApp.",
             t_formTitle: "Order: ", t_jemput: "Pick-up Location", t_antar: "Drop-off Location", t_ambil: "Pick up from", t_kirim: "Deliver to", t_daftar: "Shopping List", t_alamat: "Delivery Address", t_resik: "What needs cleaning?", t_lokasi: "Location Address", t_unik: "State Your Request", t_waktu: "Address / Time Details",
             watermark: "💡 <i>Want an ordering app system like this?</i><br><a href='https://wa.me/6281383179209' target='_blank'>📞 Contact Web Developer: 081383179209</a>",
-            templateWA: "Hello Mas Tulung Admin, my name is [NAMA]. I would like to ask for help regarding: "
+            templateWA: "Hello Mas Tulung Admin, my name is [NAMA]. I would like to ask for help regarding: ",
+            installTxt: "Install Mas Tulung App on your Phone!", btnInstall: "INSTALL NOW 📲"
         }
     };
 
@@ -278,7 +290,6 @@
         currentLang = langKey;
         document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
         document.getElementById('btn-' + langKey).classList.add('active');
-
         const t = langDict[langKey];
         document.getElementById('ui-subtitle').innerHTML = t.subtitle;
         document.getElementById('ui-login-desc').innerText = t.loginDesc;
@@ -287,28 +298,25 @@
         document.getElementById('ui-btn-login').innerText = t.btnLogin;
         document.getElementById('ui-greet').innerText = t.greet;
         document.getElementById('ui-ask').innerText = t.ask;
-        
         document.getElementById('cat-1').innerText = t.c1;
         document.getElementById('cat-2').innerText = t.c2;
         document.getElementById('cat-3').innerText = t.c3;
         document.getElementById('cat-4').innerText = t.c4;
         document.getElementById('cat-5').innerText = t.c5;
-        
         document.getElementById('ui-btn-history').innerText = t.btnHistory;
         document.getElementById('ui-help-title').innerText = t.helpTitle;
         document.getElementById('ui-help-desc').innerText = t.helpDesc;
         document.getElementById('ui-btn-admin').innerText = t.btnAdmin;
-        
         document.getElementById('ui-btn-back1').innerText = t.btnBack1;
         document.getElementById('ui-label-catatan').innerText = t.lblCatatan;
         document.getElementById('btnKirim').innerText = t.btnOrder;
-        
         document.getElementById('ui-track-title').innerText = t.trackTitle;
         document.getElementById('ui-btn-menu').innerText = t.trackMenuBtn;
-        
         document.getElementById('ui-history-title').innerText = t.histTitle;
         document.getElementById('ui-btn-back2').innerText = t.btnBack2;
         document.getElementById('ui-watermark').innerHTML = t.watermark;
+        document.getElementById('ui-install-txt').innerText = t.installTxt;
+        document.getElementById('btn-install-pwa').innerText = t.btnInstall;
     }
 
     window.chatAdminTemplate = function() {
@@ -331,23 +339,19 @@
     window.bukaForm = function(kategoriSistem) {
         layananAktif = kategoriSistem;
         const t = langDict[currentLang];
-        
         let label1, label2, tarifHTML, judul;
         if(kategoriSistem === 'Antar Jemput') { judul = t.c1; label1 = t.t_jemput; label2 = t.t_antar; tarifHTML = t.tarif1; }
         else if(kategoriSistem === 'Kirim Barang') { judul = t.c2; label1 = t.t_ambil; label2 = t.t_kirim; tarifHTML = t.tarif2; }
         else if(kategoriSistem === 'Titip Belanja') { judul = t.c3; label1 = t.t_daftar; label2 = t.t_alamat; tarifHTML = t.tarif3; }
         else if(kategoriSistem === 'Bantu Bersih') { judul = t.c4; label1 = t.t_resik; label2 = t.t_lokasi; tarifHTML = t.tarif4; }
         else { judul = t.c5; label1 = t.t_unik; label2 = t.t_waktu; tarifHTML = t.tarif5; }
-
         document.getElementById('judulFormTitle').innerText = t.t_formTitle + judul;
         document.getElementById('labelDetail1').innerText = label1;
         document.getElementById('labelDetail2').innerText = label2;
         document.getElementById('boxInfoTarif').innerHTML = tarifHTML;
-        
         document.getElementById('inputDetail1').value = '';
         document.getElementById('inputDetail2').value = '';
         document.getElementById('inputCatatan').value = '';
-
         document.getElementById('page-kategori').classList.add('hidden');
         document.getElementById('page-form').classList.remove('hidden');
     }
@@ -367,7 +371,6 @@
             const semuaOrder = [];
             snapshot.forEach((child) => { semuaOrder.push({ id: child.key, ...child.val() }); });
             semuaOrder.reverse(); 
-
             semuaOrder.forEach((data) => {
                 if (data.customer_wa === userAktif.wa) {
                     adaRiwayat = true;
@@ -375,29 +378,27 @@
                     if(data.status === "diambil") { warnaStatus = "#3498db"; teksStatus = currentLang==="en"?"In Progress":"Sedang Dikerjakan"; }
                     if(data.status === "selesai") { warnaStatus = "#27ae60"; teksStatus = currentLang==="en"?"Completed ✓":"Selesai ✓"; }
                     if(data.status === "batal") { warnaStatus = "#e74c3c"; teksStatus = currentLang==="en"?"Cancelled X":"Dibatalkan X"; }
-
                     let tombolPantau = "";
                     if(data.status === "terbuka" || data.status === "diambil") {
                         let btnLacakTxt = currentLang==="en"?"📍 Track Order":"📍 Lacak Posisi Orderan";
-                        tombolPantau = `<button class="btn-secondary" style="width:100%; padding: 8px; font-size: 12px; margin-top: 10px; border:none; border-radius:4px; color:white; cursor:pointer;" onclick="lanjutPantau('${data.id}')">${btnLacakTxt}</button>`;
+                        tombolPantau = `<button class="btn-secondary" style="width:100%; padding: 12px; font-size: 14px; margin-top: 10px; border:none; border-radius:10px; color:white; cursor:pointer;" onclick="lanjutPantau('${data.id}')">${btnLacakTxt}</button>`;
                     }
-
                     const card = document.createElement('div');
                     card.className = 'history-card';
                     card.innerHTML = `
-                        <div style="display:flex; justify-content:space-between; border-bottom:1px solid #eee; padding-bottom:6px; margin-bottom:6px;">
-                            <span style="font-weight:bold; font-size:13px; color:#2c3e50;">${data.layanan}</span>
-                            <span style="font-size:11px; color:#7f8c8d;">${data.waktu_order}</span>
+                        <div style="display:flex; justify-content:space-between; border-bottom:1px solid #eee; padding-bottom:10px; margin-bottom:10px;">
+                            <span style="font-weight:bold; font-size:16px; color:#2c3e50;">${data.layanan}</span>
+                            <span style="font-size:12px; color:#7f8c8d;">${data.waktu_order}</span>
                         </div>
-                        <div style="font-size:12px; margin-bottom:4px;"><b>Status:</b> <span style="color:${warnaStatus}; font-weight:bold;">${teksStatus}</span></div>
-                        <div style="font-size:11px; color:#555; line-height:1.4;"><b>Detail 1:</b> ${data.detail_1}<br><b>Detail 2:</b> ${data.detail_2}</div>
-                        ${data.driver_nama ? `<div style="font-size:11px; margin-top:6px; background-color:#e8f8f5; padding:5px; border-radius:4px; border-left:3px solid #1abc9c;">🛵 <b>Driver:</b> ${data.driver_nama}</div>` : ''}
+                        <div style="font-size:14px; margin-bottom:5px;"><b>Status:</b> <span style="color:${warnaStatus}; font-weight:bold;">${teksStatus}</span></div>
+                        <div style="font-size:13px; color:#555; line-height:1.4;"><b>Detail 1:</b> ${data.detail_1}<br><b>Detail 2:</b> ${data.detail_2}</div>
+                        ${data.driver_nama ? `<div style="font-size:13px; margin-top:10px; background-color:#e8f8f5; padding:8px; border-radius:8px; border-left:4px solid #1abc9c;">🛵 <b>Driver:</b> ${data.driver_nama}</div>` : ''}
                         ${tombolPantau}
                     `;
                     listHistory.appendChild(card);
                 }
             });
-            if(!adaRiwayat) { listHistory.innerHTML = `<div style="text-align:center; color:#7f8c8d; font-style:italic; padding:30px; font-size:13px;">${currentLang==='en'?'No orders found.':'Belum ada pesanan.'}</div>`; }
+            if(!adaRiwayat) { listHistory.innerHTML = `<div style="text-align:center; color:#7f8c8d; font-style:italic; padding:30px; font-size:14px;">${currentLang==='en'?'No orders found.':'Belum ada pesanan.'}</div>`; }
         });
     }
 
@@ -407,15 +408,11 @@
         const detail1 = document.getElementById('inputDetail1').value;
         const detail2 = document.getElementById('inputDetail2').value;
         const catatan = document.getElementById('inputCatatan').value;
-
         if (!detail1 || !detail2) { alert("Data belum lengkap!"); return; }
-
         const btnKirim = document.getElementById('btnKirim');
         btnKirim.innerText = "⏳..."; btnKirim.disabled = true;
-
         const orderBaruRef = push(ref(database, 'orders')); 
         const dataPesanan = { waktu_order: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }), timestamp: new Date().getTime(), customer_nama: userAktif.nama, customer_wa: userAktif.wa, layanan: layananAktif, detail_1: detail1, detail_2: detail2, catatan: catatan, status: "terbuka", driver_nama: "" };
-
         set(orderBaruRef, dataPesanan).then(() => {
             document.getElementById('page-form').classList.add('hidden');
             document.getElementById('page-tracking').classList.remove('hidden');
@@ -429,7 +426,6 @@
             const data = snapshot.val();
             if (data) {
                 const icon = document.getElementById('track-icon'); const status = document.getElementById('track-status'); const desc = document.getElementById('track-desc'); const driverInfo = document.getElementById('track-driver-info');
-                
                 if (data.status === "terbuka") {
                     icon.innerText = "⏳"; driverInfo.classList.add('hidden');
                     status.innerText = currentLang==="ngapak"?"Lagi Golek Driver...":currentLang==="id"?"Mencari Driver...":"Finding Driver...";
@@ -449,6 +445,12 @@
                     desc.innerText = currentLang==="ngapak"?"Ngapura, pesenane dibatalna nang Admin.":currentLang==="id"?"Maaf, pesanan dibatalkan sistem/admin.":"Sorry, order was cancelled by system/admin.";
                 }
             }
+        });
+    }
+
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('sw-customer.js').catch(e => console.log('SW Error:', e));
         });
     }
 </script>
