@@ -8,58 +8,112 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#f1c40f">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/1048/1048314.png">
+
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #2c3e50; margin: 0; display: flex; justify-content: center; height: 100vh; overflow: hidden; }
-        .app-container { width: 100%; max-width: 480px; background-color: #f4f7f6; height: 100vh; box-shadow: 0 0 15px rgba(0,0,0,0.5); display: flex; flex-direction: column; position: relative; }
+        /* FULL SCREEN SETUP */
+        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #2c3e50; margin: 0; padding: 0; height: 100vh; overflow: hidden; display: flex; justify-content: center; }
         
-        .header { background-color: #f1c40f; color: #2c3e50; padding: 15px; text-align: center; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; font-weight: bold; flex-shrink: 0; position: relative; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .header h2 { margin: 0; font-size: 20px; }
+        .app-container { 
+            width: 100vw; 
+            max-width: 600px; 
+            background-color: #f4f7f6; 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden; 
+            position: relative;
+        }
         
-        .lang-switcher { position: absolute; top: 12px; right: 15px; background: rgba(0,0,0,0.1); padding: 3px; border-radius: 6px; display: flex; gap: 3px; }
-        .lang-btn { background: none; border: none; color: #2c3e50; font-size: 10px; cursor: pointer; padding: 4px 6px; border-radius: 4px; font-weight: bold; opacity: 0.5; transition: 0.2s; }
-        .lang-btn.active { background: white; opacity: 1; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+        /* HEADER - Lebih Besar & Mantap */
+        .header { 
+            background-color: #f1c40f; 
+            color: #2c3e50; 
+            padding: 20px 15px; 
+            text-align: center; 
+            border-bottom-left-radius: 20px; 
+            border-bottom-right-radius: 20px; 
+            font-weight: bold; 
+            flex-shrink: 0; 
+            position: relative; 
+            z-index: 10; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
+        }
+        .header h2 { margin: 0; font-size: 24px; }
+        
+        .lang-switcher { position: absolute; top: 18px; right: 15px; background: rgba(0,0,0,0.1); padding: 4px; border-radius: 10px; display: flex; gap: 4px; }
+        .lang-btn { background: none; border: none; color: #2c3e50; font-size: 11px; cursor: pointer; padding: 5px 10px; border-radius: 7px; font-weight: bold; opacity: 0.5; }
+        .lang-btn.active { background: white; opacity: 1; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
 
-        .content { padding: 15px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
-        .content::-webkit-scrollbar { width: 0px; background: transparent; }
+        /* CONTENT AREA */
+        .content { padding: 20px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+        .content::-webkit-scrollbar { width: 0px; }
         
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 13px; color: #333; }
-        input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 15px; text-align: center; font-weight: bold; }
-        
-        .btn-masuk { background-color: #2c3e50; color: white; border: none; padding: 14px; width: 100%; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 5px; }
-        .btn-masuk:hover { background-color: #1a252f; }
+        /* TOMBOL INSTAL DRIVER */
+        #install-banner { background-color: #fff9e6; border: 2px dashed #f1c40f; padding: 15px; border-radius: 15px; text-align: center; margin-bottom: 20px; display: none; }
+        #btn-install-pwa { background-color: #2c3e50; color: white; padding: 12px 20px; border-radius: 10px; font-weight: bold; border: none; cursor: pointer; margin-top: 10px; font-size: 15px; width: 100%; }
 
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .stat-box { background: white; padding: 12px 10px; border-radius: 8px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-bottom: 3px solid #ddd; }
+        /* LOGIN FORM */
+        label { display: block; margin-bottom: 8px; font-weight: bold; font-size: 18px; color: #333; text-align: center; }
+        input { 
+            width: 100%; 
+            padding: 18px; 
+            border: 2px solid #ddd; 
+            border-radius: 15px; 
+            box-sizing: border-box; 
+            font-size: 20px; 
+            text-align: center; 
+            font-weight: bold; 
+            background-color: white;
+        }
+        
+        .btn-masuk { 
+            background-color: #2c3e50; 
+            color: white; 
+            border: none; 
+            padding: 20px; 
+            width: 100%; 
+            border-radius: 15px; 
+            font-size: 18px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            margin-top: 15px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+
+        /* STATS GRID */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .stat-box { background: white; padding: 15px; border-radius: 15px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-bottom: 5px solid #ddd; }
         .stat-box.green { border-color: #27ae60; }
         .stat-box.blue { border-color: #3498db; }
-        .stat-angka { font-size: 22px; font-weight: bold; color: #2c3e50; margin-top: 3px; }
-        .stat-label { font-size: 10px; color: #7f8c8d; text-transform: uppercase; font-weight: bold; }
+        .stat-angka { font-size: 32px; font-weight: bold; color: #2c3e50; }
+        .stat-label { font-size: 12px; color: #7f8c8d; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; }
 
-        .order-card { background: white; border-radius: 8px; padding: 12px; margin-bottom: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .order-card.baru { border-left: 5px solid #e74c3c; } 
-        .order-card.aktif { border-left: 5px solid #3498db; background-color: #f0f8ff; } 
+        /* ORDER CARDS - Teks diperbesar */
+        .order-card { background: white; border-radius: 18px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+        .order-card.baru { border-left: 8px solid #e74c3c; } 
+        .order-card.aktif { border-left: 8px solid #3498db; background-color: #f0f8ff; } 
         
-        .order-header { display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 8px; }
-        .badge-layanan { background-color: #2c3e50; color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
-        .order-detail { font-size: 13px; color: #333; margin-bottom: 4px; line-height: 1.4; }
+        .order-header { display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding-bottom: 12px; margin-bottom: 12px; }
+        .badge-layanan { background-color: #2c3e50; color: white; padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: bold; }
+        .order-detail { font-size: 16px; color: #333; margin-bottom: 6px; line-height: 1.5; }
         
-        .btn-ambil { background-color: #27ae60; color: white; border: none; padding: 10px; width: 100%; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 8px; animation: pulse 2s infinite; }
-        .btn-wa-kembali { background-color: #25D366; color: white; border: none; padding: 10px; width: 100%; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; margin-top: 8px; }
+        .btn-ambil { background-color: #27ae60; color: white; border: none; padding: 18px; width: 100%; border-radius: 15px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; animation: pulse 2s infinite; }
+        .btn-wa-kembali { background-color: #25D366; color: white; border: none; padding: 15px; width: 100%; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
 
-        .section-title { font-size: 13px; font-weight: bold; color: #2c3e50; margin: 15px 0 10px 0; padding-bottom: 5px; border-bottom: 2px solid #ddd; }
+        .section-title { font-size: 16px; font-weight: bold; color: #2c3e50; margin: 20px 0 10px 0; padding-bottom: 8px; border-bottom: 3px solid #ddd; }
 
-        .watermark { text-align: center; padding: 10px 15px; font-size: 11px; color: #7f8c8d; border-top: 1px dashed #ddd; background-color: #fdfdfd; flex-shrink: 0; z-index: 10; }
-        .watermark a { color: #00a859; font-weight: bold; text-decoration: none; display: inline-block; margin-top: 3px; }
+        /* WATERMARK */
+        .watermark { text-align: center; padding: 15px; font-size: 13px; color: #7f8c8d; border-top: 1px solid #ddd; background-color: #fdfdfd; flex-shrink: 0; }
+        .watermark a { color: #00a859; font-weight: bold; text-decoration: none; }
 
         @keyframes pulse {
             0% { transform: scale(1); }
-            50% { transform: scale(1.02); }
+            50% { transform: scale(1.03); }
             100% { transform: scale(1); }
         }
 
         .hidden { display: none !important; }
-        .empty-state { text-align: center; color: #7f8c8d; margin-top: 15px; font-style: italic; font-size: 12px; }
+        .empty-state { text-align: center; color: #7f8c8d; margin-top: 20px; font-style: italic; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -68,25 +122,30 @@
 
 <div class="app-container">
     
-    <div class="header" id="header-container">
+    <div class="header">
         <div class="lang-switcher">
             <button class="lang-btn active" onclick="setLang('ngapak')" id="btn-ngapak">Ngapak</button>
             <button class="lang-btn" onclick="setLang('id')" id="btn-id">ID</button>
             <button class="lang-btn" onclick="setLang('en')" id="btn-en">EN</button>
         </div>
         <h2 id="ui-title">🛵 Aplikasi Driver</h2>
-        <p style="font-size: 12px; margin: 2px 0 0 0;" id="ui-subtitle">Mas Tulung Gombong</p>
+        <p style="font-size: 14px; margin: 5px 0 0 0;" id="ui-subtitle">Mas Tulung Gombong</p>
         
-        <div id="ui-status-box" class="hidden" style="margin-top: 10px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 8px;">
-            <h3 style="margin:0; font-size: 14px;" id="ui-status-text">Status: <span style="color: #27ae60;">AKTIF MENCARI ORDER</span> 🟢</h3>
-            <p style="font-size: 12px; margin: 3px 0 0 0;">Driver: <b id="displayNamaDriver"></b></p>
+        <div id="ui-status-box" class="hidden" style="margin-top: 12px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 10px;">
+            <h3 style="margin:0; font-size: 16px;" id="ui-status-text">Status: <span style="color: #27ae60;">AKTIF GOLEK ORDER</span> 🟢</h3>
+            <p style="font-size: 14px; margin: 5px 0 0 0;">Driver: <b id="displayNamaDriver"></b></p>
         </div>
     </div>
 
     <div id="page-login" class="content">
         <div style="margin: auto 0;">
+            <div id="install-banner">
+                <div style="font-weight: bold; font-size: 16px; color: #2c3e50;" id="ui-install-txt">Pasang Aplikasi Driver nang HP-mu lur!</div>
+                <button id="btn-install-pwa">PASANG APLIKASI DRIVER 📲</button>
+            </div>
+
             <div class="form-group">
-                <label style="text-align: center;" id="ui-label-nama">Lebokna Jenengmu</label>
+                <label id="ui-label-nama">Lebokna Jenengmu</label>
                 <input type="text" id="inputNamaDriver" placeholder="Contoh: Agus">
             </div>
             <button class="btn-masuk" onclick="mulaiNarik()" id="ui-btn-masuk">Mulai Narik 🟢</button>
@@ -108,7 +167,7 @@
         <div class="section-title" id="ui-title-aktif">🛠️ Garapan Aktifku</div>
         <div id="listOrderanAktif"></div>
 
-        <div class="section-title" style="margin-top: 20px;" id="ui-title-radar">📡 Radar Pesenan Anyar</div>
+        <div class="section-title" style="margin-top: 25px;" id="ui-title-radar">📡 Radar Pesenan Anyar</div>
         <div id="listOrderan"></div>
     </div>
 
@@ -118,20 +177,6 @@
     </div>
 
 </div>
-
-<script>
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('sw.js')
-                .then(registration => {
-                    console.log('Service Worker berhasil didaftarkan dengan scope:', registration.scope);
-                })
-                .catch(error => {
-                    console.log('Service Worker gagal didaftarkan:', error);
-                });
-        });
-    }
-</script>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
@@ -155,6 +200,26 @@
     let latestOrdersData = []; 
     let currentLang = "ngapak";
 
+    // LOGIKA INSTALASI PWA DRIVER
+    let deferredPrompt;
+    const installBanner = document.getElementById('install-banner');
+    const btnInstall = document.getElementById('btn-install-pwa');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        installBanner.style.display = 'block';
+    });
+
+    btnInstall.addEventListener('click', async () => {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            installBanner.style.display = 'none';
+            deferredPrompt = null;
+        }
+    });
+
     const langDict = {
         ngapak: {
             title: "🛵 Aplikasi Driver", subtitle: "Mas Tulung Gombong", lblNama: "Lebokna Jenengmu", btnMasuk: "Mulai Narik 🟢", statusTxt: "Status: <span style='color:#27ae60'>AKTIF GOLEK ORDER</span> 🟢",
@@ -165,7 +230,8 @@
             btnWa: "💬 Chat WA Pelanggone Maning", btnAmbil: "Jikot Orderan Kiye ⚡",
             alertName: "Isi jeneng disit bos!", alertSukses: "MANTAP! Orderan berhasil dijikot. Klik OK nggo ngubungi pelanggone via WA.", alertGagal: "YAH TELAT! Orderan kiye nembe bae dijikot nang driver liya.",
             waTemplate1: "Halo kak ", waTemplate2: ", kiye nyong ", waTemplate3: " sekang Mas Tulung. Orderane rika wis aman tek jikot, nyong siap meluncur kaya Satria Baja Hitam siki! Enteni sedela ya lur, aja klalen siapna senyum manise 🚀💨",
-            watermark: "💡 <i>Pengin duwe aplikasi pesenan kaya kiye?</i><br><a href='https://wa.me/6281383179209' target='_blank'>📞 Hubungi Jasa Pembuatan Web: 081383179209</a>"
+            watermark: "💡 <i>Pengin duwe aplikasi pesenan kaya kiye?</i><br><a href='https://wa.me/6281383179209' target='_blank'>📞 Hubungi Jasa Pembuatan Web: 081383179209</a>",
+            installTxt: "Pasang Aplikasi Driver nang HP-mu lur!", btnInstall: "PASANG APLIKASI DRIVER 📲"
         },
         id: {
             title: "🛵 Aplikasi Driver", subtitle: "Mas Tulung Gombong", lblNama: "Masukkan Nama Anda", btnMasuk: "Mulai Narik 🟢", statusTxt: "Status: <span style='color:#27ae60'>AKTIF MENCARI ORDER</span> 🟢",
@@ -176,7 +242,8 @@
             btnWa: "💬 Chat WA Pelanggan Lagi", btnAmbil: "Ambil Order Ini ⚡",
             alertName: "Isi nama dulu bos!", alertSukses: "MANTAP! Orderan berhasil kamu ambil. Klik OK untuk menghubungi pelanggan via WA.", alertGagal: "YAH TELAT! Orderan ini baru saja diambil oleh driver lain.",
             waTemplate1: "Halo kak ", waTemplate2: ", saya ", waTemplate3: " pahlawan Mas Tulung Anda hari ini! Orderan sudah aman saya ambil, meluncur secepat kilat ke lokasi. Mohon ditunggu ya kak, siapkan senyum termanisnya 🛵💨",
-            watermark: "💡 <i>Ingin punya sistem aplikasi pemesanan seperti ini?</i><br><a href='https://wa.me/6281383179209' target='_blank'>📞 Hubungi Jasa Pembuatan Web: 081383179209</a>"
+            watermark: "💡 <i>Ingin punya sistem aplikasi pemesanan seperti ini?</i><br><a href='https://wa.me/6281383179209' target='_blank'>📞 Hubungi Jasa Pembuatan Web: 081383179209</a>",
+            installTxt: "Pasang Aplikasi Driver di HP-mu!", btnInstall: "INSTALL APLIKASI DRIVER 📲"
         },
         en: {
             title: "🛵 Driver App", subtitle: "Mas Tulung Gombong", lblNama: "Enter Your Name", btnMasuk: "Start Driving 🟢", statusTxt: "Status: <span style='color:#27ae60'>ACTIVE & SEARCHING</span> 🟢",
@@ -187,7 +254,8 @@
             btnWa: "💬 Chat Customer Again", btnAmbil: "Take This Order ⚡",
             alertName: "Please enter your name first!", alertSukses: "AWESOME! You took the order. Click OK to contact the customer via WA.", alertGagal: "TOO LATE! Another driver just took this order.",
             waTemplate1: "Hi ", waTemplate2: ", I'm ", waTemplate3: " your Mas Tulung hero today! I've secured your order and I'm zooming over at light speed. Please wait a moment and have your best smile ready 🛵💨",
-            watermark: "💡 <i>Want an ordering app system like this?</i><br><a href='https://wa.me/6281383179209' target='_blank'>📞 Contact Web Developer: 081383179209</a>"
+            watermark: "💡 <i>Want an ordering app system like this?</i><br><a href='https://wa.me/6281383179209' target='_blank'>📞 Contact Web Developer: 081383179209</a>",
+            installTxt: "Install Driver App on your Phone!", btnInstall: "INSTALL DRIVER APP 📲"
         }
     };
 
@@ -195,7 +263,6 @@
         currentLang = langKey;
         document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
         document.getElementById('btn-' + langKey).classList.add('active');
-
         const t = langDict[langKey];
         document.getElementById('ui-title').innerText = t.title;
         document.getElementById('ui-subtitle').innerText = t.subtitle;
@@ -207,22 +274,20 @@
         document.getElementById('ui-title-aktif').innerText = t.titleAktif;
         document.getElementById('ui-title-radar').innerText = t.titleRadar;
         document.getElementById('ui-watermark').innerHTML = t.watermark;
-
+        document.getElementById('ui-install-txt').innerText = t.installTxt;
+        document.getElementById('btn-install-pwa').innerText = t.btnInstall;
         renderOrdersUI(); 
     }
 
     window.mulaiNarik = function() {
         const nama = document.getElementById('inputNamaDriver').value;
         if (!nama) { alert(langDict[currentLang].alertName); return; }
-        
         namaDriverAktif = nama;
         document.getElementById('displayNamaDriver').innerText = nama;
-        
         document.getElementById('page-login').classList.add('hidden');
         document.getElementById('ui-subtitle').classList.add('hidden');
         document.getElementById('ui-status-box').classList.remove('hidden'); 
         document.getElementById('page-dashboard').classList.remove('hidden');
-
         document.getElementById('suaraNotif').play().catch(e => console.log("Audio siap."));
         pantauOrderanMasuk();
     }
@@ -240,14 +305,11 @@
 
     function renderOrdersUI() {
         if(latestOrdersData.length === 0 && namaDriverAktif === "") return; 
-
         const t = langDict[currentLang];
         const listOrderanDiv = document.getElementById('listOrderan');
         const listOrderanAktifDiv = document.getElementById('listOrderanAktif');
-        
         listOrderanDiv.innerHTML = ""; 
         listOrderanAktifDiv.innerHTML = "";
-        
         let adaOrderanBaru = false; let adaOrderanAktif = false; let orderanBaruMasuk = false; 
         let hitungSelesai = 0; let hitungJalan = 0;
 
@@ -256,7 +318,6 @@
                 if (data.status === "selesai") hitungSelesai++;
                 if (data.status === "diambil") hitungJalan++;
             }
-
             if (data.status === "diambil" && data.driver_nama === namaDriverAktif) {
                 adaOrderanAktif = true;
                 const cardAktif = document.createElement('div');
@@ -264,31 +325,29 @@
                 cardAktif.innerHTML = `
                     <div class="order-header">
                         <span class="badge-layanan" style="background-color: #3498db;">${data.layanan}</span>
-                        <span style="font-size: 11px; color: #3498db; font-weight: bold;">${t.badgeAktif}</span>
+                        <span style="font-size: 12px; color: #3498db; font-weight: bold;">${t.badgeAktif}</span>
                     </div>
                     <div class="order-detail">${t.lblCust} ${data.customer_nama}</div>
                     <div class="order-detail">${t.lblDet1} ${data.detail_1}</div>
                     <div class="order-detail">${t.lblDet2} ${data.detail_2}</div>
                     <div class="order-detail" style="color:#e67e22;">${t.lblNote} ${data.catatan ? data.catatan : '-'}</div>
-                    <p style="font-size:10px; color:#7f8c8d; text-align:center; margin-bottom:0; margin-top:8px;">${t.noteAktif}</p>
+                    <p style="font-size:11px; color:#7f8c8d; text-align:center; margin-bottom:0; margin-top:10px;">${t.noteAktif}</p>
                     <button class="btn-wa-kembali" onclick="chatUlang('${data.customer_wa}')">${t.btnWa}</button>
                 `;
                 listOrderanAktifDiv.appendChild(cardAktif);
             }
-
             if (data.status === "terbuka") {
                 adaOrderanBaru = true;
                 if (!orderYangSudahBunyi.has(data.id)) {
                     orderYangSudahBunyi.add(data.id); 
                     orderanBaruMasuk = true; 
                 }
-
                 const cardBaru = document.createElement('div');
                 cardBaru.className = 'order-card baru';
                 cardBaru.innerHTML = `
                     <div class="order-header">
                         <span class="badge-layanan">${data.layanan}</span>
-                        <span style="font-size: 11px; color: #7f8c8d;">⏱️ ${data.waktu_order}</span>
+                        <span style="font-size: 12px; color: #7f8c8d;">⏱️ ${data.waktu_order}</span>
                     </div>
                     <div class="order-detail">${t.lblCust} ${data.customer_nama}</div>
                     <div class="order-detail">${t.lblDet1} ${data.detail_1}</div>
@@ -302,24 +361,19 @@
 
         document.getElementById('statJalan').innerText = hitungJalan;
         document.getElementById('statSelesai').innerText = hitungSelesai;
-
         if (orderanBaruMasuk) {
             const audioPlayer = document.getElementById('suaraNotif');
             audioPlayer.currentTime = 0; 
             audioPlayer.play().catch(e => console.log("Gagal memutar:", e));
         }
-
         if (!adaOrderanBaru) listOrderanDiv.innerHTML = `<div class="empty-state">${t.emptyRadar}</div>`;
         if (!adaOrderanAktif) listOrderanAktifDiv.innerHTML = `<div class="empty-state">${t.emptyAktif}</div>`;
     }
 
-    window.chatUlang = function(noWA) {
-        window.open(`https://wa.me/62${noWA}`, '_blank');
-    }
+    window.chatUlang = function(noWA) { window.open(`https://wa.me/62${noWA}`, '_blank'); }
 
     window.ambilOrderan = function(orderId, noWA, namaCust) {
         const orderSpesifikRef = ref(database, 'orders/' + orderId);
-
         runTransaction(orderSpesifikRef, (pesanan) => {
             if (pesanan && pesanan.status === "terbuka") {
                 pesanan.status = "diambil"; pesanan.driver_nama = namaDriverAktif; return pesanan; 
@@ -336,7 +390,12 @@
             }
         }).catch((error) => { alert("Error: " + error); });
     }
-</script>
 
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('sw.js').catch(e => console.log('SW Error:', e));
+        });
+    }
+</script>
 </body>
 </html>
