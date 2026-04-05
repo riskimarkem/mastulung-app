@@ -55,6 +55,7 @@
         .stars { display: flex; justify-content: center; gap: 10px; font-size: 35px; margin: 10px 0; }
         .star { cursor: pointer; color: #e0e0e0; transition: 0.2s; }
         .star.selected { color: #f1c40f; }
+        .input-ulasan { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; box-sizing: border-box; margin-bottom: 12px; resize: none; font-family: inherit; }
         
         .info-tarif-box { background-color: #eef7ff; border-left: 5px solid #3498db; padding: 15px; border-radius: 10px; font-size: 14px; color: #2c3e50; line-height: 1.5; }
 
@@ -195,6 +196,9 @@
                         <span class="star" onclick="setRating(4)">★</span>
                         <span class="star" onclick="setRating(5)">★</span>
                     </div>
+                    
+                    <textarea id="inputUlasan" class="input-ulasan" rows="2" placeholder="Tulis ulasan utawa masukan (opsional)..."></textarea>
+
                     <button onclick="kirimRating()" style="padding:12px; font-size:15px; background:#f1c40f; color:#2c3e50; border: none; border-radius: 10px; width: 100%; font-weight: bold; cursor: pointer;" id="ui-btn-rating">Kirim Rating ⭐</button>
                 </div>
             </div>
@@ -264,11 +268,11 @@
             watermark: "💡 <i>Pengin duwe aplikasi kaya kiye?</i><br><a href='https://wa.me/6281383179209' target='_blank'>📞 Hubungi Jasa Web: 081383179209</a>",
             templateWA: "Halo Admin TulangTulung Gombong, nyong [NAMA]. Nyong arep takon soal pesenan: ",
             installTxt: "Pasang Aplikasi TulangTulung Gombong!", btnInstall: "INSTALL 📲",
-            btnCancel: "❌ Batalkan Pesenan", btnComplete: "✅ Konfirmasi Pesenan Beres", ratingTitle: "Kepiye pelayanan drivere?", btnRating: "Kirim Rating ⭐",
+            btnCancel: "❌ Batalkan Pesenan", btnComplete: "✅ Konfirmasi Pesenan Beres", ratingTitle: "Kepiye pelayanan drivere?", ph_ulasan: "Tulis ulasan utawa masukan (opsional)...", btnRating: "Kirim Rating ⭐",
             status1: "Lagi Golek Driver...", desc1: "Dienteni sedela ya lur...",
             status2: "Driver Wis Olih!", desc2: "Driver arep chat WA nggo konfirmasi.",
             status3: "Pesenan Beres!", desc3: "Suwun wis nganggo TulangTulung Gombong!",
-            status4: "Dibatalna", desc4: "Pesenan kiye wis dibatalna."
+            status4: "Dibatalna", desc4: "Pesenan kiye wis dibatalna.", alertRating: "Suwun rating & ulasane lur!"
         },
         id: {
             subtitle: "Layanan Asli Warga Lokal", loginDesc: "Selamat datang kak! Masukkan data untuk mulai pesan:",
@@ -294,11 +298,11 @@
             watermark: "💡 <i>Ingin punya aplikasi seperti ini?</i><br><a href='https://wa.me/6281383179209' target='_blank'>📞 Hubungi Jasa Web: 081383179209</a>",
             templateWA: "Halo Admin TulangTulung Gombong, saya [NAMA]. Saya ingin bertanya terkait pesanan: ",
             installTxt: "Install Aplikasi TulangTulung Gombong!", btnInstall: "INSTALL 📲",
-            btnCancel: "❌ Batalkan Pesanan", btnComplete: "✅ Konfirmasi Pesanan Selesai", ratingTitle: "Bagaimana pelayanan driver kami?", btnRating: "Kirim Rating ⭐",
+            btnCancel: "❌ Batalkan Pesanan", btnComplete: "✅ Konfirmasi Pesanan Selesai", ratingTitle: "Bagaimana pelayanan driver kami?", ph_ulasan: "Tulis ulasan atau masukan (opsional)...", btnRating: "Kirim Rating ⭐",
             status1: "Mencari Driver...", desc1: "Mohon tunggu sebentar...",
             status2: "Driver Ditemukan!", desc2: "Driver akan chat WA untuk konfirmasi.",
             status3: "Pesanan Selesai!", desc3: "Terima kasih sudah menggunakan layanan kami!",
-            status4: "Dibatalkan", desc4: "Pesanan ini telah dibatalkan."
+            status4: "Dibatalkan", desc4: "Pesanan ini telah dibatalkan.", alertRating: "Terima kasih atas rating & ulasan Anda!"
         },
         en: {
             subtitle: "Authentic Local Services", loginDesc: "Welcome! Enter your details to start:",
@@ -324,11 +328,11 @@
             watermark: "💡 <i>Want an app like this?</i><br><a href='https://wa.me/6281383179209' target='_blank'>📞 Contact Web Dev: 081383179209</a>",
             templateWA: "Hello Admin TulangTulung Gombong, my name is [NAMA]. I have a question regarding my order: ",
             installTxt: "Install TulangTulung Gombong App!", btnInstall: "INSTALL 📲",
-            btnCancel: "❌ Cancel Order", btnComplete: "✅ Confirm Order Completed", ratingTitle: "How was the driver's service?", btnRating: "Submit Rating ⭐",
+            btnCancel: "❌ Cancel Order", btnComplete: "✅ Confirm Order Completed", ratingTitle: "How was the driver's service?", ph_ulasan: "Write your feedback or suggestions (optional)...", btnRating: "Submit Rating ⭐",
             status1: "Finding Driver...", desc1: "Please wait a moment...",
             status2: "Driver Found!", desc2: "Driver will chat you via WA.",
             status3: "Order Completed!", desc3: "Thank you for using our service!",
-            status4: "Cancelled", desc4: "This order has been cancelled."
+            status4: "Cancelled", desc4: "This order has been cancelled.", alertRating: "Thank you for your rating & feedback!"
         }
     };
 
@@ -342,7 +346,7 @@
         document.getElementById('ui-login-desc').innerText = t.loginDesc;
         document.getElementById('ui-label-nama').innerText = t.lblNama;
         document.getElementById('ui-label-wa').innerText = t.lblWa;
-        document.getElementById('ui-note-wa').innerText = t.noteWa; // WA NOTE
+        document.getElementById('ui-note-wa').innerText = t.noteWa; 
         document.getElementById('ui-btn-login').innerText = t.btnLogin;
         
         document.getElementById('ui-greet').innerText = t.greet;
@@ -373,6 +377,9 @@
         document.getElementById('ui-btn-cancel').innerText = t.btnCancel;
         document.getElementById('ui-btn-complete').innerText = t.btnComplete;
         document.getElementById('ui-rating-title').innerText = t.ratingTitle;
+        
+        // Menerapkan Placeholder Ulasan sesuai bahasa
+        document.getElementById('inputUlasan').placeholder = t.ph_ulasan;
         document.getElementById('ui-btn-rating').innerText = t.btnRating;
         
         if(!document.getElementById('page-form').classList.contains('hidden')){
@@ -470,6 +477,10 @@
                         let btnLacakTxt = currentLang==="en"?"📍 Track Order":"📍 Lacak Pesenan";
                         tombolPantau = `<button style="background:#f1f2f6; color:#2f3542; width:100%; padding: 10px; font-size: 14px; margin-top: 10px; border:none; border-radius:8px; cursor:pointer; font-weight:bold;" onclick="lanjutPantau('${data.id}')">${btnLacakTxt}</button>`;
                     }
+
+                    // Tampilkan Ulasan di Riwayat jika ada
+                    let teksUlasan = data.ulasan ? `<br>💬 <i>"${data.ulasan}"</i>` : '';
+
                     const card = document.createElement('div');
                     card.className = 'history-card';
                     card.innerHTML = `
@@ -479,7 +490,7 @@
                         </div>
                         <div style="font-size:13px; margin-bottom:5px;"><b>Status:</b> <span style="color:${warnaStatus}; font-weight:bold;">${teksStatus}</span></div>
                         <div style="font-size:12px; color:#555; line-height:1.4; background:#f9f9f9; padding:8px; border-radius:8px;">${data.detail_1} <br>➔<br> ${data.detail_2}</div>
-                        ${data.driver_nama ? `<div style="font-size:12px; margin-top:8px; background-color:#e8f8f5; padding:8px; border-radius:8px; border-left:4px solid #1abc9c;">🛵 <b>Driver:</b> ${data.driver_nama} ${data.rating ? ' (⭐'+data.rating+')' : ''}</div>` : ''}
+                        ${data.driver_nama ? `<div style="font-size:12px; margin-top:8px; background-color:#e8f8f5; padding:8px; border-radius:8px; border-left:4px solid #1abc9c;">🛵 <b>Driver:</b> ${data.driver_nama} ${data.rating ? ' (⭐'+data.rating+')' : ''} ${teksUlasan}</div>` : ''}
                         ${tombolPantau}
                     `;
                     listHistory.appendChild(card);
@@ -524,6 +535,12 @@
             document.getElementById('page-form').classList.add('hidden');
             document.getElementById('page-tracking').classList.remove('hidden');
             btnKirim.innerText = langDict[currentLang].btnOrder; btnKirim.disabled = false;
+            
+            // Kosongkan rating dan ulasan setiap pesan baru
+            ratingSkor = 0;
+            document.querySelectorAll('.star').forEach(s => s.classList.remove('selected'));
+            document.getElementById('inputUlasan').value = "";
+
             pantauStatusPesanan(currentOrderId);
         }).catch((e) => { alert("Error: " + e); btnKirim.disabled = false; });
     }
@@ -556,6 +573,7 @@
                     icon.innerText = "✅"; status.style.color = "#2980b9"; status.innerText = t.status3; desc.innerText = t.desc3;
                     ratingArea.classList.remove('hidden');
                     cancelArea.classList.add('hidden'); completeArea.classList.add('hidden'); driverInfo.classList.add('hidden');
+                    // Jika sudah dirating, hilangkan kotak rating
                     if(data.rating) ratingArea.classList.add('hidden');
                 } else if (data.status === "batal" || data.status === "batal_cust") {
                     icon.innerText = "❌"; status.style.color = "#e74c3c"; status.innerText = t.status4; desc.innerText = t.desc4;
@@ -584,10 +602,20 @@
         });
     }
 
+    // FUNGSI KIRIM RATING + ULASAN KE FIREBASE
     window.kirimRating = function() {
-        if(ratingSkor === 0) { alert(currentLang==="en" ? "Please select stars first!" : "Pilih bintang disit!"); return; }
-        update(ref(database, 'orders/' + currentOrderId), { rating: ratingSkor }).then(() => {
-            alert(currentLang==="en" ? "Thank you for rating!" : "Suwun rating-e lur!");
+        if(ratingSkor === 0) { 
+            alert(currentLang==="en" ? "Please select stars first!" : "Pilih bintang disit!"); 
+            return; 
+        }
+        
+        const teksUlasan = document.getElementById('inputUlasan').value.trim();
+
+        update(ref(database, 'orders/' + currentOrderId), { 
+            rating: ratingSkor,
+            ulasan: teksUlasan
+        }).then(() => {
+            alert(langDict[currentLang].alertRating);
             document.getElementById('rating-area').classList.add('hidden');
         });
     }
