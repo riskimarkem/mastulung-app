@@ -183,7 +183,7 @@
     }
 
     // ==========================================
-    // BAGIAN 1: MANAJEMEN DRIVER (DENGAN PENCARIAN & STATISTIK)
+    // BAGIAN 1: MANAJEMEN DRIVER
     // ==========================================
     function muatDataDriver() {
         const driversRef = ref(database, 'drivers');
@@ -195,31 +195,27 @@
             if(snapshot.exists()) {
                 snapshot.forEach((child) => { 
                     const data = child.val();
-                    data.wa = child.key; // Simpan WA sbg key
+                    data.wa = child.key; 
                     allDriversData.push(data); 
 
-                    // Hitung Statistik
                     if(data.status === 'aktif') totalAktif++;
                     totalSaldoSistem += (data.saldo || 0);
                 });
             }
             
-            // Update UI Statistik
             document.getElementById('adminStatDriver').innerText = totalAktif;
             document.getElementById('adminStatSaldo').innerText = "Rp " + totalSaldoSistem.toLocaleString('id-ID');
 
-            renderDrivers(); // Panggil fungsi cetak UI
+            renderDrivers(); 
         });
     }
 
-    // Fungsi Render UI Daftar Driver dengan Filter Pencarian
     window.renderDrivers = function() {
         const listDiv = document.getElementById('listDrivers');
         listDiv.innerHTML = "";
         
         const keyword = document.getElementById('searchDriver').value.toLowerCase();
 
-        // Saring array driver berdasarkan input pencarian
         const filteredDrivers = allDriversData.filter(d => 
             d.nama.toLowerCase().includes(keyword) || 
             d.wa.includes(keyword)
@@ -319,16 +315,13 @@
                     data.id = child.key;
                     allOrdersData.push(data); 
 
-                    // Hitung Statistik
                     if(data.status === 'selesai') totalOrderSelesai++;
                 });
             }
 
-            // Update UI Statistik Orderan
             document.getElementById('adminStatOrder').innerText = totalOrderSelesai;
 
-            // Render Kartu Orderan
-            allOrdersData.reverse(); // Terbaru di atas
+            allOrdersData.reverse(); 
             if(allOrdersData.length === 0) {
                 listDiv.innerHTML = "<p>Database orderan masih kosong.</p>"; return;
             }
@@ -343,6 +336,13 @@
                     const jam = dt.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
                     waktuTampil = `${tgl} - ${jam} WIB`;
                 }
+
+                // LOGIKA MENAMPILKAN ULASAN (JIKA ADA)
+                let ulasanHtml = data.ulasan ? `
+                    <div class="card-detail" style="margin-top:10px; background:#fdf2e9; padding:10px; border-radius:8px; border-left:4px solid #8e44ad; color:#8e44ad; font-style:italic;">
+                        💬 <b>Ulasan Pelanggan:</b><br>"${data.ulasan}"
+                    </div>
+                ` : '';
 
                 const card = document.createElement('div');
                 card.className = "card";
@@ -359,7 +359,7 @@
                     </div>
                     ${data.catatan ? `<div class="card-detail" style="margin-top:5px; color:#e67e22;">📝 Catatan: ${data.catatan}</div>` : ''}
                     
-                    <div style="margin-top:15px; text-align:right;">
+                    ${ulasanHtml} <div style="margin-top:15px; text-align:right;">
                         <button class="btn-hapus" onclick="hapusOrder('${data.id}')">🗑️ Hapus Data Lama</button>
                     </div>
                 `;
@@ -368,22 +368,20 @@
         });
     }
 
-    // FUNGSI DOWNLOAD KE EXCEL (.CSV)
+    // FUNGSI DOWNLOAD KE EXCEL (.CSV) (SUDAH DITAMBAHKAN KOLOM ULASAN)
     window.exportToCSV = function() {
         if(allOrdersData.length === 0) { alert("Belum ada data pesanan untuk di-download."); return; }
         
-        // Buat Header Tabel (Baris Pertama)
-        let csvContent = "Tanggal & Waktu,Layanan,Status,Nama Customer,WA Customer,Nama Driver,Detail 1 (Penjemputan),Detail 2 (Tujuan),Catatan,Bintang (Rating)\n";
+        // Buat Header Tabel (Baris Pertama) + Kolom Ulasan Baru
+        let csvContent = "Tanggal & Waktu,Layanan,Status,Nama Customer,WA Customer,Nama Driver,Detail 1 (Penjemputan),Detail 2 (Tujuan),Catatan,Bintang (Rating),Ulasan\n";
         
         allOrdersData.forEach(o => {
-            // Memastikan format waktu benar
             let waktuStr = o.waktu_order || "";
             if(o.timestamp) {
                 let dt = new Date(o.timestamp);
                 waktuStr = dt.toLocaleDateString('id-ID') + " " + dt.toLocaleTimeString('id-ID');
             }
             
-            // Format agar koma (,) di dalam alamat tidak merusak tabel Excel
             let lay = `"${(o.layanan||"").replace(/"/g, '""')}"`;
             let stat = `"${(o.status||"").replace(/"/g, '""')}"`;
             let cNama = `"${(o.customer_nama||"").replace(/"/g, '""')}"`;
@@ -393,12 +391,12 @@
             let d2 = `"${(o.detail_2||"").replace(/"/g, '""')}"`;
             let cat = `"${(o.catatan||"").replace(/"/g, '""')}"`;
             let rat = o.rating || "";
+            // Tambahkan data ulasan pelanggan
+            let uls = `"${(o.ulasan||"").replace(/"/g, '""')}"`;
 
-            // Gabungkan jadi 1 baris
-            csvContent += `${waktuStr},${lay},${stat},${cNama},${cWa},${dNama},${d1},${d2},${cat},${rat}\n`;
+            csvContent += `${waktuStr},${lay},${stat},${cNama},${cWa},${dNama},${d1},${d2},${cat},${rat},${uls}\n`;
         });
 
-        // Trik Download Paksa dari Browser
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement("a");
         const url = URL.createObjectURL(blob);
