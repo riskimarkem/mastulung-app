@@ -4,617 +4,1164 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>TulangTulung Gombong - Jasa Apa Aja</title>
+    <meta name="apple-mobile-web-app-title" content="TulangTulung Gombong">
     
     <link rel="manifest" href="manifest-customer.json">
-    <meta name="theme-color" content="#00a859">
+    <meta name="theme-color" content="#2c3e50">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3063/3063822.png">
-
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #ffffff; margin: 0; padding: 0; height: 100vh; overflow: hidden; display: flex; justify-content: center; }
-        .app-container { width: 100vw; max-width: 600px; background-color: white; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-        
-        .header { background-color: #00a859; color: white; padding: 20px 15px; text-align: center; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; position: relative; flex-shrink: 0; z-index: 10; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .header h2 { margin: 0; font-size: 24px; letter-spacing: 0.5px; }
-        
-        .lang-switcher { position: absolute; top: 18px; right: 15px; background: rgba(0,0,0,0.15); padding: 4px; border-radius: 10px; display: flex; gap: 4px; }
-        .lang-btn { background: none; border: none; color: white; font-size: 11px; cursor: pointer; padding: 5px 10px; border-radius: 7px; font-weight: bold; opacity: 0.7; }
-        .lang-btn.active { background: white; color: #00a859; opacity: 1; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+    :root {
+        --primary: #2c3e50; 
+        --primary-dark: #1a252f; 
+        --primary-deep: #11181f;
+        --primary-light: #ebf0f5; 
+        --primary-glow: rgba(44, 62, 80, 0.25);
+        --accent: #f1c40f; 
+        --accent-light: #fef9e7; 
+        --accent-dark: #d4ac0d;
+        --bg: #F3F5F8;
+        --card: #FFFFFF;
+        --text: #0D1117;
+        --text2: #3D4A5C;
+        --text3: #8A96A8;
+        --border: #E8ECF0;
+        --red: #EF4444;
+        --blue: #3B82F6;
+        --radius: 20px;
+        --radius-sm: 14px;
+        --radius-xs: 10px;
+        --shadow: 0 6px 24px rgba(0,0,0,0.07);
+        --shadow-sm: 0 2px 10px rgba(0,0,0,0.05);
+        --shadow-primary: 0 8px 28px rgba(44, 62, 80, 0.28);
+    }
 
-        .content { padding: 20px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
-        .content::-webkit-scrollbar { width: 0px; }
-        
-        #install-banner { background-color: #e8f5e9; border: 2px dashed #00a859; padding: 15px; border-radius: 15px; text-align: center; margin-bottom: 5px; display: none; }
-        #btn-install-pwa { background-color: #2c3e50; color: white; padding: 10px 20px; border-radius: 10px; font-weight: bold; border: none; cursor: pointer; margin-top: 10px; font-size: 14px; }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
-        label { display: block; margin-bottom: 6px; font-weight: bold; font-size: 15px; color: #2c3e50; }
-        input, textarea { width: 100%; padding: 15px; border: 2px solid #ecf0f1; border-radius: 12px; box-sizing: border-box; font-size: 15px; background-color: #f9f9f9; }
-        input:focus, textarea:focus { border-color: #00a859; outline: none; background-color: #fff; }
-        
-        .wa-note { font-size: 12px; color: #e67e22; margin-top: 6px; font-weight: bold; line-height: 1.3; }
+    body {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        background: var(--bg);
+        height: 100vh;
+        height: 100dvh;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+    }
 
-        button { background-color: #00a859; color: white; border: none; padding: 18px; width: 100%; border-radius: 15px; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 6px rgba(0,168,89,0.3); transition: 0.2s; }
-        button:active { transform: scale(0.98); }
+    .app {
+        width: 100%;
+        max-width: 480px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        background: var(--bg);
+        position: relative;
+        overflow: hidden;
+    }
 
-        .header-action { display: flex; align-items: center; gap: 12px; margin-bottom: 5px; }
-        .back-btn { background-color: #f1f2f6; color: #2f3542; border: none; padding: 10px 15px; width: fit-content; border-radius: 10px; font-size: 14px; font-weight: bold; display: inline-flex; align-items: center; gap: 6px; box-shadow: none; cursor: pointer; }
-        .back-btn:active { background-color: #e2e5ec; }
+    @media screen and (max-width: 768px) { .app { max-width: 100%; } }
 
-        .category-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-        .category-card { background: #ffffff; border: 2px solid #f1f2f6; border-radius: 18px; padding: 20px 10px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.02); cursor: pointer; transition: 0.2s; }
-        .category-card:active { transform: scale(0.95); background-color: #e8f5e9; border-color: #00a859; }
-        .category-icon { font-size: 36px; margin-bottom: 10px; display: block; }
-        .category-title { font-size: 15px; font-weight: bold; color: #333; }
+    .page {
+        flex: 1;
+        overflow-y: auto;
+        padding-bottom: 100px;
+        scroll-behavior: smooth;
+    }
+    .page::-webkit-scrollbar { display: none; }
+    .login-hero::after, .hero-banner::after, .hero-banner::before { pointer-events: none; z-index: 0; }
 
-        .admin-link-wrapper { text-align: center; margin-top: 5px; margin-bottom: 15px; }
-        .btn-admin-minimal { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background-color: #e8f5e9; color: #00a859; font-weight: bold; font-size: 13px; text-decoration: none; padding: 10px 20px; border-radius: 20px; border: 1px solid #00a859; transition: 0.2s; }
+    /* ── PILIHAN BAHASA GLOBAL ── */
+    .lang-pill {
+        display: flex; background: rgba(0,0,0,0.25); border-radius: 24px; padding: 3px; gap: 2px; backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.1);
+    }
+    .lang-btn {
+        background: none; border: none; color: rgba(255,255,255,0.7); font-size: 10px; font-weight: 700; padding: 5px 10px; border-radius: 20px; cursor: pointer; font-family: inherit; transition: all 0.2s; position: relative; z-index: 2; letter-spacing: 0.3px;
+    }
+    .lang-btn.active { background: white; color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
 
-        .btn-cancel { background-color: #e74c3c; margin-top: 10px; font-size: 15px; padding: 15px; box-shadow: none; }
-        .btn-complete { background-color: #3498db; margin-top: 10px; font-size: 15px; padding: 15px; box-shadow: none; }
+    /* ── TOPBAR ── */
+    .topbar {
+        background: linear-gradient(145deg, var(--primary-dark) 0%, var(--primary) 55%, #34495e 100%);
+        padding: 18px 20px 22px;
+        position: relative;
+        flex-shrink: 0;
+        overflow: hidden;
+    }
+    .topbar::before {
+        content: ''; position: absolute; top: -30px; right: -30px;
+        width: 160px; height: 160px; background: rgba(255,255,255,0.06); border-radius: 50%; pointer-events: none;
+    }
+    .topbar::after {
+        content: ''; position: absolute; bottom: -50px; left: 20px;
+        width: 120px; height: 120px; background: rgba(255,255,255,0.04); border-radius: 50%; pointer-events: none;
+    }
+    .topbar-row { display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 10; }
 
-        .rating-box { margin-top: 15px; padding: 15px; background: #fff; border-radius: 12px; border: 1px solid #ddd; }
-        .stars { display: flex; justify-content: center; gap: 10px; font-size: 35px; margin: 10px 0; }
-        .star { cursor: pointer; color: #e0e0e0; transition: 0.2s; }
-        .star.selected { color: #f1c40f; }
-        .input-ulasan { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; box-sizing: border-box; margin-bottom: 12px; resize: none; font-family: inherit; }
-        
-        .info-tarif-box { background-color: #eef7ff; border-left: 5px solid #3498db; padding: 15px; border-radius: 10px; font-size: 14px; color: #2c3e50; line-height: 1.5; }
+    .topbar-logo { color: white; font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
+    .topbar-logo span { color: var(--accent); }
 
-        .watermark { text-align: center; padding: 15px; font-size: 13px; color: #95a5a6; border-top: 1px solid #f1f2f6; background-color: #fafafa; }
-        .watermark a { color: #00a859; font-weight: bold; text-decoration: none; }
+    .topbar-greeting { color: rgba(255,255,255,0.75); font-size: 12.5px; margin-top: 12px; position: relative; z-index: 10; letter-spacing: 0.2px; }
+    .topbar-name { color: white; font-size: 19px; font-weight: 800; margin-top: 2px; position: relative; z-index: 10; letter-spacing: -0.3px; }
 
-        .hidden { display: none !important; }
-        .track-box { background: #fdfdfd; border: 2px solid #f1f2f6; border-radius: 20px; padding: 20px; text-align: center; }
+    /* ── HERO BANNER ── */
+    .hero-banner {
+        margin: -8px 16px 0;
+        background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, #3b5998 100%);
+        border-radius: var(--radius); padding: 20px 22px; position: relative; overflow: hidden; box-shadow: var(--shadow-primary);
+    }
+    .hero-banner::after { content: ''; position: absolute; right: -25px; top: -25px; width: 150px; height: 150px; background: rgba(255,255,255,0.06); border-radius: 50%; }
+    .hero-banner::before { content: ''; position: absolute; right: 25px; bottom: -35px; width: 110px; height: 110px; background: rgba(255,255,255,0.04); border-radius: 50%; }
+    .hero-tag { background: var(--accent); color: #5C3A00; font-size: 9.5px; font-weight: 800; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 10px; position: relative; z-index: 1; letter-spacing: 1px; text-transform: uppercase; }
+    .hero-title { color: white; font-size: 19px; font-weight: 800; line-height: 1.3; margin-bottom: 7px; position: relative; z-index: 1; letter-spacing: -0.3px; }
+    .hero-sub { color: rgba(255,255,255,0.75); font-size: 12px; line-height: 1.6; max-width: 215px; position: relative; z-index: 1; }
+    .hero-price { margin-top: 16px; background: rgba(255,255,255,0.13); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; padding: 10px 16px; display: inline-flex; align-items: center; gap: 10px; position: relative; z-index: 1; backdrop-filter: blur(4px); }
+    .hero-price-main { color: white; font-size: 21px; font-weight: 800; letter-spacing: -0.5px; }
+    .hero-price-sub { color: rgba(255,255,255,0.7); font-size: 11px; font-weight: 600; }
+    .hero-emoji { position: absolute; right: 18px; bottom: 10px; font-size: 60px; z-index: 1; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); }
+
+    /* ── SECTIONS ── */
+    .section { padding: 20px 16px 0; }
+    .section-title { font-size: 15px; font-weight: 800; color: var(--text); margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; letter-spacing: -0.2px; }
+
+    /* ── SERVICE GRID ── */
+    .service-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .service-card {
+        background: var(--card); border-radius: var(--radius-sm); padding: 16px 8px 14px; text-align: center; cursor: pointer; transition: all 0.18s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: var(--shadow-sm); border: 1.5px solid transparent; position: relative; overflow: hidden;
+    }
+    .service-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--primary), var(--primary-dark)); opacity: 0; transition: opacity 0.2s; border-radius: 3px 3px 0 0; }
+    .service-card:active { transform: scale(0.92); border-color: var(--primary); background: var(--primary-light); box-shadow: var(--shadow-primary); }
+    .service-card:active::before { opacity: 1; }
+    .service-icon { font-size: 30px; margin-bottom: 8px; display: block; transition: transform 0.2s; }
+    .service-label { font-size: 10.5px; font-weight: 700; color: var(--text2); line-height: 1.35; letter-spacing: 0.1px; }
+
+    /* ── PROMO CARDS ── */
+    .promo-scroll { display: flex; gap: 12px; overflow-x: auto; padding: 4px 16px 6px; scrollbar-width: none; margin: 0 -16px; }
+    .promo-scroll::-webkit-scrollbar { display: none; }
+    .promo-card { flex-shrink: 0; width: 210px; border-radius: var(--radius); padding: 18px 16px; position: relative; overflow: hidden; box-shadow: 0 6px 20px rgba(0,0,0,0.12); }
+    .promo-card.green { background: linear-gradient(135deg, #16A085, #2ECC71); }
+    .promo-card.amber { background: linear-gradient(135deg, #B45309, #FBBF24); }
+    .promo-card.blue { background: linear-gradient(135deg, #1E40AF, #60A5FA); }
+    .promo-card-tag { font-size: 9px; font-weight: 800; color: rgba(255,255,255,0.7); letter-spacing: 1.2px; text-transform: uppercase; }
+    .promo-card-title { font-size: 14px; font-weight: 800; color: white; margin-top: 5px; line-height: 1.35; }
+    .promo-card-sub { font-size: 11px; color: rgba(255,255,255,0.75); margin-top: 5px; }
+    .promo-card-emoji { position: absolute; right: 10px; bottom: 6px; font-size: 38px; opacity: 0.8; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
+
+    /* ── ACTIVE ORDER CARD ── */
+    .active-order-card {
+        background: var(--card); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); border: none; margin: 0 16px 14px; position: relative; overflow: hidden;
+    }
+    .active-order-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: linear-gradient(180deg, var(--primary), var(--accent)); border-radius: 4px 0 0 4px; }
+    .aoc-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .aoc-dot {
+        width: 10px; height: 10px; border-radius: 50%; background: var(--accent); animation: pulse 1.8s infinite; box-shadow: 0 0 0 0 rgba(241, 196, 15, 0.4);
+    }
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(241, 196, 15, 0.4); } 70% { box-shadow: 0 0 0 8px rgba(241, 196, 15, 0); } 100% { box-shadow: 0 0 0 0 rgba(241, 196, 15, 0); } }
+    .aoc-label { font-size: 12px; font-weight: 800; color: var(--primary); letter-spacing: 0.3px; }
+    .aoc-status { font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+    .aoc-desc { font-size: 12px; color: var(--text3); }
+    .aoc-btn { margin-top: 14px; background: linear-gradient(135deg, var(--primary-dark), var(--primary)); color: white; border: none; border-radius: var(--radius-xs); padding: 12px; width: 100%; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; box-shadow: 0 4px 14px var(--primary-glow); transition: all 0.15s; letter-spacing: 0.2px; }
+    .aoc-btn:active { transform: scale(0.97); }
+
+    /* ── BOTTOM NAV ── */
+    .bottom-nav { position: absolute; bottom: 0; left: 0; right: 0; background: white; display: none; border-top: 1px solid var(--border); padding: 10px 0 18px; z-index: 100; box-shadow: 0 -4px 20px rgba(0,0,0,0.05); border-radius: 20px 20px 0 0; }
+    .bottom-nav.visible { display: flex; }
+    .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; padding: 6px 0; transition: all 0.2s; }
+    .nav-icon-wrap { width: 48px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 16px; transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1); font-size: 20px; }
+    .nav-item.active .nav-icon-wrap { background: var(--primary-light); transform: translateY(-2px); }
+    .nav-label { font-size: 9.5px; font-weight: 700; color: var(--text3); letter-spacing: 0.3px; text-transform: uppercase; }
+    .nav-item.active .nav-label { color: var(--primary); }
+
+    /* ── LOGIN PAGE ── */
+    .login-page { flex: 1; overflow-y: auto; display: flex; flex-direction: column; position: relative; }
+    .login-hero { background: linear-gradient(150deg, var(--primary-deep) 0%, var(--primary) 60%, var(--primary-dark) 100%); padding: 50px 28px 70px; text-align: center; position: relative; overflow: hidden; }
+    .login-hero::before { content: ''; position: absolute; top: -40px; right: -40px; width: 200px; height: 200px; background: rgba(255,255,255,0.05); border-radius: 50%; pointer-events: none;}
+    .login-hero::after { content: ''; position: absolute; left: -30px; bottom: -30px; width: 160px; height: 160px; background: rgba(255,255,255,0.04); border-radius: 50%; pointer-events: none;}
+    .login-hero-icon { font-size: 64px; margin-bottom: 14px; display: block; position: relative; z-index: 1; filter: drop-shadow(0 6px 16px rgba(0,0,0,0.2)); animation: float 3s ease-in-out infinite; }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+    .login-hero-title { color: white; font-size: 28px; font-weight: 800; position: relative; z-index: 1; letter-spacing: -0.5px; }
+    .login-hero-title span { color: var(--accent); }
+    .login-hero-sub { color: rgba(255,255,255,0.72); font-size: 13.5px; margin-top: 7px; position: relative; z-index: 1; letter-spacing: 0.2px; }
+    .login-body { flex: 1; background: white; border-radius: 30px 30px 0 0; margin-top: -26px; padding: 30px 26px 40px; position: relative; z-index: 2; box-shadow: 0 -4px 30px rgba(0,0,0,0.08); }
+    .login-heading { font-size: 20px; font-weight: 800; color: var(--text); margin-bottom: 6px; letter-spacing: -0.4px; }
+    .login-sub { font-size: 13px; color: var(--text3); margin-bottom: 26px; }
+
+    .form-group { margin-bottom: 18px; }
+    .form-label { font-size: 12.5px; font-weight: 700; color: var(--text2); margin-bottom: 8px; display: block; letter-spacing: 0.3px; text-transform: uppercase; }
+    .form-input { width: 100%; padding: 15px 18px; border: 2px solid var(--border); border-radius: var(--radius-sm); font-size: 15px; font-family: inherit; background: var(--bg); color: var(--text); transition: all 0.2s; outline: none; font-weight: 600; }
+    .form-input:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 4px var(--primary-light); }
+    .form-hint { font-size: 11.5px; color: #b7791f; margin-top: 6px; font-weight: 600; background: #fef3c7; padding: 8px 12px; border-radius: 8px; border-left: 3px solid #f59e0b; }
+    
+    .btn-primary { width: 100%; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white; border: none; border-radius: var(--radius-sm); padding: 17px; font-size: 15.5px; font-weight: 700; font-family: inherit; cursor: pointer; transition: all 0.18s; box-shadow: var(--shadow-primary); letter-spacing: 0.3px; }
+    .btn-primary:active { transform: scale(0.97); box-shadow: 0 2px 10px var(--primary-glow); }
+    .btn-outline { width: 100%; background: none; color: var(--primary); border: 2px solid var(--primary); border-radius: var(--radius-sm); padding: 14px; font-size: 14px; font-weight: 700; font-family: inherit; cursor: pointer; margin-top: 12px; transition: all 0.15s; }
+    .btn-outline:active { background: var(--primary-light); }
+
+    /* ── INSTALL BAR ── */
+    .install-bar { background: var(--primary-light); border: 1.5px dashed var(--primary); border-radius: var(--radius-sm); padding: 14px 16px; text-align: center; margin-bottom: 20px; display: none; }
+    .install-bar p { font-size: 13px; font-weight: 800; color: var(--primary); margin-bottom: 8px; }
+    @media all and (display-mode: standalone) { .install-bar { display: none !important; } #row-install-app { display: none !important; } }
+
+    /* ── FORM PAGE ── */
+    .form-page { flex: 1; overflow-y: auto; padding-bottom: 40px; }
+    .form-topbar { background: linear-gradient(135deg, var(--primary-dark), var(--primary)); padding: 18px 20px; display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+    .back-btn { background: rgba(255,255,255,0.2); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.15s; backdrop-filter: blur(4px); }
+    .back-btn:active { background: rgba(255,255,255,0.35); }
+    .form-topbar-title { color: white; font-size: 16px; font-weight: 800; flex: 1;}
+    .form-body { padding: 22px 18px; }
+    .tarif-box { background: #f8faff; border: 1.5px solid #bfdbfe; border-radius: var(--radius-sm); padding: 16px 18px; margin-bottom: 22px; font-size: 13px; color: #1e3a8a; line-height: 1.7; box-shadow: 0 2px 10px rgba(59,130,246,0.1); }
+    .tarif-box b { color: #1e40af; }
+    .form-section-label { font-size: 12px; font-weight: 800; color: var(--text2); margin-bottom: 8px; display: block; text-transform: uppercase; letter-spacing: 0.5px; }
+    .form-textarea { width: 100%; padding: 15px 18px; border: 2px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; font-family: inherit; background: var(--bg); resize: none; color: var(--text); transition: all 0.2s; outline: none; font-weight: 600; }
+    .form-textarea:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 4px var(--primary-light); }
+
+    /* ── TRACKING CARD ── */
+    .tracking-card { background: var(--card); border-radius: var(--radius); margin: 18px; box-shadow: var(--shadow); overflow: hidden; border: 1px solid var(--border); }
+    .tracking-status-bar { padding: 28px 22px 22px; text-align: center; border-bottom: 1px solid var(--border); background: linear-gradient(180deg, var(--primary-light) 0%, white 100%); }
+    .track-icon-big { font-size: 68px; display: block; margin-bottom: 14px; }
+    .track-status-text { font-size: 20px; font-weight: 800; color: var(--text); margin-bottom: 5px; }
+    .track-desc-text { font-size: 13px; color: var(--text3); font-weight: 600; }
+    .tracking-driver-row { padding: 18px 22px; display: flex; align-items: center; gap: 14px; border-bottom: 1px solid var(--border); }
+    .driver-avatar { width: 50px; height: 50px; background: linear-gradient(135deg, var(--primary-light), #bfdbfe); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; box-shadow: 0 4px 12px var(--primary-glow); }
+    .driver-name-label { font-size: 10.5px; color: var(--text3); font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; }
+    .driver-name { font-size: 16px; font-weight: 800; color: var(--primary); }
+    .tracking-actions { padding: 18px 22px; display: flex; flex-direction: column; gap: 12px; }
+    .btn-cancel { background: #FEF2F2; color: var(--red); border: 1.5px solid #FECACA; border-radius: var(--radius-sm); padding: 14px; font-size: 14px; font-weight: 700; cursor: pointer; width: 100%; font-family: inherit; transition: all 0.15s; }
+    .btn-cancel:active { background: #FEE2E2; }
+    .btn-complete { background: #EFF6FF; color: var(--blue); border: 1.5px solid #BFDBFE; border-radius: var(--radius-sm); padding: 14px; font-size: 14px; font-weight: 700; cursor: pointer; width: 100%; font-family: inherit; transition: all 0.15s; }
+
+    /* ── RATING CARD ── */
+    .rating-card { background: linear-gradient(135deg, #FFFBEB, #FEF3C7); border-radius: var(--radius); margin: 0; padding: 22px 22px 28px; text-align: center; border: 1px solid #FDE68A; }
+    .stars { display: flex; justify-content: center; gap: 14px; font-size: 40px; margin-bottom: 18px; }
+    .star { cursor: pointer; color: #E5E7EB; transition: all 0.2s cubic-bezier(0.34,1.56,0.64,1); }
+    .star.selected { color: #f1c40f; transform: scale(1.15); filter: drop-shadow(0 2px 6px rgba(241,196,15,0.4)); }
+    .rating-textarea { width: 100%; padding: 13px 16px; border: 2px solid #FDE68A; border-radius: var(--radius-sm); font-size: 14px; margin-bottom: 14px; background: white; font-family: inherit; outline: none; transition: border-color 0.2s; }
+    .rating-textarea:focus { border-color: #f1c40f; }
+    .btn-rating { background: linear-gradient(135deg, #d4ac0d, #f1c40f); color: #1C1917; border: none; border-radius: var(--radius-sm); padding: 15px; width: 100%; font-size: 14px; font-weight: 800; cursor: pointer; font-family: inherit; box-shadow: 0 4px 14px rgba(241,196,15,0.35); transition: all 0.15s; }
+    .btn-rating:active { transform: scale(0.97); }
+
+    /* ── HISTORY CARDS ── */
+    .hist-card { background: var(--card); border-radius: var(--radius-sm); margin: 0 16px 12px; padding: 18px; box-shadow: var(--shadow-sm); border: 1.5px solid var(--border); transition: all 0.25s ease; }
+    .hist-card:hover { box-shadow: var(--shadow); border-color: #bfdbfe; }
+    .hc-top-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+    .hc-service-wrap { display: flex; flex-direction: column; gap: 4px; }
+    .hc-service { font-size: 15px; font-weight: 800; color: var(--text); }
+    .hc-time { font-size: 11px; color: var(--text3); font-weight: 700; }
+    .hc-status-pill { font-size: 9.5px; font-weight: 800; padding: 5px 12px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; height: fit-content; }
+    .pill-pending { background: #FEF3C7; color: #92400E; border: 1px solid #FDE68A; }
+    .pill-active { background: #DBEAFE; color: #1E3A8A; border: 1px solid #BFDBFE; }
+    .pill-done { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
+    .pill-cancelled { background: #FEE2E2; color: #991B1B; border: 1px solid #FECACA; }
+    .hc-toggle-btn { background: var(--bg); border: none; width: 100%; display: flex; justify-content: space-between; align-items: center; color: var(--primary); font-size: 12.5px; font-weight: 800; cursor: pointer; padding: 10px 12px; font-family: inherit; border-radius: var(--radius-xs); margin-top: 10px; transition: background 0.15s; letter-spacing: 0.2px; }
+    .hc-toggle-btn:active { background: var(--border); }
+    .hc-toggle-icon { transition: transform 0.3s ease; font-size: 12px; }
+    .hc-toggle-btn.open .hc-toggle-icon { transform: rotate(180deg); }
+    .hc-details { display: none; }
+    .hc-details.show { display: block; animation: slideDown 0.3s ease-in-out; margin-top: 12px; }
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+    .hc-route-box { background: var(--bg); border-radius: 10px; padding: 14px; font-size: 12.5px; color: var(--text); line-height: 1.6; display: flex; flex-direction: column; gap: 12px; border: 1px solid var(--border); }
+    .hc-route-item { display: flex; gap: 12px; align-items: flex-start; }
+    .hc-route-icon { font-size: 16px; line-height: 1.2; }
+    .hc-route-text span { font-size: 9.5px; color: var(--text3); text-transform: uppercase; font-weight: 800; letter-spacing: 0.8px; display: block; margin-bottom: 2px; }
+    .hc-route-text b { font-weight: 700; }
+    .hc-driver { font-size: 12.5px; margin-top: 12px; padding: 12px 14px; background: var(--primary-light); border-radius: 10px; color: var(--primary); font-weight: 700; display: flex; align-items: center; gap: 10px; border: 1px solid #bfdbfe; }
+    .hc-rating { margin-top: 10px; font-size: 13px; color: #F59E0B; font-weight: 800; }
+
+    /* ── PROFILE ── */
+    .profile-hero { background: linear-gradient(150deg, var(--primary-deep) 0%, var(--primary) 60%, var(--primary-dark) 100%); padding: 36px 22px; text-align: center; position: relative; overflow: hidden; }
+    .profile-hero::after { content: ''; position: absolute; right: -30px; top: -30px; width: 150px; height: 150px; background: rgba(255,255,255,0.06); border-radius: 50%; pointer-events: none;}
+    .profile-avatar { width: 88px; height: 88px; background: rgba(255,255,255,0.18); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 40px; margin: 0 auto 14px; border: 3px solid rgba(255,255,255,0.35); box-shadow: 0 6px 24px rgba(0,0,0,0.15); backdrop-filter: blur(4px); position: relative; z-index: 1; }
+    .profile-name { color: white; font-size: 22px; font-weight: 800; position: relative; z-index: 1; letter-spacing: -0.4px; }
+    .profile-wa { color: rgba(255,255,255,0.72); font-size: 14px; margin-top: 5px; position: relative; z-index: 1; font-weight: 600;}
+    .profile-card { background: var(--card); margin: 18px; border-radius: var(--radius); box-shadow: var(--shadow-sm); overflow: hidden; border: 1px solid var(--border); }
+    .profile-row { display: flex; align-items: center; gap: 14px; padding: 17px 20px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.15s; }
+    .profile-row:last-child { border-bottom: none; }
+    .profile-row:active { background: var(--bg); }
+    .profile-row-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .profile-row-label { font-size: 14.5px; font-weight: 700; color: var(--text); letter-spacing: 0.1px; }
+    .profile-row-arrow { margin-left: auto; color: var(--text3); font-size: 16px; font-weight: 800; }
+    .btn-logout { margin: 0 18px; width: calc(100% - 36px); background: #FEF2F2; color: var(--red); border: 2px solid #FECACA; border-radius: var(--radius-sm); padding: 16px; font-size: 15px; font-weight: 800; cursor: pointer; font-family: inherit; transition: all 0.15s; }
+    .btn-logout:active { background: #FEE2E2; }
+
+    /* ── IKLAN JASA PEMBUATAN APLIKASI ── */
+    .dev-ad-card { background: linear-gradient(135deg, #11181f 0%, #2c3e50 100%); margin: 18px 18px 0; border-radius: var(--radius); padding: 16px 18px; display: flex; align-items: center; gap: 14px; cursor: pointer; box-shadow: 0 8px 20px rgba(44,62,80,0.4); border: 1px solid rgba(255,255,255,0.1); position: relative; overflow: hidden; transition: 0.2s; }
+    .dev-ad-card:active { transform: scale(0.97); }
+    .dev-ad-card::before { content: ''; position: absolute; top: -50%; right: -20%; width: 100px; height: 100px; background: rgba(241, 196, 15, 0.2); border-radius: 50%; filter: blur(20px); pointer-events: none;}
+    .dev-ad-icon { font-size: 32px; flex-shrink: 0; }
+    .dev-ad-content { flex: 1; }
+    .dev-ad-title { color: var(--accent); font-size: 15px; font-weight: 800; margin-bottom: 4px; letter-spacing: 0.3px; }
+    .dev-ad-desc { color: rgba(255,255,255,0.85); font-size: 12px; line-height: 1.4; font-weight: 500; }
+    .dev-ad-arrow { color: var(--accent); font-size: 20px; font-weight: bold; }
+
+    /* ── EMPTY STATE ── */
+    .empty-state { text-align: center; padding: 56px 30px; }
+    .empty-icon { font-size: 80px; margin-bottom: 18px; display: block; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.08)); }
+    .empty-title { font-size: 16px; font-weight: 800; color: var(--text2); }
+    .empty-sub { font-size: 13px; color: var(--text3); margin-top: 7px; line-height: 1.5; font-weight: 600;}
+
+    .hidden { display: none !important; } .mt8 { margin-top: 8px; } .mt16 { margin-top: 16px; }
+
+    /* ── ADMIN CTA CARD ── */
+    .admin-cta-card { background: var(--card); border-radius: var(--radius); padding: 18px 20px; display: flex; align-items: center; gap: 16px; box-shadow: var(--shadow-sm); border: 1.5px solid var(--border); transition: all 0.15s; }
+    .admin-cta-icon { font-size: 38px; }
+    .admin-cta-btn { background: linear-gradient(135deg, var(--primary-dark), var(--primary)); color: white; border: none; border-radius: 10px; padding: 10px 18px; font-size: 12.5px; font-weight: 800; cursor: pointer; font-family: inherit; box-shadow: 0 4px 12px var(--primary-glow); transition: all 0.15s; white-space: nowrap; letter-spacing: 0.2px; }
+    .admin-cta-btn:active { transform: scale(0.96); }
+
+    @keyframes pageIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    .page { animation: pageIn 0.3s ease-out; }
+    .service-card:hover { box-shadow: var(--shadow); border-color: rgba(44, 62, 80, 0.2); }
+    #page-about .tracking-card { border: 1px solid var(--border); }
     </style>
 </head>
 <body>
+<div class="app">
 
-<div class="app-container">
-    <div class="header">
-        <div class="lang-switcher">
-            <button class="lang-btn active" onclick="setLang('ngapak')" id="btn-ngapak">Ngapak</button>
-            <button class="lang-btn" onclick="setLang('id')" id="btn-id">ID</button>
-            <button class="lang-btn" onclick="setLang('en')" id="btn-en">EN</button>
-        </div>
-        <h2 id="ui-title">TulangTulung Gombong</h2>
-        <p id="ui-subtitle" style="font-size: 14px; margin: 5px 0 0 0; opacity: 0.9;">Layanan Asli Wong Gombong</p>
-    </div>
-
-    <div id="page-login" class="content">
-        <div style="margin: auto 0;">
-            <div id="install-banner">
-                <div style="font-weight: bold; font-size: 15px; color: #00a859;" id="ui-install-txt">Pasang Aplikasi TulangTulung Gombong!</div>
-                <button id="btn-install-pwa">INSTALL 📲</button>
+    <div id="page-login" style="display:flex; flex-direction:column; flex:1; overflow-y:auto; height:100%;">
+        <div class="login-hero">
+            <div style="position:absolute; top:16px; right:16px; z-index:10;">
+                <div class="lang-pill">
+                    <button class="lang-btn lang-ngapak active" onclick="setLang('ngapak')">Ngapak</button>
+                    <button class="lang-btn lang-id" onclick="setLang('id')">ID</button>
+                    <button class="lang-btn lang-en" onclick="setLang('en')">EN</button>
+                </div>
             </div>
-
-            <p id="ui-login-desc" style="text-align: center; font-size: 17px; margin-bottom: 20px; color: #555;">Sugeng rawuh sedulur! Lebokna data nggo mulai pesen:</p>
+            <span class="login-hero-icon">🛵</span>
+            <div class="login-hero-title">TulangTulung <span>Gombong</span></div>
+            <div class="login-hero-sub" id="ui-subtitle">Layanan Asli Wong Gombong</div>
+        </div>
+        <div class="login-body">
+            <div id="install-banner" class="install-bar">
+                <p id="ui-install-txt">Pasang Aplikasi TulangTulung Gombong!</p>
+                <button id="btn-install-pwa" class="btn-primary" style="padding:10px;" onclick="installAplikasi()">INSTALL 📲</button>
+            </div>
             
+            <div class="login-heading" id="ui-login-title">Sugeng Rawuh 👋</div>
+            <div class="login-sub" id="ui-login-desc">Lebokna datamu nggo mulai pesen</div>
+
             <div class="form-group">
-                <label id="ui-label-nama">Jeneng (Panggilan)</label>
-                <input type="text" id="inputNama" placeholder="Ketik nang kene...">
+                <label class="form-label" id="ui-label-nama">Jeneng Panggilan</label>
+                <input class="form-input" type="text" id="inputNama" placeholder="Ketik nang kene...">
             </div>
-            
             <div class="form-group">
-                <label id="ui-label-wa">Nomer WhatsApp Aktif</label>
-                <input type="tel" inputmode="numeric" pattern="[0-9]*" id="inputWA" placeholder="Contoh: 0858xxxx">
-                <div class="wa-note" id="ui-note-wa">⚠️ Nomer WA kudu bener & aktif, ben driver gampang ngubungine lur!</div>
+                <label class="form-label" id="ui-label-wa">Nomer WA Sing Aktif</label>
+                <input class="form-input" type="tel" inputmode="numeric" id="inputWA" placeholder="Conto: 0813xxxx">
+                <div class="form-hint" id="ui-note-wa">⚠️ Pastikna nomer WA-ne aktif ben driver gampang ngubungi!</div>
             </div>
-            
-            <button id="ui-btn-login" onclick="masukAplikasi()" style="margin-top: 10px; margin-bottom: 15px;">Mulai Pesen 🚀</button>
-
-            <div class="admin-link-wrapper">
-                <a href="https://wa.me/6285870422464?text=Halo Admin TulangTulung Gombong, nyong arep takon." target="_blank" class="btn-admin-minimal" id="ui-btn-admin-login">📞 Butuh Bantuan Admin?</a>
-            </div>
+            <button class="btn-primary" onclick="masukAplikasi()" id="ui-btn-login">Mulai Pesen 🚀</button>
+            <button class="btn-outline" onclick="chatAdminLoginPage()" id="ui-btn-admin-login">📞 Butuh Bantuan Admin?</button>
         </div>
     </div>
 
-    <div id="page-kategori" class="content hidden">
-        <h3 style="margin:0; font-size: 22px;"><span id="ui-greet">Halo</span>, <span id="displayNama"></span>! 👋</h3>
-        <p id="ui-ask" style="font-size: 15px; margin: 5px 0 10px 0; color: #666;">Dina kiye arep njaluk tulung apa lur?</p>
-        
-        <div class="category-grid">
-            <div class="category-card" onclick="bukaForm('Antar Jemput')">
-                <span class="category-icon">🏍️</span>
-                <div class="category-title" id="cat-1">Ngeter & Methuk</div>
-            </div>
-            <div class="category-card" onclick="bukaForm('Kirim Barang')">
-                <span class="category-icon">📦</span>
-                <div class="category-title" id="cat-2">Kirim Barang</div>
-            </div>
-            <div class="category-card" onclick="bukaForm('Titip Belanja')">
-                <span class="category-icon">🛒</span>
-                <div class="category-title" id="cat-3">Titip Tuku (Belanja)</div>
-            </div>
-            <div class="category-card" onclick="bukaForm('Bantu Bersih')">
-                <span class="category-icon">🧹</span>
-                <div class="category-title" id="cat-4">Bantu Resik-resik</div>
-            </div>
-            <div class="category-card" style="grid-column: span 2;" onclick="bukaForm('Jasa Unik')">
-                <span class="category-icon">✨</span>
-                <div class="category-title" id="cat-5">Jasa Liya-liyane</div>
-            </div>
-        </div>
+    <div id="app-main" class="hidden" style="display:flex; flex-direction:column; flex:1; overflow:hidden; position:relative; height:100%;">
 
-        <button class="btn-history" onclick="bukaRiwayat()" style="background-color: #34495e; padding: 15px; font-size: 16px; display: flex; justify-content: center; gap: 10px; margin-bottom: 5px; border-radius: 15px; color: white; border: none; cursor: pointer;">
-            <span>📜</span> <span id="ui-btn-history">Riwayat Pesenanku</span>
-        </button>
-
-        <div class="admin-link-wrapper">
-            <a href="#" onclick="chatAdminTemplate()" class="btn-admin-minimal" id="ui-btn-admin">📞 Chat Admin (WA)</a>
-        </div>
-    </div>
-
-    <div id="page-form" class="content hidden">
-        <div class="header-action">
-            <button class="back-btn" onclick="kembaliKeKategori()">⬅ <span id="ui-btn-back1">Bali</span></button>
-            <h3 style="margin:0; font-size: 20px;" id="judulFormTitle">Detail Pesenan</h3>
-        </div>
-
-        <div id="boxInfoTarif" class="info-tarif-box"></div>
-        
-        <div class="form-group" style="margin-top:15px;">
-            <label id="labelDetail1">Detail 1</label>
-            <textarea id="inputDetail1" rows="2"></textarea>
-        </div>
-        <div class="form-group">
-            <label id="labelDetail2">Detail 2</label>
-            <textarea id="inputDetail2" rows="2"></textarea>
-        </div>
-        <div class="form-group">
-            <label id="ui-label-catatan">Catetan Tambahan</label>
-            <input type="text" id="inputCatatan" placeholder="(Opsional/Bebas bae)">
-        </div>
-        <button id="btnKirim" onclick="kirimPesananFirebase()" style="margin-top: auto;">Kirim Pesenan 🚀</button>
-    </div>
-
-    <div id="page-tracking" class="content hidden">
-        <h3 id="ui-track-title" style="margin-top: 0; text-align: center; font-size: 22px;">Status Pesenan</h3>
-        <div class="track-box">
-            <div id="track-icon" style="font-size: 60px;">⏳</div>
-            <h3 id="track-status" style="margin: 10px 0; font-size: 22px;">Lagi Golek Driver...</h3>
-            <p id="track-desc" style="font-size: 14px; color: #666;"></p>
-            
-            <div id="track-driver-info" class="hidden" style="background:#e8f5e9; padding:15px; border-radius:15px; margin-top:15px; border:1px solid #27ae60;">
-                <p style="font-size: 12px; margin:0;" id="ui-track-driver-label">Driver rika:</p>
-                <h2 id="track-driver-name" style="margin:5px 0; color:#27ae60; font-size: 24px;">-</h2>
-            </div>
-
-            <div id="cancel-area" class="hidden">
-                <button class="btn-cancel" onclick="batalPesenanRealtime()" id="ui-btn-cancel" style="width:100%; border-radius:12px; color:white; font-weight:bold; cursor:pointer;">❌ Batalkan Pesenan</button>
-            </div>
-
-            <div id="complete-area" class="hidden">
-                <button class="btn-complete" onclick="selesaiPesenanRealtime()" id="ui-btn-complete" style="width:100%; border-radius:12px; color:white; font-weight:bold; cursor:pointer;">✅ Konfirmasi Pesenan Beres</button>
-            </div>
-
-            <div id="rating-area" class="hidden">
-                <div class="rating-box">
-                    <p style="font-weight:bold; margin:0;" id="ui-rating-title">Kepiye pelayanan drivere?</p>
-                    <div class="stars">
-                        <span class="star" onclick="setRating(1)">★</span>
-                        <span class="star" onclick="setRating(2)">★</span>
-                        <span class="star" onclick="setRating(3)">★</span>
-                        <span class="star" onclick="setRating(4)">★</span>
-                        <span class="star" onclick="setRating(5)">★</span>
+        <div id="page-home" style="display:flex; flex-direction:column; overflow:hidden; height:100%;">
+            <div class="topbar" style="flex-shrink:0;">
+                <div class="topbar-row">
+                    <div class="topbar-logo">TulangTulung <span>Gombong</span></div>
+                    <div class="lang-pill">
+                        <button class="lang-btn lang-ngapak active" onclick="setLang('ngapak')">Ngapak</button>
+                        <button class="lang-btn lang-id" onclick="setLang('id')">ID</button>
+                        <button class="lang-btn lang-en" onclick="setLang('en')">EN</button>
                     </div>
-                    
-                    <textarea id="inputUlasan" class="input-ulasan" rows="2" placeholder="Tulis ulasan utawa masukan (opsional)..."></textarea>
+                </div>
+                <div class="topbar-greeting" id="ui-greet-prefix">Sugeng rawuh,</div>
+                <div class="topbar-name" id="displayNama">—</div>
+            </div>
+            <div class="page">
+                
+                <div id="home-active-list" style="margin-top: 16px;"></div>
 
-                    <button onclick="kirimRating()" style="padding:12px; font-size:15px; background:#f1c40f; color:#2c3e50; border: none; border-radius: 10px; width: 100%; font-weight: bold; cursor: pointer;" id="ui-btn-rating">Kirim Rating ⭐</button>
+                <div class="section">
+                    <div class="hero-banner">
+                        <div class="hero-tag" id="ui-hero-tag">TARIF HEMAT</div>
+                        <div class="hero-title" id="ui-hero-title">Pesen Gampang,<br>Rego Pas neng Kantong!</div>
+                        <div class="hero-sub" id="ui-hero-sub">Direwangi sedulur Gombong sing profesional lan grapyak.</div>
+                        <div class="hero-price">
+                            <div>
+                                <div class="hero-price-main">Rp 2.000</div>
+                                <div class="hero-price-sub" id="ui-hero-price-sub">/ kilometer</div>
+                            </div>
+                        </div>
+                        <div class="hero-emoji">🏍️</div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title"><span id="ui-section-layanan">Pilih Layanan</span></div>
+                    <div class="service-grid">
+                        <div class="service-card" onclick="bukaForm('Antar Jemput')"><span class="service-icon">🏍️</span><div class="service-label" id="cat-1">Ngeter & Methuk</div></div>
+                        <div class="service-card" onclick="bukaForm('Kirim Barang')"><span class="service-icon">📦</span><div class="service-label" id="cat-2">Kirim Barang</div></div>
+                        <div class="service-card" onclick="bukaForm('Titip Belanja')"><span class="service-icon">🛒</span><div class="service-label" id="cat-3">Titip Tuku</div></div>
+                        <div class="service-card" onclick="bukaForm('Bantu Bersih')"><span class="service-icon">🧹</span><div class="service-label" id="cat-4">Bantu Resik-resik</div></div>
+                    </div>
+                    <div class="service-card mt8" onclick="bukaForm('Jasa Unik')" style="border-radius:var(--radius-sm); display:flex; align-items:center; gap:14px; padding:14px 16px; text-align:left;">
+                        <span style="font-size:28px;">✨</span>
+                        <div><div class="service-label" id="cat-5" style="font-size:13px; margin-bottom:2px;">Jasa Liya-liyane</div><div style="font-size:11px; color:var(--text3);" id="ui-cat5-sub">Jasa liya manut kebutuhanmu</div></div>
+                        <div style="margin-left:auto; color:var(--text3); font-size:16px;">›</div>
+                    </div>
+                </div>
+
+                <div class="section" style="padding-right:0;">
+                    <div class="section-title" style="padding-right:16px;"><span id="ui-section-promo">Info & Promo</span></div>
+                    <div class="promo-scroll">
+                        <div class="promo-card green">
+                            <div class="promo-card-tag" id="ui-promo1-tag">KILAT & SIGAP</div>
+                            <div class="promo-card-title" id="ui-promo1-title">Pelayanan Ekstra Cepet!</div>
+                            <div class="promo-card-sub" id="ui-promo1-sub">Prioritas utama nggo warga Gombong</div>
+                            <div class="promo-card-emoji">⚡</div>
+                        </div>
+                        <div class="promo-card amber">
+                            <div class="promo-card-tag" id="ui-promo2-tag">INFO TARIF</div>
+                            <div class="promo-card-title" id="ui-promo2-title">Tarif Jelas, Nego Langsung!</div>
+                            <div class="promo-card-sub" id="ui-promo2-sub">Chat driver via WA</div>
+                            <div class="promo-card-emoji">💬</div>
+                        </div>
+                        <div class="promo-card blue">
+                            <div class="promo-card-tag" id="ui-promo3-tag">24 JAM</div>
+                            <div class="promo-card-title" id="ui-promo3-title">Siap Rewang Kapan Wae!</div>
+                            <div class="promo-card-sub" id="ui-promo3-sub">Hubungi admin nek butuh bantuan</div>
+                            <div class="promo-card-emoji">⏰</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section mt16" style="margin-bottom:0; padding-bottom:0;">
+                    <div class="admin-cta-card">
+                        <div class="admin-cta-icon">💬</div>
+                        <div style="flex:1;">
+                            <div style="font-size:14px; font-weight:800; color:var(--text);" id="ui-admin-cta-title">Butuh Bantuan Admin?</div>
+                            <div style="font-size:12px; font-weight:600; color:var(--text3); margin-top:2px;" id="ui-admin-cta-sub">Chat langsung via WA</div>
+                        </div>
+                        <button onclick="chatAdminTemplate()" class="admin-cta-btn" id="ui-btn-admin">Chat</button>
+                    </div>
                 </div>
             </div>
         </div>
-        <button style="width: 100%; margin-top: 15px; background:#7f8c8d; color:white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; font-size: 15px; cursor: pointer;" onclick="pesanLagi()" id="ui-btn-menu">Bali Maring Menu Utama</button>
-    </div>
 
-    <div id="page-history" class="content hidden">
-        <div class="header-action">
-            <button class="back-btn" onclick="tutupRiwayat()">⬅ <span id="ui-btn-back2">Bali</span></button>
-            <h3 id="ui-history-title" style="margin: 0; font-size: 20px;">Riwayat Pesenan</h3>
+        <div id="page-form" class="hidden" style="display:flex; flex-direction:column; height:100%;">
+            <div class="form-topbar" style="flex-shrink:0;">
+                <button class="back-btn" onclick="kembaliKeMenu()">←</button>
+                <div class="form-topbar-title" id="judulFormTitle" style="flex:1;">Detail Pesenan</div>
+                <div class="lang-pill">
+                    <button class="lang-btn lang-ngapak active" onclick="setLang('ngapak')">Ngapak</button>
+                    <button class="lang-btn lang-id" onclick="setLang('id')">ID</button>
+                    <button class="lang-btn lang-en" onclick="setLang('en')">EN</button>
+                </div>
+            </div>
+            <div class="form-page">
+                <div class="form-body">
+                    <div id="boxInfoTarif" class="tarif-box"></div>
+                    <div class="form-group"><label class="form-section-label" id="labelDetail1">Detail 1</label><textarea class="form-textarea" id="inputDetail1" rows="2"></textarea></div>
+                    <div class="form-group"><label class="form-section-label" id="labelDetail2">Detail 2</label><textarea class="form-textarea" id="inputDetail2" rows="2"></textarea></div>
+                    <div class="form-group"><label class="form-section-label" id="ui-label-catatan">Catetan Tambahan</label><input class="form-input" type="text" id="inputCatatan" placeholder="(Opsional/Bebas bae)"></div>
+                    <button class="btn-primary mt16" id="btnKirim" onclick="kirimPesananFirebase()">Kirim Pesenan 🚀</button>
+                </div>
+            </div>
         </div>
-        <div id="listHistory" style="padding-bottom: 20px;"></div>
-    </div>
 
-    <div class="watermark" id="ui-watermark">
-        💡 <i>Pengin duwe aplikasi kaya kiye?</i><br>
-        <a href="https://wa.me/6281383179209" target="_blank">📞 Hubungi Jasa Web: 081383179209</a>
+        <div id="page-tracking" class="hidden" style="display:flex; flex-direction:column; height:100%; overflow:hidden;">
+            <div class="topbar" style="flex-shrink:0;">
+                <div class="topbar-row">
+                    <div class="topbar-logo">TulangTulung <span>Gombong</span></div>
+                    <div class="lang-pill">
+                        <button class="lang-btn lang-ngapak active" onclick="setLang('ngapak')">Ngapak</button>
+                        <button class="lang-btn lang-id" onclick="setLang('id')">ID</button>
+                        <button class="lang-btn lang-en" onclick="setLang('en')">EN</button>
+                    </div>
+                </div>
+                <div style="color:rgba(255,255,255,0.85); font-size:13px; font-weight:600; margin-top:8px;" id="ui-track-title">Status Pesenan</div>
+            </div>
+            <div class="page">
+                <div id="tracking-list"></div>
+                <div id="tracking-empty">
+                    <div class="empty-state"><span class="empty-icon">📭</span><div class="empty-title" id="ui-empty-order">Urung ana pesenan aktif.</div><div class="empty-sub" id="ui-empty-sub">Mangga pilih layanan nang Beranda</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-history" class="hidden" style="display:flex; flex-direction:column; height:100%; overflow:hidden;">
+            <div class="topbar" style="flex-shrink:0;">
+                <div class="topbar-row">
+                    <div class="topbar-logo">TulangTulung <span>Gombong</span></div>
+                    <div class="lang-pill">
+                        <button class="lang-btn lang-ngapak active" onclick="setLang('ngapak')">Ngapak</button>
+                        <button class="lang-btn lang-id" onclick="setLang('id')">ID</button>
+                        <button class="lang-btn lang-en" onclick="setLang('en')">EN</button>
+                    </div>
+                </div>
+                <div style="color:rgba(255,255,255,0.85); font-size:13px; font-weight:600; margin-top:8px;" id="ui-history-title">Riwayat Pesenan</div>
+            </div>
+            <div class="page">
+                <div style="height:16px;"></div>
+                <div id="listHistory"></div>
+            </div>
+        </div>
+
+        <div id="page-profile" class="hidden" style="display:flex; flex-direction:column; height:100%; overflow:hidden;">
+            <div class="page">
+                <div class="profile-hero">
+                    <div style="position:absolute; top:16px; right:16px; z-index:10;">
+                        <div class="lang-pill">
+                            <button class="lang-btn lang-ngapak active" onclick="setLang('ngapak')">Ngapak</button>
+                            <button class="lang-btn lang-id" onclick="setLang('id')">ID</button>
+                            <button class="lang-btn lang-en" onclick="setLang('en')">EN</button>
+                        </div>
+                    </div>
+                    <div class="profile-avatar">👤</div>
+                    <div class="profile-name" id="profileNama">—</div>
+                    <div class="profile-wa" id="profileWA">—</div>
+                </div>
+                
+                <div class="dev-ad-card" onclick="hubungiDeveloper()">
+                    <div class="dev-ad-icon">🚀</div>
+                    <div class="dev-ad-content">
+                        <div class="dev-ad-title" id="ui-ad-title">Kembangkan Bisnismu!</div>
+                        <div class="dev-ad-desc" id="ui-ad-desc">Jasa Pembuatan Aplikasi, Website & Sistem Manajemen Profesional.</div>
+                    </div>
+                    <div class="dev-ad-arrow">›</div>
+                </div>
+
+                <div class="profile-card" style="margin-top: 16px;">
+                    <div class="profile-row" id="row-install-app" onclick="installAplikasi()" style="display:none;"><div class="profile-row-icon" style="background:#FCE7F3;">📲</div><div class="profile-row-label" id="ui-profile-install">Pasang Aplikasi</div><div class="profile-row-arrow">›</div></div>
+                    <div class="profile-row" onclick="bagikanAplikasi()"><div class="profile-row-icon" style="background:#E0E7FF;">📤</div><div class="profile-row-label" id="ui-profile-share">Bagikan Aplikasi</div><div class="profile-row-arrow">›</div></div>
+                    <div class="profile-row" onclick="navigasiKe('history')"><div class="profile-row-icon" style="background:var(--primary-light);">🕒</div><div class="profile-row-label" id="ui-profile-orders">Riwayat Pesenanku</div><div class="profile-row-arrow">›</div></div>
+                    <div class="profile-row" onclick="chatAdminTemplate()"><div class="profile-row-icon" style="background:#FEF3C7;">💬</div><div class="profile-row-label" id="ui-profile-admin">Hubungi Admin</div><div class="profile-row-arrow">›</div></div>
+                    <div class="profile-row" onclick="bukaTentang()"><div class="profile-row-icon" style="background:#EFF6FF;">ℹ️</div><div class="profile-row-label" id="ui-profile-about">Tentang Aplikasi</div><div class="profile-row-arrow">›</div></div>
+                </div>
+                <div style="height:16px;"></div>
+                <button class="btn-logout" onclick="kaluarAplikasi()" id="ui-btn-logout">🚪 Metu (Logout)</button>
+            </div>
+        </div>
+
+        <div id="page-about" class="hidden" style="display:flex; flex-direction:column; height:100%;">
+            <div class="form-topbar" style="flex-shrink:0;">
+                <button class="back-btn" onclick="tutupTentang()">←</button>
+                <div class="form-topbar-title" id="ui-about-topbar" style="flex:1;">Tentang Aplikasi</div>
+                <div class="lang-pill">
+                    <button class="lang-btn lang-ngapak active" onclick="setLang('ngapak')">Ngapak</button>
+                    <button class="lang-btn lang-id" onclick="setLang('id')">ID</button>
+                    <button class="lang-btn lang-en" onclick="setLang('en')">EN</button>
+                </div>
+            </div>
+            <div class="page" style="padding: 20px 16px;">
+                <div class="tracking-card" style="margin: 0; padding: 20px;">
+                    <div style="text-align: center; margin-bottom: 24px;">
+                        <div style="font-size: 52px; margin-bottom: 6px;">🛵</div><div style="font-size: 22px; font-weight: 800; color: var(--primary);">TulangTulung <span style="color: var(--accent-dark);">Gombong</span></div>
+                        <div style="font-size: 13px; font-weight: 700; color: var(--text3); margin-top: 4px;" id="ui-about-tagline">Layanan Asli Wong Gombong</div>
+                    </div>
+                    <div style="margin-bottom: 20px;"><div style="font-size: 15px; font-weight: 800; color: var(--text); margin-bottom: 8px; border-bottom: 2px solid var(--border); padding-bottom: 4px;" id="ui-about-h1">Tentang Kami</div><div style="font-size: 13px; font-weight:600; color: var(--text2); line-height: 1.6;" id="ui-about-p1">TulangTulung Gombong adalah platform penyedia layanan transportasi dan jasa harian on-demand khusus warga lokal. Mengusung konsep dari warga untuk warga, saling menolong dan memberdayakan.</div></div>
+                    <div style="margin-bottom: 20px;"><div style="font-size: 15px; font-weight: 800; color: var(--text); margin-bottom: 8px; border-bottom: 2px solid var(--border); padding-bottom: 4px;" id="ui-about-h2">Misi</div><ul style="font-size: 13px; font-weight:600; color: var(--text2); line-height: 1.6; padding-left: 18px; margin: 0;" id="ui-about-p2"></ul></div>
+                    <div style="background: var(--red-light); padding: 14px; border-radius: var(--radius-sm); border: 1.5px dashed var(--red);"><div style="font-size: 14px; font-weight: 800; color: var(--red); margin-bottom: 6px;" id="ui-about-h3">Syarat & Ketentuan</div><div style="font-size: 12px; font-weight:600; color: #991B1B; line-height: 1.5;" id="ui-about-p3">TulangTulung adalah platform penghubung. Untuk pengiriman barang bernilai tinggi sangat disarankan menggunakan asuransi. Segala kerusakan atau kehilangan barang sepenuhnya menjadi tanggung jawab antara mitra driver dan pelanggan.</div></div>
+                </div>
+                <div style="height: 150px; width: 100%;"></div>
+            </div>
+        </div>
+
+        <div class="bottom-nav visible" id="bottom-nav">
+            <div class="nav-item active" id="tab-home" onclick="navigasiKe('home')"><div class="nav-icon-wrap">🏠</div><div class="nav-label" id="nav-home">Beranda</div></div>
+            <div class="nav-item" id="tab-order" onclick="navigasiKe('order')" style="position:relative;"><div class="nav-icon-wrap">🛵</div><div class="nav-label" id="nav-order">Pesenan</div></div>
+            <div class="nav-item" id="tab-history" onclick="navigasiKe('history')"><div class="nav-icon-wrap">🕒</div><div class="nav-label" id="nav-history">Riwayat</div></div>
+            <div class="nav-item" id="tab-profile" onclick="navigasiKe('profile')"><div class="nav-icon-wrap">👤</div><div class="nav-label" id="nav-profile">Profil</div></div>
+        </div>
     </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getDatabase, ref, push, set, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+    import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-messaging.js";
 
+    // ── FIREBASE TULANGTULUNG GOMBONG ──
     const firebaseConfig = {
-        apiKey: "AIzaSyCO4vDd6Z1NnrMx5gK7nMCyDceaGZj_bQw",
-        authDomain: "mastulungmasgombong.firebaseapp.com",
-        databaseURL: "https://mastulungmasgombong-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "mastulungmasgombong",
-        storageBucket: "mastulungmasgombong.firebasestorage.app",
-        messagingSenderId: "4547691331",
-        appId: "1:4547691331:web:45ecd39aab90f45b4f25f6"
+      apiKey: "AIzaSyCO4vDd6Z1NnrMx5gK7nMCyDceaGZj_bQw",
+      authDomain: "mastulungmasgombong.firebaseapp.com",
+      databaseURL: "https://mastulungmasgombong-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "mastulungmasgombong",
+      storageBucket: "mastulungmasgombong.firebasestorage.app",
+      messagingSenderId: "4547691331",
+      appId: "1:4547691331:web:45ecd39aab90f45b4f25f6",
+      measurementId: "G-MCYH7YMQXQ"
     };
-
-    const app = initializeApp(firebaseConfig);
+    
+    const app = initializeApp(firebaseConfig); 
     const database = getDatabase(app);
+    let messaging;
+    try { messaging = getMessaging(app); } catch(e) {}
 
-    let userAktif = { nama: "", wa: "" };
-    let layananAktif = "";
-    let currentLang = "ngapak"; 
-    let currentOrderId = "";
-    let ratingSkor = 0;
+    // ── VAPID KEY TULANGTULUNG GOMBONG ──
+    const VAPID_KEY = "BHrjLUSNG-h2NcRw_ypWBHTr3cc-iEZ7jCA8fYzjrWO6Yh4Sqg3xTevCEAcUAbncnWwrZZfOXkuFeWMQCHnkLDs";
+    
+    // ── KONTAK PUSAT ──
+    const NOMOR_ADMIN = "6285870422464";
+    const NOMOR_DEVELOPER = "6281383179209";
 
+    async function setupPushNotification() {
+        if (!('serviceWorker' in navigator) || !('Notification' in window) || !messaging) return;
+
+        let swReg;
+        try { swReg = await navigator.serviceWorker.register('/firebase-messaging-sw.js'); } 
+        catch(e) { return; }
+
+        const permission = await Notification.requestPermission();
+        if (permission !== 'granted') return;
+
+        try {
+            const fcmToken = await getToken(messaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: swReg });
+            if (fcmToken && userAktif.wa) {
+                const tokenKey = userAktif.wa.replace(/\D/g, '');
+                await set(ref(database, 'fcm_tokens_customer/' + tokenKey), {
+                    token: fcmToken, nama: userAktif.nama, wa: userAktif.wa, updated: Date.now()
+                });
+            }
+        } catch(e) {}
+
+        onMessage(messaging, (payload) => {
+            const title = payload.notification?.title || '🛵 TulangTulung Gombong';
+            const body = payload.notification?.body || 'Ada update pesanan!';
+            showFloatingNotif(title, body);
+        });
+    }
+
+    function showFloatingNotif(title, body) {
+        const old = document.getElementById('ttg-floating-notif');
+        if (old) old.remove();
+
+        const notif = document.createElement('div');
+        notif.id = 'ttg-floating-notif';
+        notif.innerHTML = `
+            <div style="display:flex;align-items:center;gap:12px;">
+                <span style="font-size:30px;">🛵</span>
+                <div style="flex:1;">
+                    <div style="font-weight:800;font-size:14px;color:#fff;">${title}</div>
+                    <div style="font-size:12.5px;color:rgba(255,255,255,0.85);margin-top:3px;font-weight:600;">${body}</div>
+                </div>
+                <button onclick="document.getElementById('ttg-floating-notif').remove()" style="background:rgba(255,255,255,0.2);border:none;color:white;width:28px;height:28px;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">✕</button>
+            </div>
+        `;
+        Object.assign(notif.style, {
+            position: 'fixed', top: '16px', left: '50%', transform: 'translateX(-50%)',
+            width: 'calc(100% - 32px)', maxWidth: '440px',
+            background: 'linear-gradient(135deg, var(--primary-dark), var(--primary))',
+            borderRadius: '16px', padding: '16px 18px',
+            boxShadow: '0 8px 32px rgba(44, 62, 80, 0.45)',
+            zIndex: '9999', animation: 'notifSlideIn 0.4s cubic-bezier(0.34,1.56,0.64,1)', cursor: 'pointer'
+        });
+        notif.onclick = function(e) { if(e.target.tagName !== 'BUTTON') { navigasiKe('order'); notif.remove(); } };
+        document.body.appendChild(notif);
+        setTimeout(() => { if(notif.parentNode) notif.remove(); }, 6000);
+    }
+
+    const notifStyle = document.createElement('style');
+    notifStyle.textContent = `@keyframes notifSlideIn { from { opacity:0; transform:translateX(-50%) translateY(-20px) scale(0.9); } to { opacity:1; transform:translateX(-50%) translateY(0) scale(1); } }`;
+    document.head.appendChild(notifStyle);
+
+    const prevOrderStatus = {};
+    function cekPerubahanStatusDanNotif(orders) {
+        const t = langDict[currentLang];
+        orders.forEach(o => {
+            const prev = prevOrderStatus[o.id];
+            if (prev === undefined) { prevOrderStatus[o.id] = o.status; return; }
+            if (prev === 'terbuka' && o.status === 'diambil') {
+                showFloatingNotif(t.status2, `Driver ${o.driver_nama || ''} ${t.notifDiambil} ${o.layanan}.`);
+                if (document.hidden && Notification.permission === 'granted') {
+                    new Notification(`${t.status2} — TulangTulung`, { body: `Driver ${o.driver_nama || ''} ${t.notifDiambil} ${o.layanan}.`, icon: '/logo-satria.png', tag: 'driver-found-' + o.id });
+                }
+            }
+            if (prev === 'diambil' && o.status === 'selesai') {
+                showFloatingNotif(t.status3, `${o.layanan} ${t.notifSelesai}`);
+                if (document.hidden && Notification.permission === 'granted') {
+                    new Notification(`${t.status3} — TulangTulung`, { body: `${o.layanan} ${t.notifSelesai}`, icon: '/logo-satria.png', tag: 'order-done-' + o.id });
+                }
+            }
+            prevOrderStatus[o.id] = o.status;
+        });
+    }
+
+    if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch((err) => {}); }); }
+
+    let userAktif = { nama: "", wa: "" }; let layananAktif = ""; let currentLang = "ngapak"; let currentOrderId = "";
+    
+    periksaLogin();
+    function periksaLogin() {
+        const simpanan = localStorage.getItem('ttg_customer');
+        if(simpanan) {
+            userAktif = JSON.parse(simpanan);
+            document.getElementById('displayNama').innerText = userAktif.nama;
+            document.getElementById('profileNama').innerText = userAktif.nama;
+            document.getElementById('profileWA').innerText = userAktif.wa;
+            document.getElementById('page-login').classList.add('hidden');
+            document.getElementById('app-main').classList.remove('hidden');
+            pantauDataPesenanWarga();
+            setupPushNotification();
+        }
+    }
+
+    // ── KAMUS 3 BAHASA LENGKAP ──
     const langDict = {
         ngapak: {
-            subtitle: "Layanan Asli Wong Gombong", loginDesc: "Sugeng rawuh sedulur! Lebokna data nggo mulai pesen:",
-            lblNama: "Jeneng (Panggilan)", lblWa: "Nomer WhatsApp Aktif", noteWa: "⚠️ Nomer WA kudu bener & aktif, ben driver gampang ngubungine lur!", btnLogin: "Mulai Pesen 🚀",
-            greet: "Halo", ask: "Dina kiye arep njaluk tulung apa lur?",
-            c1: "Ngeter & Methuk", c2: "Kirim Barang", c3: "Titip Tuku (Belanja)", c4: "Bantu Resik-resik", c5: "Jasa Liya-liyane",
-            btnHistory: "Riwayat Pesenanku", btnAdmin: "📞 Butuh Bantuan Admin?",
-            btnBack1: "Bali", btnBack2: "Bali", lblCatatan: "Catetan Tambahan", btnOrder: "Kirim Pesenan 🚀",
-            trackTitle: "Status Pesenan", trackMenuBtn: "Bali Maring Menu Utama", histTitle: "Riwayat Pesenan",
-            tarif1: "🚗 <b>Rega Dasar:</b> Rp 2.000 / Kilo.<br>Rega pase dirembug via WhatsApp karo petugase lur.",
-            tarif2: "📦 <b>Rega Kurir:</b> Rp 2.000 / Kilo.<br>Rega pase dirembug via WhatsApp karo petugase lur.",
-            tarif3: "🛒 <b>Rega Jasa:</b> Rp 2.000 / Kilo.<br>Rega pase dirembug via WhatsApp karo petugase lur.",
-            tarif4: "🧹 <b>Rega Resik-resik:</b> Bebas (Nego).<br>Diregasi pas karo ambane umah. Mangga nego via WhatsApp karo petugase.",
-            tarif5: "✨ <b>Jasa Liya-liyane:</b> Regane bebas (Nego).<br>Gumantung kangelane gawean lur. Aja sungkan, rembugan bae karo petugase via WhatsApp.",
+            loginTitle: "Sugeng Rawuh 👋", subtitle: "Layanan Asli Wong Gombong", loginDesc: "Lebokna datamu nggo mulai pesen", lblNama: "Jeneng Panggilan", lblWa: "Nomer WA Sing Aktif", noteWa: "⚠️ Pastikna nomer WA-ne aktif ben driver gampang ngubungi!", btnLogin: "Mulai Pesen 🚀", ph_nama: "Ketik nang kene...", ph_wa: "Conto: 0813xxxx", btnAdminLogin: "📞 Butuh Bantuan Admin?",
+            greetPrefix: "Sugeng rawuh,", c1: "Ngeter & Methuk", c2: "Kirim Barang", c3: "Titip Tuku", c4: "Bantu Resik-resik", c5: "Jasa Liya-liyane", cat5sub: "Jasa liya manut kebutuhanmu", btnAdmin: "Chat", adminCtaTitle: "Butuh Bantuan Admin?", adminCtaSub: "Chat langsung via WA",
+            sectionLayanan: "Pilih Layanan", sectionPromo: "Info & Promo", heroTag: "TARIF HEMAT", heroTitle: "Pesen Gampang,\nRego Pas neng Kantong!", heroSub: "Direwangi sedulur Gombong sing profesional lan grapyak.", heroPriceSub: "/ kilometer",
+            promo1Tag: "KILAT & SIGAP", promo1Title: "Pelayanan Ekstra Cepet!", promo1Sub: "Prioritas utama nggo warga Gombong", promo2Tag: "INFO TARIF", promo2Title: "Tarif Jelas, Nego Langsung!", promo2Sub: "Chat driver via WA", promo3Tag: "24 JAM", promo3Title: "Siap Rewang Kapan Wae!", promo3Sub: "Hubungi admin nek butuh bantuan",
+            btnBack1: "Bali", lblCatatan: "Catetan Tambahan", btnOrder: "Kirim Pesenan 🚀", trackTitle: "Status Pesenan", histTitle: "Riwayat Pesenan", navHome: "Beranda", navOrder: "Pesenan", navHistory: "Riwayat", navProfile: "Profil", profTitle: "Profilku", btnLogout: "🚪 Metu (Logout)", emptyOrder: "Urung ana pesenan aktif.", emptySub: "Mangga pilih layanan nang Beranda",
+            profileOrders: "Riwayat Pesenanku", profileAdmin: "Hubungi Admin", profileAbout: "Tentang Aplikasi", profileShare: "Bagikan Aplikasi", profileInstall: "Pasang Aplikasi", aocLabel: "Pesenan Aktif", aocBtn: "📍 Lacak Pesenanku", btnDetail: "Rincian Pesenan",
+            tarif1: "🚗 <b>Rega Dasar:</b> Rp 2.000 / Kilo.<br>Rega dirembug via WA karo driver.", tarif2: "📦 <b>Rega Kurir:</b> Rp 2.000 / Kilo.<br>Rega dirembug via WA karo driver.", tarif3: "🛒 <b>Rega Jasa:</b> Rp 2.000 / Kilo.<br>Rega dirembug via WA karo driver.", tarif4: "🧹 <b>Rega Resik-resik:</b> Bebas (Nego).<br>Mangga nego via WA karo driver.", tarif5: "✨ <b>Jasa Liya-liyane:</b> Bebas (Nego).<br>Rembugan rego via WA bae.",
             t_formTitle: "Detail Pesenan", t_jemput: "Lokasi Methuk", t_antar: "Lokasi Ngeter", t_ambil: "Njukut Barang Nang", t_kirim: "Kirim Barang Maring", t_daftar: "Daftar Sing Arep Dituku", t_alamat: "Alamat Ngirim", t_resik: "Apa sing arep diresiki?", t_lokasi: "Lokasine nang endi?", t_unik: "Sebutna Penjalukmu", t_waktu: "Alamat / Jam Pira",
-            
-            ph_jemput: "Contoh: Pasar Gombong, ngarep toko emas...", ph_antar: "Contoh: Stasiun Gombong, pintu mlebu...",
-            ph_ambil: "Contoh: Umahku, gang duku nomer 5...", ph_kirim: "Contoh: JNE Gombong, ngirim paketan...",
-            ph_daftar: "Contoh: Tuku sate ambal 2 porsi, sing pedes...", ph_alamat: "Contoh: Anterna maring alun-alun...",
-            ph_resik: "Contoh: Nyapu pekarangan, nguras kamar mandi...", ph_lokasi: "Contoh: Umah mburi kelurahan...",
-            ph_unik: "Contoh: Tulung pindahna lemari, dandan gendeng...", ph_waktu: "Contoh: Dina kiye jam 2 awan, nang umah...",
-
-            watermark: "💡 <i>Pengin duwe aplikasi kaya kiye?</i><br><a href='https://wa.me/6281383179209' target='_blank'>📞 Hubungi Jasa Web: 081383179209</a>",
-            templateWA: "Halo Admin TulangTulung Gombong, nyong [NAMA]. Nyong arep takon soal pesenan: ",
-            installTxt: "Pasang Aplikasi TulangTulung Gombong!", btnInstall: "INSTALL 📲",
-            btnCancel: "❌ Batalkan Pesenan", btnComplete: "✅ Konfirmasi Pesenan Beres", ratingTitle: "Kepiye pelayanan drivere?", ph_ulasan: "Tulis ulasan utawa masukan (opsional)...", btnRating: "Kirim Rating ⭐",
-            status1: "Lagi Golek Driver...", desc1: "Dienteni sedela ya lur...",
-            status2: "Driver Wis Olih!", desc2: "Driver arep chat WA nggo konfirmasi.",
-            status3: "Pesenan Beres!", desc3: "Suwun wis nganggo TulangTulung Gombong!",
-            status4: "Dibatalna", desc4: "Pesenan kiye wis dibatalna.", alertRating: "Suwun rating & ulasane lur!"
+            ph_jemput: "Contoh: Pasar Gombong...", ph_antar: "Contoh: Stasiun Gombong...", ph_ambil: "Contoh: Umahku...", ph_kirim: "Contoh: JNE Gombong...", ph_daftar: "Contoh: Tuku sate ambal...", ph_alamat: "Contoh: Anterna maring...", ph_resik: "Contoh: Nyapu pekarangan...", ph_lokasi: "Contoh: Umah mburi kelurahan...", ph_unik: "Contoh: Tulung pindahna lemari...", ph_waktu: "Contoh: Dina kiye jam 2...",
+            templateWA: "Halo Admin TulangTulung Gombong, nyong [NAMA]. Nyong arep takon: ", installTxt: "Pasang Aplikasi!", btnInstall: "INSTALL 📲", btnCancel: "❌ Batalna", btnComplete: "✅ Konfirmasi Beres", ratingTitle: "Kepiye pelayanan drivere?", ph_ulasan: "Tulis ulasan (opsional)...", btnRating: "Kirim Rating ⭐",
+            status1: "Lagi Golek Driver...", desc1: "Dienteni sedela ya lur...", status2: "Driver Wis Olih!", desc2: "Driver arep chat WA nggo konfirmasi.", status3: "Pesenan Beres!", desc3: "Suwun wis nganggo TulangTulung Gombong!", status4: "Dibatalna", desc4: "Pesenan kiye wis dibatalna.", alertRating: "Suwun rating & ulasane lur!", pillDone: "Beres ✓", pillOngoing: "Lagi Mlaku", emptyHistory: "Urung ana riwayat pesenan.",
+            aboutTagline: "Layanan Asli Wong Gombong", aboutH1: "Tentang Kami", aboutP1: "TulangTulung Gombong adalah platform penyedia layanan transportasi dan jasa harian on-demand khusus warga lokal. Mengusung konsep dari warga untuk warga, saling menolong dan memberdayakan.",
+            aboutH2: "Misi", aboutP2: "<li style='margin-bottom:6px;'><b>Kebutuhan Warga:</b> Layanan praktis & cepat tanggap.</li><li style='margin-bottom:6px;'><b>Adil:</b> Tanpa potongan persentase penghasilan yang merugikan.</li><li style='margin-bottom:6px;'><b>Aman:</b> Dilayani oleh sesama warga yang saling mengenal.</li>",
+            aboutH3: "Syarat & Ketentuan", aboutP3: "TulangTulung adalah platform penghubung. Untuk pengiriman barang bernilai tinggi sangat disarankan menggunakan asuransi. Segala kerusakan atau kehilangan barang sepenuhnya menjadi tanggung jawab antara mitra driver dan pelanggan.",
+            notifDiambil: "siap njikot pesenan", notifSelesai: "wis beres. Aja klalen aweh rating!",
+            adTitle: "Kembangkan Bisnismu!", adDesc: "Jasa Pembuatan Aplikasi, Website & Sistem Manajemen Profesional.",
+            waDevMsg: "Halo Mas Riski, nyong weruh sekang aplikasi TulangTulung Gombong. Nyong minat arep gawe Aplikasi/Website nggo bisnisku. Bisa diskusi sedela?"
         },
         id: {
-            subtitle: "Layanan Asli Warga Lokal", loginDesc: "Selamat datang kak! Masukkan data untuk mulai pesan:",
-            lblNama: "Nama Panggilan", lblWa: "Nomor WhatsApp Aktif", noteWa: "⚠️ Pastikan nomor WA aktif agar driver bisa menghubungi Anda!", btnLogin: "Mulai Pesan 🚀",
-            greet: "Hai", ask: "Hari ini mau dibantu apa kak?",
-            c1: "Antar Jemput", c2: "Kirim Barang", c3: "Titip Belanja", c4: "Bantu Bersih", c5: "Jasa Lainnya",
-            btnHistory: "Riwayat Pesanan Saya", btnAdmin: "📞 Butuh Bantuan Admin?",
-            btnBack1: "Kembali", btnBack2: "Kembali", lblCatatan: "Catatan Tambahan", btnOrder: "Kirim Pesanan 🚀",
-            trackTitle: "Status Pesanan", trackMenuBtn: "Kembali ke Menu Utama", histTitle: "Riwayat Pesanan",
-            tarif1: "🚗 <b>Tarif Dasar:</b> Rp 2.000 / Kilometer.<br>Harga pasti disepakati via WA dengan driver.",
-            tarif2: "📦 <b>Tarif Kurir:</b> Rp 2.000 / Kilometer.<br>Harga pasti disepakati via WA dengan driver.",
-            tarif3: "🛒 <b>Tarif Jasa:</b> Rp 2.000 / Kilometer.<br>Harga pasti disepakati via WA dengan driver.",
-            tarif4: "🧹 <b>Tarif Bersih-bersih:</b> Fleksibel (Nego).<br>Harga disesuaikan dengan luas area. Silakan nego via WA dengan petugas.",
-            tarif5: "✨ <b>Jasa Lainnya:</b> Harga fleksibel (Nego).<br>Tergantung tingkat kesulitan pekerjaan. Jangan sungkan untuk diskusi harga dengan petugas via WA.",
-            t_formTitle: "Detail Pesanan", t_jemput: "Titik Jemput", t_antar: "Titik Tujuan", t_ambil: "Ambil Barang Di", t_kirim: "Kirim Barang Ke", t_daftar: "Daftar Belanjaan", t_alamat: "Alamat Pengiriman", t_resik: "Apa yang dibersihkan?", t_lokasi: "Alamat Lokasi", t_unik: "Sebutkan Permintaanmu", t_waktu: "Alamat / Waktu Pelaksanaan",
-            
-            ph_jemput: "Contoh: Pasar Gombong, depan toko emas...", ph_antar: "Contoh: Stasiun Gombong, pintu masuk...",
-            ph_ambil: "Contoh: Rumah saya, gang duku nomor 5...", ph_kirim: "Contoh: JNE Gombong, kirim paket...",
-            ph_daftar: "Contoh: Beli sate ambal 2 porsi, pedas...", ph_alamat: "Contoh: Antar ke alun-alun, dekat tugu...",
-            ph_resik: "Contoh: Sapu halaman, kuras bak mandi...", ph_lokasi: "Contoh: Rumah belakang kelurahan...",
-            ph_unik: "Contoh: Minta tolong pindahkan lemari...", ph_waktu: "Contoh: Hari ini jam 2 siang, di rumah...",
-
-            watermark: "💡 <i>Ingin punya aplikasi seperti ini?</i><br><a href='https://wa.me/6281383179209' target='_blank'>📞 Hubungi Jasa Web: 081383179209</a>",
-            templateWA: "Halo Admin TulangTulung Gombong, saya [NAMA]. Saya ingin bertanya terkait pesanan: ",
-            installTxt: "Install Aplikasi TulangTulung Gombong!", btnInstall: "INSTALL 📲",
-            btnCancel: "❌ Batalkan Pesanan", btnComplete: "✅ Konfirmasi Pesanan Selesai", ratingTitle: "Bagaimana pelayanan driver kami?", ph_ulasan: "Tulis ulasan atau masukan (opsional)...", btnRating: "Kirim Rating ⭐",
-            status1: "Mencari Driver...", desc1: "Mohon tunggu sebentar...",
-            status2: "Driver Ditemukan!", desc2: "Driver akan chat WA untuk konfirmasi.",
-            status3: "Pesanan Selesai!", desc3: "Terima kasih sudah menggunakan layanan kami!",
-            status4: "Dibatalkan", desc4: "Pesanan ini telah dibatalkan.", alertRating: "Terima kasih atas rating & ulasan Anda!"
+            loginTitle: "Selamat Datang 👋", subtitle: "Layanan Asli Warga Lokal", loginDesc: "Masukkan data kamu untuk mulai pesan", lblNama: "Nama Panggilan", lblWa: "Nomor WhatsApp Aktif", noteWa: "⚠️ Pastikan nomor WA aktif agar driver bisa menghubungi kamu!", btnLogin: "Mulai Pesan 🚀", ph_nama: "Ketik di sini...", ph_wa: "Contoh: 0813xxxx", btnAdminLogin: "📞 Butuh Bantuan Admin?",
+            greetPrefix: "Selamat datang,", c1: "Antar Jemput", c2: "Kirim Barang", c3: "Titip Belanja", c4: "Bantu Bersih", c5: "Jasa Lainnya", cat5sub: "Jasa lainnya sesuai kebutuhanmu", btnAdmin: "Chat", adminCtaTitle: "Butuh Bantuan Admin?", adminCtaSub: "Chat langsung via WhatsApp",
+            sectionLayanan: "Pilih Layanan", sectionPromo: "Informasi & Promo", heroTag: "TARIF HEMAT", heroTitle: "Pesan Mudah,\nHarga Terjangkau!", heroSub: "Dibantu warga lokal yang amanah dan profesional.", heroPriceSub: "/ kilometer",
+            promo1Tag: "KILAT & SIGAP", promo1Title: "Pelayanan Ekstra Cepat!", promo1Sub: "Prioritas utama untuk warga", promo2Tag: "INFO TARIF", promo2Title: "Tarif Transparan, Nego Langsung!", promo2Sub: "Chat driver via WhatsApp", promo3Tag: "24 JAM", promo3Title: "Siap Membantu Kapan Saja!", promo3Sub: "Hubungi admin jika butuh bantuan",
+            btnBack1: "Kembali", lblCatatan: "Catatan Tambahan", btnOrder: "Kirim Pesanan 🚀", trackTitle: "Status Pesanan", histTitle: "Riwayat Pesanan", navHome: "Beranda", navOrder: "Pesanan", navHistory: "Riwayat", navProfile: "Profil", profTitle: "Profil Saya", btnLogout: "🚪 Keluar (Logout)", emptyOrder: "Belum ada pesanan aktif.", emptySub: "Silakan pilih layanan di Beranda",
+            profileOrders: "Riwayat Pesanan", profileAdmin: "Hubungi Admin", profileAbout: "Tentang Aplikasi", profileShare: "Bagikan Aplikasi", profileInstall: "Install Aplikasi", aocLabel: "Pesanan Aktif", aocBtn: "📍 Lacak Pesanan", btnDetail: "Rincian Pesanan",
+            tarif1: "🚗 <b>Tarif Dasar:</b> Rp 2.000 / Kilometer.<br>Harga disepakati via WA dengan driver.", tarif2: "📦 <b>Tarif Kurir:</b> Rp 2.000 / Kilometer.<br>Harga disepakati via WA dengan driver.", tarif3: "🛒 <b>Tarif Jasa:</b> Rp 2.000 / Kilometer.<br>Harga disepakati via WA dengan driver.", tarif4: "🧹 <b>Tarif Bersih-bersih:</b> Fleksibel (Nego).<br>Silakan nego via WA dengan petugas.", tarif5: "✨ <b>Jasa Lainnya:</b> Fleksibel (Nego).<br>Diskusikan harga via WA.",
+            t_formTitle: "Detail Pesanan", t_jemput: "Titik Jemput", t_antar: "Titik Tujuan", t_ambil: "Ambil Barang Di", t_kirim: "Kirim Barang Ke", t_daftar: "Daftar Belanjaan", t_alamat: "Alamat Pengiriman", t_resik: "Apa yang dibersihkan?", t_lokasi: "Alamat Lokasi", t_unik: "Sebutkan Permintaanmu", t_waktu: "Alamat / Waktu",
+            ph_jemput: "Contoh: Pasar Gombong...", ph_antar: "Contoh: Stasiun Gombong...", ph_ambil: "Contoh: Rumah saya...", ph_kirim: "Contoh: JNE Gombong...", ph_daftar: "Contoh: Beli sate...", ph_alamat: "Contoh: Antar ke...", ph_resik: "Contoh: Sapu halaman...", ph_lokasi: "Contoh: Rumah belakang...", ph_unik: "Contoh: Tolong pindahkan...", ph_waktu: "Contoh: Hari ini...",
+            templateWA: "Halo Admin TulangTulung Gombong, saya [NAMA]. Saya ingin bertanya: ", installTxt: "Install Aplikasi!", btnInstall: "INSTALL 📲", btnCancel: "❌ Batalkan Pesanan", btnComplete: "✅ Konfirmasi Selesai", ratingTitle: "Bagaimana pelayanan driver kami?", ph_ulasan: "Tulis ulasan (opsional)...", btnRating: "Kirim Rating ⭐",
+            status1: "Mencari Driver...", desc1: "Mohon tunggu sebentar...", status2: "Driver Ditemukan!", desc2: "Driver akan chat WA.", status3: "Pesanan Selesai!", desc3: "Terima kasih sudah menggunakan layanan kami!", status4: "Dibatalkan", desc4: "Pesanan ini telah dibatalkan.", alertRating: "Terima kasih atas ulasan Anda!", pillDone: "Selesai ✓", pillOngoing: "Sedang Berjalan", emptyHistory: "Belum ada riwayat pesanan.",
+            aboutTagline: "Layanan Asli Wong Gombong", aboutH1: "Tentang Kami", aboutP1: "TulangTulung Gombong adalah platform penyedia layanan transportasi dan jasa harian on-demand khusus warga lokal. Mengusung konsep dari warga untuk warga, saling menolong dan memberdayakan.",
+            aboutH2: "Misi", aboutP2: "<li style='margin-bottom:6px;'><b>Kebutuhan Warga:</b> Layanan praktis & cepat tanggap.</li><li style='margin-bottom:6px;'><b>Adil:</b> Tanpa potongan persentase penghasilan yang merugikan.</li><li style='margin-bottom:6px;'><b>Aman:</b> Dilayani oleh sesama warga yang saling mengenal.</li>",
+            aboutH3: "Syarat & Ketentuan", aboutP3: "TulangTulung adalah platform penghubung. Untuk pengiriman barang bernilai tinggi sangat disarankan menggunakan asuransi. Segala kerusakan atau kehilangan barang sepenuhnya menjadi tanggung jawab antara mitra driver dan pelanggan.",
+            notifDiambil: "siap mengambil pesanan", notifSelesai: "telah selesai. Jangan lupa beri rating!",
+            adTitle: "Kembangkan Bisnismu!", adDesc: "Jasa Pembuatan Aplikasi, Website & Sistem Manajemen Profesional.",
+            waDevMsg: "Halo Mas Riski, saya mengetahui dari aplikasi TulangTulung Gombong. Saya tertarik untuk berdiskusi mengenai jasa pembuatan Aplikasi/Website untuk bisnis saya."
         },
         en: {
-            subtitle: "Authentic Local Services", loginDesc: "Welcome! Enter your details to start:",
-            lblNama: "Nickname", lblWa: "Active WhatsApp Number", noteWa: "⚠️ Ensure your WA number is active so the driver can contact you!", btnLogin: "Start Ordering 🚀",
-            greet: "Hi", ask: "What do you need help with today?",
-            c1: "Pick-up / Drop-off", c2: "Delivery", c3: "Grocery Shopping", c4: "Cleaning Service", c5: "Custom Service",
-            btnHistory: "My Order History", btnAdmin: "📞 Contact Admin",
-            btnBack1: "Back", btnBack2: "Back", lblCatatan: "Additional Notes", btnOrder: "Submit Order 🚀",
-            trackTitle: "Order Status", trackMenuBtn: "Back to Main Menu", histTitle: "Order History",
-            tarif1: "🚗 <b>Base Fare:</b> Rp 2.000 / Kilometer.<br>Final price negotiated via WA.",
-            tarif2: "📦 <b>Delivery Fare:</b> Rp 2.000 / Kilometer.<br>Final price negotiated via WA.",
-            tarif3: "🛒 <b>Service Fee:</b> Rp 2.000 / Kilometer.<br>Final price negotiated via WA.",
-            tarif4: "🧹 <b>Cleaning Fee:</b> Flexible (Nego).<br>Price depends on the area size. Please negotiate via WA.",
-            tarif5: "✨ <b>Custom Service:</b> Flexible price (Nego).<br>Depends on the task difficulty. Feel free to discuss with the driver via WA.",
-            t_formTitle: "Order Details", t_jemput: "Pick-up Location", t_antar: "Drop-off Location", t_ambil: "Pick up from", t_kirim: "Deliver to", t_daftar: "Shopping List", t_alamat: "Delivery Address", t_resik: "What needs cleaning?", t_lokasi: "Location Address", t_unik: "State Your Request", t_waktu: "Address / Time Details",
-            
-            ph_jemput: "Example: Gombong Market, front gate...", ph_antar: "Example: Gombong Station...",
-            ph_ambil: "Example: My house, Duku street no 5...", ph_kirim: "Example: JNE Gombong, send package...",
-            ph_daftar: "Example: Buy 2 portions of satay...", ph_alamat: "Example: Deliver to city square...",
-            ph_resik: "Example: Sweep the yard, clean bathroom...", ph_lokasi: "Example: House behind the hall...",
-            ph_unik: "Example: Help me move a wardrobe...", ph_waktu: "Example: Today at 2 PM, at my house...",
-
-            watermark: "💡 <i>Want an app like this?</i><br><a href='https://wa.me/6281383179209' target='_blank'>📞 Contact Web Dev: 081383179209</a>",
-            templateWA: "Hello Admin TulangTulung Gombong, my name is [NAMA]. I have a question regarding my order: ",
-            installTxt: "Install TulangTulung Gombong App!", btnInstall: "INSTALL 📲",
-            btnCancel: "❌ Cancel Order", btnComplete: "✅ Confirm Order Completed", ratingTitle: "How was the driver's service?", ph_ulasan: "Write your feedback or suggestions (optional)...", btnRating: "Submit Rating ⭐",
-            status1: "Finding Driver...", desc1: "Please wait a moment...",
-            status2: "Driver Found!", desc2: "Driver will chat you via WA.",
-            status3: "Order Completed!", desc3: "Thank you for using our service!",
-            status4: "Cancelled", desc4: "This order has been cancelled.", alertRating: "Thank you for your rating & feedback!"
+            loginTitle: "Welcome 👋", subtitle: "Authentic Local Services", loginDesc: "Enter your details to get started", lblNama: "Nickname", lblWa: "Active WhatsApp Number", noteWa: "⚠️ Ensure your WA number is active so the driver can contact you!", btnLogin: "Start Ordering 🚀", ph_nama: "Type here...", ph_wa: "Example: 0813xxxx", btnAdminLogin: "📞 Admin Help?",
+            greetPrefix: "Welcome back,", c1: "Pick-up / Drop-off", c2: "Delivery", c3: "Grocery Shopping", c4: "Cleaning", c5: "Custom Service", cat5sub: "Any other service you need", btnAdmin: "Chat", adminCtaTitle: "Need Admin Support?", adminCtaSub: "Chat directly via WhatsApp",
+            sectionLayanan: "Choose a Service", sectionPromo: "Promos & Info", heroTag: "AFFORDABLE", heroTitle: "Easy Orders,\nGreat Prices!", heroSub: "Helped by trusted, professional locals.", heroPriceSub: "/ kilometer",
+            promo1Tag: "FAST & READY", promo1Title: "Extra Fast Service!", promo1Sub: "Top priority for locals", promo2Tag: "FARE INFO", promo2Title: "Transparent Fares, Negotiate Direct!", promo2Sub: "Chat the driver via WhatsApp", promo3Tag: "24 HOURS", promo3Title: "Ready to Help Anytime!", promo3Sub: "Contact admin if you need help",
+            btnBack1: "Back", lblCatatan: "Additional Notes", btnOrder: "Submit Order 🚀", trackTitle: "Order Status", histTitle: "Order History", navHome: "Home", navOrder: "Orders", navHistory: "History", navProfile: "Profile", profTitle: "My Profile", btnLogout: "🚪 Logout", emptyOrder: "No active orders.", emptySub: "Please choose a service from Home",
+            profileOrders: "Order History", profileAdmin: "Contact Admin", profileAbout: "About App", profileShare: "Share App", profileInstall: "Install App", aocLabel: "Active Order", aocBtn: "📍 Track Order", btnDetail: "Order Details",
+            tarif1: "🚗 <b>Base Fare:</b> Rp 2,000 / Kilometer.<br>Final price via WA.", tarif2: "📦 <b>Delivery Fare:</b> Rp 2,000 / Kilometer.<br>Final price via WA.", tarif3: "🛒 <b>Service Fee:</b> Rp 2,000 / Kilometer.<br>Final price via WA.", tarif4: "🧹 <b>Cleaning Fee:</b> Flexible (Negotiable).<br>Please negotiate via WA.", tarif5: "✨ <b>Custom Service:</b> Flexible price (Negotiable).<br>Discuss via WA.",
+            t_formTitle: "Order Details", t_jemput: "Pick-up Location", t_antar: "Drop-off Location", t_ambil: "Pick up from", t_kirim: "Deliver to", t_daftar: "Shopping List", t_alamat: "Delivery Address", t_resik: "What needs cleaning?", t_lokasi: "Location Address", t_unik: "State Your Request", t_waktu: "Address / Time",
+            ph_jemput: "Example: Main Gate...", ph_antar: "Example: Station...", ph_ambil: "Example: My house...", ph_kirim: "Example: JNE...", ph_daftar: "Example: Buy satay...", ph_alamat: "Example: Deliver to...", ph_resik: "Example: Sweep yard...", ph_lokasi: "Example: House behind...", ph_unik: "Example: Move wardrobe...", ph_waktu: "Example: Today at 2 PM...",
+            templateWA: "Hello Admin, my name is [NAMA]. I have a question: ", installTxt: "Install App!", btnInstall: "INSTALL 📲", btnCancel: "❌ Cancel", btnComplete: "✅ Confirm Completed", ratingTitle: "How was the service?", ph_ulasan: "Write feedback (optional)...", btnRating: "Submit Rating ⭐",
+            status1: "Finding Driver...", desc1: "Please wait...", status2: "Driver Found!", desc2: "Driver will chat via WA.", status3: "Completed!", desc3: "Thank you!", status4: "Cancelled", desc4: "This order has been cancelled.", alertRating: "Thank you for your feedback!", pillDone: "Completed ✓", pillOngoing: "In Progress", emptyHistory: "No order history yet.",
+            aboutTagline: "Authentic Local Services", aboutH1: "About Us", aboutP1: "TulangTulung Gombong is an on-demand transport and daily service platform exclusively for locals. Bringing the concept of 'from residents, for residents'.",
+            aboutH2: "Mission", aboutP2: "<li style='margin-bottom:6px;'><b>Resident Needs:</b> Practical & fast service.</li><li style='margin-bottom:6px;'><b>Fair:</b> Zero percent commission, 100% to partners.</li><li style='margin-bottom:6px;'><b>Safe:</b> Served by verified local residents.</li>",
+            aboutH3: "Terms & Conditions", aboutP3: "TulangTulung is a connecting platform. For delivering high-value items, personal insurance is highly recommended. Any damage or loss of goods is entirely the responsibility between the driver partner and the customer.",
+            notifDiambil: "is ready to take your order", notifSelesai: "is completed. Don't forget to rate!",
+            adTitle: "Grow Your Business!", adDesc: "Professional App, Website & Management System Development.",
+            waDevMsg: "Hello Mr. Riski, I found your contact from the TulangTulung Gombong app. I am interested in discussing App/Website development for my business."
         }
     };
 
     window.setLang = function(langKey) {
         currentLang = langKey;
-        document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-        document.getElementById('btn-' + langKey).classList.add('active');
+        // Panggil ke semua tombol global
+        document.querySelectorAll('.lang-btn').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.lang-' + langKey).forEach(el => el.classList.add('active'));
         const t = langDict[langKey];
         
-        document.getElementById('ui-subtitle').innerText = t.subtitle;
-        document.getElementById('ui-login-desc').innerText = t.loginDesc;
-        document.getElementById('ui-label-nama').innerText = t.lblNama;
-        document.getElementById('ui-label-wa').innerText = t.lblWa;
-        document.getElementById('ui-note-wa').innerText = t.noteWa; 
-        document.getElementById('ui-btn-login').innerText = t.btnLogin;
-        
-        document.getElementById('ui-greet').innerText = t.greet;
-        document.getElementById('ui-ask').innerText = t.ask;
-        document.getElementById('cat-1').innerText = t.c1;
-        document.getElementById('cat-2').innerText = t.c2;
-        document.getElementById('cat-3').innerText = t.c3;
-        document.getElementById('cat-4').innerText = t.c4;
-        document.getElementById('cat-5').innerText = t.c5;
-        
-        document.getElementById('ui-btn-history').innerText = t.btnHistory;
-        document.getElementById('ui-btn-admin-login').innerText = t.btnAdmin;
-        document.getElementById('ui-btn-admin').innerText = t.btnAdmin;
-        
-        document.getElementById('ui-btn-back1').innerText = t.btnBack1;
-        document.getElementById('ui-label-catatan').innerText = t.lblCatatan;
-        document.getElementById('btnKirim').innerText = t.btnOrder;
-        
-        document.getElementById('ui-track-title').innerText = t.trackTitle;
-        document.getElementById('ui-btn-menu').innerText = t.trackMenuBtn;
-        document.getElementById('ui-history-title').innerText = t.histTitle;
-        document.getElementById('ui-btn-back2').innerText = t.btnBack2;
-        
-        document.getElementById('ui-watermark').innerHTML = t.watermark;
-        document.getElementById('ui-install-txt').innerText = t.installTxt;
-        document.getElementById('btn-install-pwa').innerText = t.btnInstall;
+        setText('ui-login-title', t.loginTitle); setText('ui-subtitle', t.subtitle); setText('ui-login-desc', t.loginDesc);
+        setText('ui-label-nama', t.lblNama); setText('ui-label-wa', t.lblWa); setText('ui-note-wa', t.noteWa); setText('ui-btn-login', t.btnLogin);
+        document.getElementById('inputNama').placeholder = t.ph_nama; document.getElementById('inputWA').placeholder = t.ph_wa;
+        setText('ui-btn-admin-login', t.btnAdminLogin); setText('ui-greet-prefix', t.greetPrefix);
+        ['c1','c2','c3','c4','c5'].forEach((c,i) => setText(`cat-${i+1}`, t[c])); setText('ui-cat5-sub', t.cat5sub);
+        setText('ui-btn-admin', t.btnAdmin); setText('ui-admin-cta-title', t.adminCtaTitle); setText('ui-admin-cta-sub', t.adminCtaSub);
+        setText('ui-section-layanan', t.sectionLayanan); setText('ui-section-promo', t.sectionPromo);
+        setText('ui-hero-tag', t.heroTag); setText('ui-hero-title', t.heroTitle); setText('ui-hero-sub', t.heroSub); setText('ui-hero-price-sub', t.heroPriceSub);
+        setText('ui-promo1-tag', t.promo1Tag); setText('ui-promo1-title', t.promo1Title); setText('ui-promo1-sub', t.promo1Sub);
+        setText('ui-promo2-tag', t.promo2Tag); setText('ui-promo2-title', t.promo2Title); setText('ui-promo2-sub', t.promo2Sub);
+        setText('ui-promo3-tag', t.promo3Tag); setText('ui-promo3-title', t.promo3Title); setText('ui-promo3-sub', t.promo3Sub);
+        setText('ui-label-catatan', t.lblCatatan); setText('btnKirim', t.btnOrder);
+        setText('ui-track-title', t.trackTitle); 
+        setText('ui-empty-order', t.emptyOrder); setText('ui-empty-sub', t.emptySub);
+        setText('ui-history-title', t.histTitle); setText('ui-btn-logout', t.btnLogout);
+        setText('ui-profile-orders', t.profileOrders); setText('ui-profile-admin', t.profileAdmin);
+        setText('ui-profile-about', t.profileAbout); setText('ui-profile-share', t.profileShare); setText('ui-profile-install', t.profileInstall);
+        setText('nav-home', t.navHome); setText('nav-order', t.navOrder); setText('nav-history', t.navHistory); setText('nav-profile', t.navProfile);
+        setText('ui-install-txt', t.installTxt); setText('btn-install-pwa', t.btnInstall);
 
-        document.getElementById('ui-btn-cancel').innerText = t.btnCancel;
-        document.getElementById('ui-btn-complete').innerText = t.btnComplete;
-        document.getElementById('ui-rating-title').innerText = t.ratingTitle;
-        
-        document.getElementById('inputUlasan').placeholder = t.ph_ulasan;
-        document.getElementById('ui-btn-rating').innerText = t.btnRating;
-        
-        if(!document.getElementById('page-form').classList.contains('hidden')){
-            bukaForm(layananAktif); 
-        }
-        if(currentOrderId !== "") pantauStatusPesanan(currentOrderId);
+        setText('ui-about-topbar', t.profileAbout); setText('ui-about-tagline', t.aboutTagline);
+        setText('ui-about-h1', t.aboutH1); setText('ui-about-p1', t.aboutP1);
+        setText('ui-about-h2', t.aboutH2); setHTML('ui-about-p2', t.aboutP2);
+        setText('ui-about-h3', t.aboutH3); setHTML('ui-about-p3', t.aboutP3);
+
+        setText('ui-ad-title', t.adTitle); setText('ui-ad-desc', t.adDesc);
+
+        if(userAktif.wa !== "") pantauDataPesenanWarga();
+        if(!document.getElementById('page-form').classList.contains('hidden')) bukaForm(layananAktif);
     }
 
-    let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault(); deferredPrompt = e;
-        document.getElementById('install-banner').style.display = 'block';
-    });
-    document.getElementById('btn-install-pwa').addEventListener('click', async () => {
-        if (deferredPrompt) {
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            document.getElementById('install-banner').style.display = 'none';
-            deferredPrompt = null;
-        }
-    });
+    function setText(id, val) { const el = document.getElementById(id); if(el) el.innerText = val; }
+    function setHTML(id, val) { const el = document.getElementById(id); if(el) el.innerHTML = val; }
 
-    window.chatAdminTemplate = function() {
-        const namaPelanggan = userAktif.nama ? userAktif.nama : "Pelanggan";
-        const templateAsli = langDict[currentLang].templateWA;
-        const pesanFinal = templateAsli.replace("[NAMA]", namaPelanggan);
-        // NOMOR ADMIN DIPERBARUI DI SINI
-        window.open(`https://wa.me/6285870422464?text=${encodeURIComponent(pesanFinal)}`, '_blank');
+    const installBanner = document.getElementById('install-banner');
+    const rowInstallApp = document.getElementById('row-install-app');
+    let deferredPrompt = null;
+    
+    if (!window.matchMedia('(display-mode: standalone)').matches && window.navigator.standalone !== true) {
+        if(installBanner) installBanner.style.display = 'block';
+        if(rowInstallApp) rowInstallApp.style.display = 'flex';
+    } else {
+        if(installBanner) installBanner.style.display = 'none';
+        if(rowInstallApp) rowInstallApp.style.display = 'none';
     }
 
+    window.addEventListener('beforeinstallprompt', (e) => { 
+        e.preventDefault(); deferredPrompt = e; 
+        if(installBanner) installBanner.style.display = 'block';
+        if(rowInstallApp) rowInstallApp.style.display = 'flex';
+    });
+    
+    window.installAplikasi = async function() {
+        if(deferredPrompt) { 
+            deferredPrompt.prompt(); 
+            const { outcome } = await deferredPrompt.userChoice; 
+            if (outcome === 'accepted') { 
+                if(installBanner) installBanner.style.display = 'none'; 
+                if(rowInstallApp) rowInstallApp.style.display = 'none'; 
+            } 
+            deferredPrompt = null; 
+        } else { 
+            alert(currentLang === 'id' ? "Untuk menginstal, klik menu browser (titik tiga) lalu pilih 'Tambahkan ke Layar Utama'." : "Nggo masang aplikasi, klik menu browser terus pilih 'Tambahkan ke Layar Utama'."); 
+        }
+    }
+
+    window.addEventListener('appinstalled', () => { 
+        if(installBanner) installBanner.style.display = 'none'; 
+        if(rowInstallApp) rowInstallApp.style.display = 'none'; deferredPrompt = null; 
+    });
+
+    window.navigasiKe = function(tab) {
+        ['page-home','page-form','page-tracking','page-history','page-profile','page-about'].forEach(p => { const el = document.getElementById(p); if(el) el.classList.add('hidden'); });
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        const pageMap = { home:'page-home', order:'page-tracking', history:'page-history', profile:'page-profile' };
+        const tabMap = { home:'tab-home', order:'tab-order', history:'tab-history', profile:'tab-profile' };
+        if(pageMap[tab]) document.getElementById(pageMap[tab]).classList.remove('hidden');
+        if(tabMap[tab]) document.getElementById(tabMap[tab]).classList.add('active');
+    }
+
+    window.bukaTentang = function() { document.getElementById('page-profile').classList.add('hidden'); document.getElementById('page-about').classList.remove('hidden'); }
+    window.tutupTentang = function() { document.getElementById('page-about').classList.add('hidden'); document.getElementById('page-profile').classList.remove('hidden'); }
+    
+    window.bagikanAplikasi = function() { 
+        const textShare = currentLang === 'en' ? 'Try TulangTulung Gombong app!' : 'Ayo jajal aplikasi TulangTulung Gombong! Solusi layanan harian asli wong kene.'; 
+        const shareData = { title: 'TulangTulung Gombong', text: textShare, url: window.location.href }; 
+        if (navigator.share) { navigator.share(shareData).catch(err => console.log('Gagal:', err)); } else { navigator.clipboard.writeText(window.location.href); alert(currentLang==='en'?'Link copied!':'Link berhasil disalin!'); } 
+    }
+    
+    window.chatAdminTemplate = function() { 
+        const nama = userAktif.nama || "Pelanggan"; 
+        const pesan = langDict[currentLang].templateWA.replace("[NAMA]", nama); 
+        window.open(`https://wa.me/${NOMOR_ADMIN}?text=${encodeURIComponent(pesan)}`, '_blank'); 
+    }
+    window.chatAdminLoginPage = function() { window.open(`https://wa.me/${NOMOR_ADMIN}?text=${encodeURIComponent("Halo Admin TulangTulung Gombong, nyong arep takon.")}`, '_blank'); }
+
+    window.hubungiDeveloper = function() {
+        const msg = langDict[currentLang].waDevMsg;
+        window.open(`https://wa.me/${NOMOR_DEVELOPER}?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+    
     window.masukAplikasi = function() {
-        const nama = document.getElementById('inputNama').value;
-        const wa = document.getElementById('inputWA').value;
-        if (!nama || !wa) { alert("Harap isi data!"); return; }
+        const nama = document.getElementById('inputNama').value.trim();
+        const wa = document.getElementById('inputWA').value.trim();
+        if(!nama || !wa) { alert(currentLang==='en'?"Please fill all fields!":"Data kudu diisi kabeh lur!"); return; }
+        
         userAktif = { nama, wa };
+        localStorage.setItem('ttg_customer', JSON.stringify(userAktif));
+        
         document.getElementById('displayNama').innerText = nama;
+        document.getElementById('profileNama').innerText = nama;
+        document.getElementById('profileWA').innerText = wa;
         document.getElementById('page-login').classList.add('hidden');
-        document.getElementById('page-kategori').classList.remove('hidden');
+        document.getElementById('app-main').classList.remove('hidden');
+        navigasiKe('home');
+        pantauDataPesenanWarga();
+        setupPushNotification();
     }
 
-    window.bukaForm = function(kategoriSistem) {
-        layananAktif = kategoriSistem;
+    window.kaluarAplikasi = function() {
+        if(confirm(currentLang==='en'?'Are you sure you want to logout?':(currentLang==='ngapak'?'Tenane arep metu (logout)?':'Yakin badé kaluar?'))) {
+            localStorage.removeItem('ttg_customer');
+            userAktif = { nama:"", wa:"" }; 
+            document.getElementById('inputNama').value = "";
+            document.getElementById('inputWA').value = "";
+            document.getElementById('app-main').classList.add('hidden');
+            document.getElementById('page-login').classList.remove('hidden');
+        }
+    }
+
+    window.bukaForm = function(kat) {
+        layananAktif = kat;
         const t = langDict[currentLang];
-        let label1, label2, tarifHTML, judul, ph1, ph2;
-        
-        if(kategoriSistem === 'Antar Jemput') { judul = t.c1; label1 = t.t_jemput; label2 = t.t_antar; tarifHTML = t.tarif1; ph1 = t.ph_jemput; ph2 = t.ph_antar; }
-        else if(kategoriSistem === 'Kirim Barang') { judul = t.c2; label1 = t.t_ambil; label2 = t.t_kirim; tarifHTML = t.tarif2; ph1 = t.ph_ambil; ph2 = t.ph_kirim; }
-        else if(kategoriSistem === 'Titip Belanja') { judul = t.c3; label1 = t.t_daftar; label2 = t.t_alamat; tarifHTML = t.tarif3; ph1 = t.ph_daftar; ph2 = t.ph_alamat; }
-        else if(kategoriSistem === 'Bantu Bersih') { judul = t.c4; label1 = t.t_resik; label2 = t.t_lokasi; tarifHTML = t.tarif4; ph1 = t.ph_resik; ph2 = t.ph_lokasi; }
-        else { judul = t.c5; label1 = t.t_unik; label2 = t.t_waktu; tarifHTML = t.tarif5; ph1 = t.ph_unik; ph2 = t.ph_waktu; }
-        
-        document.getElementById('judulFormTitle').innerText = t.t_formTitle;
+        let label1, label2, tarifHTML, ph1, ph2;
+
+        if(kat==='Antar Jemput'){label1=t.t_jemput;label2=t.t_antar;tarifHTML=t.tarif1;ph1=t.ph_jemput;ph2=t.ph_antar;}
+        else if(kat==='Kirim Barang'){label1=t.t_ambil;label2=t.t_kirim;tarifHTML=t.tarif2;ph1=t.ph_ambil;ph2=t.ph_kirim;}
+        else if(kat==='Titip Belanja'){label1=t.t_daftar;label2=t.t_alamat;tarifHTML=t.tarif3;ph1=t.ph_daftar;ph2=t.ph_alamat;}
+        else if(kat==='Bantu Bersih'){label1=t.t_resik;label2=t.t_lokasi;tarifHTML=t.tarif4;ph1=t.ph_resik;ph2=t.ph_lokasi;}
+        else{label1=t.t_unik;label2=t.t_waktu;tarifHTML=t.tarif5;ph1=t.ph_unik;ph2=t.ph_waktu;}
+
+        document.getElementById('judulFormTitle').innerText = t.t_formTitle + ' — ' + (kat==='Antar Jemput'?t.c1:kat==='Kirim Barang'?t.c2:kat==='Titip Belanja'?t.c3:kat==='Bantu Bersih'?t.c4:t.c5);
         document.getElementById('labelDetail1').innerText = label1;
         document.getElementById('labelDetail2').innerText = label2;
         document.getElementById('boxInfoTarif').innerHTML = tarifHTML;
-        
         document.getElementById('inputDetail1').placeholder = ph1;
         document.getElementById('inputDetail2').placeholder = ph2;
-        
-        if(document.getElementById('page-form').classList.contains('hidden')) {
-            document.getElementById('inputDetail1').value = '';
-            document.getElementById('inputDetail2').value = '';
-            document.getElementById('inputCatatan').value = '';
-        }
-        
-        document.getElementById('page-kategori').classList.add('hidden');
+        document.getElementById('inputDetail1').value = '';
+        document.getElementById('inputDetail2').value = '';
+        document.getElementById('inputCatatan').value = '';
+
+        document.getElementById('page-home').classList.add('hidden');
         document.getElementById('page-form').classList.remove('hidden');
     }
 
-    window.kembaliKeKategori = function() { document.getElementById('page-form').classList.add('hidden'); document.getElementById('page-kategori').classList.remove('hidden'); }
-    window.pesanLagi = function() { document.getElementById('page-tracking').classList.add('hidden'); document.getElementById('page-kategori').classList.remove('hidden'); }
-    window.tutupRiwayat = function() { document.getElementById('page-history').classList.add('hidden'); document.getElementById('page-kategori').classList.remove('hidden'); }
+    window.kembaliKeMenu = function() {
+        document.getElementById('page-form').classList.add('hidden');
+        navigasiKe('home');
+    }
 
-    window.bukaRiwayat = function() {
-        document.getElementById('page-kategori').classList.add('hidden');
-        document.getElementById('page-history').classList.remove('hidden');
-        const ordersRef = ref(database, 'orders');
-        onValue(ordersRef, (snapshot) => {
-            const listHistory = document.getElementById('listHistory');
-            listHistory.innerHTML = "";
-            let adaRiwayat = false;
-            const semuaOrder = [];
-            snapshot.forEach((child) => { semuaOrder.push({ id: child.key, ...child.val() }); });
-            semuaOrder.reverse(); 
-
-            semuaOrder.forEach((data) => {
-                if (data.customer_wa === userAktif.wa) {
-                    adaRiwayat = true;
-                    let warnaStatus = "#f39c12"; let teksStatus = langDict[currentLang].status1;
-                    if(data.status === "diambil") { warnaStatus = "#3498db"; teksStatus = currentLang==="en"?"In Progress":"Sedang Dikerjakan"; }
-                    if(data.status === "selesai") { warnaStatus = "#27ae60"; teksStatus = langDict[currentLang].status3; }
-                    if(data.status === "batal" || data.status === "batal_cust") { warnaStatus = "#e74c3c"; teksStatus = langDict[currentLang].status4; }
-                    
-                    let tombolPantau = "";
-                    if(data.status === "terbuka" || data.status === "diambil") {
-                        let btnLacakTxt = currentLang==="en"?"📍 Track Order":"📍 Lacak Pesenan";
-                        tombolPantau = `<button style="background:#f1f2f6; color:#2f3542; width:100%; padding: 10px; font-size: 14px; margin-top: 10px; border:none; border-radius:8px; cursor:pointer; font-weight:bold;" onclick="lanjutPantau('${data.id}')">${btnLacakTxt}</button>`;
-                    }
-
-                    let teksUlasan = data.ulasan ? `<br>💬 <i>"${data.ulasan}"</i>` : '';
-
-                    const card = document.createElement('div');
-                    card.className = 'history-card';
-                    card.innerHTML = `
-                        <div style="display:flex; justify-content:space-between; border-bottom:1px solid #eee; padding-bottom:8px; margin-bottom:8px;">
-                            <span style="font-weight:bold; font-size:15px; color:#2c3e50;">${data.layanan}</span>
-                            <span style="font-size:11px; color:#7f8c8d;">${data.waktu_order}</span>
-                        </div>
-                        <div style="font-size:13px; margin-bottom:5px;"><b>Status:</b> <span style="color:${warnaStatus}; font-weight:bold;">${teksStatus}</span></div>
-                        <div style="font-size:12px; color:#555; line-height:1.4; background:#f9f9f9; padding:8px; border-radius:8px;">${data.detail_1} <br>➔<br> ${data.detail_2}</div>
-                        ${data.driver_nama ? `<div style="font-size:12px; margin-top:8px; background-color:#e8f8f5; padding:8px; border-radius:8px; border-left:4px solid #1abc9c;">🛵 <b>Driver:</b> ${data.driver_nama} ${data.rating ? ' (⭐'+data.rating+')' : ''} ${teksUlasan}</div>` : ''}
-                        ${tombolPantau}
-                    `;
-                    listHistory.appendChild(card);
-                }
+    function pantauDataPesenanWarga() {
+        if(userAktif.wa === "") return;
+        onValue(ref(database, 'orders'), (snap) => {
+            const arr = [];
+            snap.forEach(c => {
+                let obj = c.val();
+                obj.id = c.key;
+                if(obj.customer_wa === userAktif.wa) { arr.push(obj); }
             });
-            if(!adaRiwayat) { listHistory.innerHTML = `<div style="text-align:center; color:#7f8c8d; font-style:italic; padding:30px; font-size:14px;">Belum ada pesanan.</div>`; }
+            arr.reverse();
+            cekPerubahanStatusDanNotif(arr);
+            renderHalamanHome(arr);
+            renderHalamanTracking(arr);
+            renderHalamanRiwayat(arr);
         });
     }
 
-    window.lanjutPantau = function(orderId) { 
-        document.getElementById('page-history').classList.add('hidden'); 
-        document.getElementById('page-tracking').classList.remove('hidden'); 
-        pantauStatusPesanan(orderId); 
+    function renderHalamanHome(orders) {
+        const t = langDict[currentLang];
+        const listDiv = document.getElementById('home-active-list');
+        listDiv.innerHTML = '';
+        
+        const active = orders.filter(o => o.status === 'terbuka' || o.status === 'diambil');
+        
+        if(active.length > 0) {
+            active.forEach(data => {
+                const isDiambil = data.status === 'diambil';
+                const statusText = isDiambil ? t.status2 : t.status1;
+                const descText = isDiambil ? t.desc2 : t.desc1;
+                const card = document.createElement('div');
+                card.className = 'active-order-card';
+                card.innerHTML = `
+                    <div class="aoc-header">
+                        <div class="aoc-dot"></div>
+                        <div class="aoc-label">${data.layanan}</div>
+                    </div>
+                    <div class="aoc-status">${statusText}</div>
+                    <div class="aoc-desc">${descText}</div>
+                    <button class="aoc-btn" onclick="navigasiKe('order')">📍 ${t.aocBtn}</button>
+                `;
+                listDiv.appendChild(card);
+            });
+        }
+    }
+
+    function renderHalamanTracking(orders) {
+        const t = langDict[currentLang];
+        const listDiv = document.getElementById('tracking-list');
+        const emptyDiv = document.getElementById('tracking-empty');
+        listDiv.innerHTML = '';
+
+        const activeOrUnrated = orders.filter(o => o.status === 'terbuka' || o.status === 'diambil' || (o.status === 'selesai' && !o.rating));
+
+        if(activeOrUnrated.length === 0) {
+            listDiv.classList.add('hidden');
+            emptyDiv.classList.remove('hidden');
+            return;
+        }
+
+        listDiv.classList.remove('hidden');
+        emptyDiv.classList.add('hidden');
+
+        activeOrUnrated.forEach(data => {
+            const isSelesai = data.status === 'selesai';
+            const isDiambil = data.status === 'diambil';
+            
+            let statusIcon = isSelesai ? '✅' : (isDiambil ? '🛵' : '⏳');
+            let statusColor = isSelesai ? 'var(--blue)' : (isDiambil ? 'var(--accent-dark)' : 'var(--text)');
+            let statusText = isSelesai ? t.status3 : (isDiambil ? t.status2 : t.status1);
+            let descText = isSelesai ? t.desc3 : (isDiambil ? t.desc2 : t.desc1);
+
+            let driverInfoHtml = isDiambil ? `
+                <div class="tracking-driver-row">
+                    <div class="driver-avatar">🛵</div>
+                    <div>
+                        <div class="driver-name-label">Driver:</div>
+                        <div class="driver-name">${data.driver_nama}</div>
+                    </div>
+                </div>
+            ` : '';
+
+            let actionsHtml = '';
+            if(data.status === 'terbuka') {
+                actionsHtml = `<button class="btn-cancel" onclick="batalPesenanRealtime('${data.id}')">${t.btnCancel}</button>`;
+            } else if(data.status === 'diambil') {
+                actionsHtml = `<button class="btn-complete" onclick="selesaiPesenanRealtime('${data.id}')">${t.btnComplete}</button>`;
+            }
+
+            let ratingHtml = isSelesai ? `
+                <div class="rating-card" id="rating-container-${data.id}">
+                    <div class="rating-title" style="font-weight:800; color:var(--text); margin-bottom:8px;">${t.ratingTitle}</div>
+                    <div class="stars">
+                        <span class="star star-${data.id}" onclick="setRating('${data.id}', 1)">★</span>
+                        <span class="star star-${data.id}" onclick="setRating('${data.id}', 2)">★</span>
+                        <span class="star star-${data.id}" onclick="setRating('${data.id}', 3)">★</span>
+                        <span class="star star-${data.id}" onclick="setRating('${data.id}', 4)">★</span>
+                        <span class="star star-${data.id}" onclick="setRating('${data.id}', 5)">★</span>
+                    </div>
+                    <textarea id="ulasan-${data.id}" class="rating-textarea" rows="2" placeholder="${t.ph_ulasan}"></textarea>
+                    <button class="btn-rating" onclick="kirimRating('${data.id}')">${t.btnRating}</button>
+                </div>
+            ` : '';
+
+            const card = document.createElement('div');
+            card.innerHTML = `
+                <div class="tracking-card">
+                    <div style="padding: 10px 16px; background:var(--primary-light); font-weight:800; color:var(--primary); font-size:13px; text-transform:uppercase; display:flex; justify-content:space-between;">
+                        <span>${data.layanan}</span>
+                        <span>${data.waktu_order}</span>
+                    </div>
+                    <div class="tracking-status-bar">
+                        <span class="track-icon-big">${statusIcon}</span>
+                        <div class="track-status-text" style="color:${statusColor};">${statusText}</div>
+                        <div class="track-desc-text">${descText}</div>
+                    </div>
+                    ${driverInfoHtml}
+                    ${actionsHtml ? `<div class="tracking-actions">${actionsHtml}</div>` : ''}
+                </div>
+                ${ratingHtml}
+            `;
+            listDiv.appendChild(card);
+        });
+    }
+
+    window.toggleHistory = function(id) {
+        const el = document.getElementById('hist-det-'+id);
+        const btn = document.getElementById('hist-btn-'+id);
+        if(el.classList.contains('show')) {
+            el.classList.remove('show');
+            btn.classList.remove('open');
+        } else {
+            el.classList.add('show');
+            btn.classList.add('open');
+        }
+    }
+
+    function renderHalamanRiwayat(orders) {
+        const t = langDict[currentLang];
+        const listDiv = document.getElementById('listHistory');
+        listDiv.innerHTML = "";
+        
+        let ada = false;
+        const historyOrders = orders.filter(o => (o.status === 'selesai' && o.rating) || o.status === 'batal' || o.status === 'batal_cust');
+
+        historyOrders.forEach(data => {
+            ada = true;
+            let pillClass = 'pill-pending', statusTxt = t.status1;
+            if(data.status==='selesai'){pillClass='pill-done';statusTxt=t.pillDone;}
+            if(data.status==='batal'||data.status==='batal_cust'){pillClass='pill-cancelled';statusTxt=t.status4;}
+
+            let ratingHtml = data.rating ? `<div class="hc-rating">⭐ ${data.rating} ${currentLang==='en'?'Stars':'Bintang'}${data.ulasan?` · "${data.ulasan}"`:''}</div>` : '';
+
+            const card = document.createElement('div');
+            card.className = 'hist-card';
+            card.innerHTML = `
+                <div class="hc-top-row">
+                    <div class="hc-service-wrap">
+                        <div class="hc-service">${data.layanan}</div>
+                        <div class="hc-time">${data.waktu_order}</div>
+                    </div>
+                    <span class="hc-status-pill ${pillClass}">${statusTxt}</span>
+                </div>
+                <button class="hc-toggle-btn" id="hist-btn-${data.id}" onclick="toggleHistory('${data.id}')">
+                    <span>${t.btnDetail}</span>
+                    <span class="hc-toggle-icon" id="hist-icon-${data.id}">▼</span>
+                </button>
+                <div class="hc-details" id="hist-det-${data.id}">
+                    <div class="hc-route-box">
+                        <div class="hc-route-item"><span class="hc-route-icon" style="color:var(--accent);">📍</span> <div class="hc-route-text"><span>${t.t_jemput}</span><b>${data.detail_1}</b></div></div>
+                        <div class="hc-route-item"><span class="hc-route-icon" style="color:var(--primary);">🏁</span> <div class="hc-route-text"><span>${t.t_antar}</span><b>${data.detail_2}</b></div></div>
+                    </div>
+                    ${data.driver_nama ? `<div class="hc-driver">🛵 Driver: <b>${data.driver_nama}</b></div>` : ''}
+                    ${ratingHtml}
+                </div>
+            `;
+            listDiv.appendChild(card);
+        });
+
+        if(!ada) listDiv.innerHTML = `<div class="empty-state"><span class="empty-icon">📭</span><div class="empty-title">${t.emptyOrder}</div></div>`;
     }
 
     window.kirimPesananFirebase = function() {
-        const detail1 = document.getElementById('inputDetail1').value;
-        const detail2 = document.getElementById('inputDetail2').value;
-        const catatan = document.getElementById('inputCatatan').value;
-        if (!detail1 || !detail2) { alert("Data belum lengkap!"); return; }
+        const d1 = document.getElementById('inputDetail1').value.trim();
+        const d2 = document.getElementById('inputDetail2').value.trim();
+        if(!d1||!d2){alert(currentLang==='en'?"Data is incomplete!":"Data urung lengkap lur!");return;}
         
-        const btnKirim = document.getElementById('btnKirim');
-        btnKirim.innerText = "⏳..."; btnKirim.disabled = true;
+        const btn = document.getElementById('btnKirim');
+        btn.innerText = "⏳..."; btn.disabled = true;
         
-        const orderBaruRef = push(ref(database, 'orders')); 
-        currentOrderId = orderBaruRef.key;
-
-        const dataPesanan = { 
-            waktu_order: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }), 
-            timestamp: new Date().getTime(), 
-            customer_nama: userAktif.nama, 
-            customer_wa: userAktif.wa, 
-            layanan: layananAktif, 
-            detail_1: detail1, 
-            detail_2: detail2, 
-            catatan: catatan, 
-            status: "terbuka", 
-            driver_nama: "" 
+        const newRef = push(ref(database,'orders'));
+        const data = {
+            waktu_order: new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}),
+            timestamp: Date.now(), customer_nama: userAktif.nama, customer_wa: userAktif.wa,
+            layanan: layananAktif, detail_1: d1, detail_2: d2,
+            catatan: document.getElementById('inputCatatan').value, status:"terbuka", driver_nama:""
         };
         
-        set(orderBaruRef, dataPesanan).then(() => {
+        set(newRef, data).then(() => {
+            btn.innerText = langDict[currentLang].btnOrder; btn.disabled = false;
+            document.getElementById('inputDetail1').value = "";
+            document.getElementById('inputDetail2').value = "";
+            document.getElementById('inputCatatan').value = "";
             document.getElementById('page-form').classList.add('hidden');
-            document.getElementById('page-tracking').classList.remove('hidden');
-            btnKirim.innerText = langDict[currentLang].btnOrder; btnKirim.disabled = false;
-            
-            ratingSkor = 0;
-            document.querySelectorAll('.star').forEach(s => s.classList.remove('selected'));
-            document.getElementById('inputUlasan').value = "";
-
-            pantauStatusPesanan(currentOrderId);
-        }).catch((e) => { alert("Error: " + e); btnKirim.disabled = false; });
+            navigasiKe('order');
+        }).catch(e=>{alert("Error: "+e);btn.disabled=false;});
     }
 
-    function pantauStatusPesanan(orderId) {
-        currentOrderId = orderId;
-        onValue(ref(database, 'orders/' + orderId), (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                const t = langDict[currentLang];
-                const icon = document.getElementById('track-icon'); 
-                const status = document.getElementById('track-status'); 
-                const desc = document.getElementById('track-desc'); 
-                
-                const driverInfo = document.getElementById('track-driver-info');
-                const cancelArea = document.getElementById('cancel-area');
-                const completeArea = document.getElementById('complete-area');
-                const ratingArea = document.getElementById('rating-area');
-                
-                if (data.status === "terbuka") {
-                    icon.innerText = "⏳"; status.innerText = t.status1; desc.innerText = t.desc1; status.style.color = "#333";
-                    cancelArea.classList.remove('hidden');
-                    driverInfo.classList.add('hidden'); completeArea.classList.add('hidden'); ratingArea.classList.add('hidden');
-                } else if (data.status === "diambil") {
-                    icon.innerText = "🛵"; status.style.color = "#27ae60"; status.innerText = t.status2; desc.innerText = t.desc2;
-                    document.getElementById('track-driver-name').innerText = data.driver_nama;
-                    driverInfo.classList.remove('hidden'); completeArea.classList.remove('hidden');
-                    cancelArea.classList.add('hidden'); ratingArea.classList.add('hidden');
-                } else if (data.status === "selesai") {
-                    icon.innerText = "✅"; status.style.color = "#2980b9"; status.innerText = t.status3; desc.innerText = t.desc3;
-                    ratingArea.classList.remove('hidden');
-                    cancelArea.classList.add('hidden'); completeArea.classList.add('hidden'); driverInfo.classList.add('hidden');
-                    if(data.rating) ratingArea.classList.add('hidden');
-                } else if (data.status === "batal" || data.status === "batal_cust") {
-                    icon.innerText = "❌"; status.style.color = "#e74c3c"; status.innerText = t.status4; desc.innerText = t.desc4;
-                    cancelArea.classList.add('hidden'); completeArea.classList.add('hidden'); ratingArea.classList.add('hidden'); driverInfo.classList.add('hidden');
-                }
-            }
-        });
+    window.batalPesenanRealtime = function(orderId) {
+        if(confirm(currentLang==='en'?'Are you sure you want to cancel?':(currentLang==='ngapak'?'Tenane arep dibatalna?':'Naha leres badé ngabolaykeun pesenan ieu?')))
+            update(ref(database,'orders/'+orderId),{status:'batal_cust'});
+    }
+    
+    window.selesaiPesenanRealtime = function(orderId) {
+        if(confirm(currentLang==='en'?'Is the order fully completed?':(currentLang==='ngapak'?'Pesenane wis bener-bener beres?':'Driver parantos ngabéréskeun pesenan anjeun?')))
+            update(ref(database,'orders/'+orderId),{status:'selesai'});
     }
 
-    window.batalPesenanRealtime = function() {
-        if(confirm(currentLang==="en" ? "Are you sure you want to cancel?" : "Yakin arep mbatalna pesenan kiye?")) {
-            update(ref(database, 'orders/' + currentOrderId), { status: "batal_cust" });
+    window.setRating = function(orderId, skor) {
+        document.querySelectorAll(`.star-${orderId}`).forEach((s,i)=>s.classList.toggle('selected',i<skor));
+        const container = document.getElementById(`rating-container-${orderId}`);
+        if(container) container.dataset.skor = skor;
+    }
+
+    window.kirimRating = function(orderId) {
+        const container = document.getElementById(`rating-container-${orderId}`);
+        const skor = parseInt(container.dataset.skor || "0");
+        if(skor === 0) {
+            alert(currentLang==='en'?'Please select stars first!':'Pilih bintang disit!');
+            return;
         }
-    }
-
-    window.selesaiPesenanRealtime = function() {
-        if(confirm(currentLang==="en" ? "Is the order fully completed?" : "Driver wis rampung ngabari/ngeter pesenanmu?")) {
-            update(ref(database, 'orders/' + currentOrderId), { status: "selesai" });
-        }
-    }
-
-    window.setRating = function(skor) {
-        ratingSkor = skor;
-        document.querySelectorAll('.star').forEach((s, idx) => {
-            s.classList.toggle('selected', idx < skor);
-        });
-    }
-
-    window.kirimRating = function() {
-        if(ratingSkor === 0) { 
-            alert(currentLang==="en" ? "Please select stars first!" : "Pilih bintang disit!"); 
-            return; 
-        }
-        
-        const teksUlasan = document.getElementById('inputUlasan').value.trim();
-
-        update(ref(database, 'orders/' + currentOrderId), { 
-            rating: ratingSkor,
-            ulasan: teksUlasan
-        }).then(() => {
+        const ulasan = document.getElementById(`ulasan-${orderId}`).value.trim();
+        update(ref(database,'orders/'+orderId), {rating:skor, ulasan:ulasan}).then(()=>{
             alert(langDict[currentLang].alertRating);
-            document.getElementById('rating-area').classList.add('hidden');
         });
     }
+
+    setLang('ngapak');
 </script>
 </body>
 </html>
