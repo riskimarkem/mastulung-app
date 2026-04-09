@@ -1,11 +1,11 @@
+
 {
   "name": "TulangTulung Gombong",
   "short_name": "TulangTulung",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#00a859",
-  "description": "Layanan Asli Wong Gombong - Jasa Antar, Kirim, Belanja & Bersih-bersih",
+  "background_color": "#F3F5F8",
+  "theme_color": "#2c3e50",
   "icons": [
     {
       "src": "https://cdn-icons-png.flaticon.com/512/3063/3063822.png",
