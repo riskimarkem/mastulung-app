@@ -203,7 +203,7 @@
     .install-bar p { font-size: 13px; font-weight: 800; color: var(--primary); margin-bottom: 8px; }
     @media all and (display-mode: standalone) { .install-bar { display: none !important; } #row-install-app { display: none !important; } }
 
-    /* ── FORM PAGE ── */
+    /* ── FORM PAGE & LOCATION BUTTON ── */
     .form-page { flex: 1; overflow-y: auto; padding-bottom: 40px; }
     .form-topbar { background: linear-gradient(135deg, var(--primary-dark), var(--primary)); padding: 18px 20px; display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
     .back-btn { background: rgba(255,255,255,0.2); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.15s; backdrop-filter: blur(4px); }
@@ -212,9 +212,20 @@
     .form-body { padding: 22px 18px; }
     .tarif-box { background: #f8faff; border: 1.5px solid #bfdbfe; border-radius: var(--radius-sm); padding: 16px 18px; margin-bottom: 22px; font-size: 13px; color: #1e3a8a; line-height: 1.7; box-shadow: 0 2px 10px rgba(59,130,246,0.1); }
     .tarif-box b { color: #1e40af; }
+    
     .form-section-label { font-size: 12px; font-weight: 800; color: var(--text2); margin-bottom: 8px; display: block; text-transform: uppercase; letter-spacing: 0.5px; }
-    .form-textarea { width: 100%; padding: 15px 18px; border: 2px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; font-family: inherit; background: var(--bg); resize: none; color: var(--text); transition: all 0.2s; outline: none; font-weight: 600; }
+    
+    /* Input Wrapper buat Tombol GPS */
+    .input-with-btn { display: flex; gap: 10px; align-items: stretch; }
+    .form-textarea { flex: 1; padding: 15px 18px; border: 2px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; font-family: inherit; background: var(--bg); resize: none; color: var(--text); transition: all 0.2s; outline: none; font-weight: 600; }
     .form-textarea:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 4px var(--primary-light); }
+    
+    /* Tombol GPS */
+    .btn-lokasi { width: 54px; background: var(--primary-light); color: var(--primary); border: 2px solid var(--border); border-radius: var(--radius-sm); font-size: 22px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .btn-lokasi:active { background: var(--border); transform: scale(0.95); }
+    
+    /* Hint/Petunjuk Tombol GPS */
+    .form-hint-loc { font-size: 11px; color: var(--text3); margin-top: 8px; font-weight: 600; line-height: 1.4; }
 
     /* ── TRACKING CARD ── */
     .tracking-card { background: var(--card); border-radius: var(--radius); margin: 18px; box-shadow: var(--shadow); overflow: hidden; border: 1px solid var(--border); }
@@ -260,11 +271,13 @@
     .hc-details { display: none; }
     .hc-details.show { display: block; animation: slideDown 0.3s ease-in-out; margin-top: 12px; }
     @keyframes slideDown { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
-    .hc-route-box { background: var(--bg); border-radius: 10px; padding: 14px; font-size: 12.5px; color: var(--text); line-height: 1.6; display: flex; flex-direction: column; gap: 12px; border: 1px solid var(--border); }
+    
+    .hc-route-box { background: var(--bg); border-radius: 10px; padding: 14px; font-size: 12.5px; color: var(--text); line-height: 1.6; display: flex; flex-direction: column; gap: 12px; border: 1px solid var(--border); word-break: break-word; }
     .hc-route-item { display: flex; gap: 12px; align-items: flex-start; }
     .hc-route-icon { font-size: 16px; line-height: 1.2; }
     .hc-route-text span { font-size: 9.5px; color: var(--text3); text-transform: uppercase; font-weight: 800; letter-spacing: 0.8px; display: block; margin-bottom: 2px; }
-    .hc-route-text b { font-weight: 700; }
+    .hc-route-text b { font-weight: 700; white-space: pre-wrap; }
+    
     .hc-driver { font-size: 12.5px; margin-top: 12px; padding: 12px 14px; background: var(--primary-light); border-radius: 10px; color: var(--primary); font-weight: 700; display: flex; align-items: center; gap: 10px; border: 1px solid #bfdbfe; }
     .hc-rating { margin-top: 10px; font-size: 13px; color: #F59E0B; font-weight: 800; }
 
@@ -452,9 +465,30 @@
             <div class="form-page">
                 <div class="form-body">
                     <div id="boxInfoTarif" class="tarif-box"></div>
-                    <div class="form-group"><label class="form-section-label" id="labelDetail1">Detail 1</label><textarea class="form-textarea" id="inputDetail1" rows="2"></textarea></div>
-                    <div class="form-group"><label class="form-section-label" id="labelDetail2">Detail 2</label><textarea class="form-textarea" id="inputDetail2" rows="2"></textarea></div>
-                    <div class="form-group"><label class="form-section-label" id="ui-label-catatan">Catetan Tambahan</label><input class="form-input" type="text" id="inputCatatan" placeholder="(Opsional/Bebas bae)"></div>
+                    
+                    <div class="form-group">
+                        <label class="form-section-label" id="labelDetail1">Detail 1</label>
+                        <div class="input-with-btn">
+                            <textarea class="form-textarea" id="inputDetail1" rows="2"></textarea>
+                            <button class="btn-lokasi" onclick="ambilLokasiAkurat('inputDetail1')" title="Ambil Lokasi Saat Ini">📍</button>
+                        </div>
+                        <div class="form-hint-loc" id="ui-loc-hint1">💡 Pencet 📍 nek arep nggunakna titik lokasimu sing siki.</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-section-label" id="labelDetail2">Detail 2</label>
+                        <div class="input-with-btn">
+                            <textarea class="form-textarea" id="inputDetail2" rows="2"></textarea>
+                            <button class="btn-lokasi" onclick="ambilLokasiAkurat('inputDetail2')" title="Ambil Lokasi Saat Ini">📍</button>
+                        </div>
+                        <div class="form-hint-loc" id="ui-loc-hint2">💡 Pencet 📍 nek arep nggunakna titik lokasimu sing siki.</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-section-label" id="ui-label-catatan">Catetan Tambahan</label>
+                        <input class="form-input" type="text" id="inputCatatan" placeholder="(Opsional/Bebas bae)">
+                    </div>
+                    
                     <button class="btn-primary mt16" id="btnKirim" onclick="kirimPesananFirebase()">Kirim Pesenan 🚀</button>
                 </div>
             </div>
@@ -716,7 +750,9 @@
             aboutH3: "Syarat & Ketentuan", aboutP3: "TulangTulung adalah platform penghubung. Untuk pengiriman barang bernilai tinggi sangat disarankan menggunakan asuransi. Segala kerusakan atau kehilangan barang sepenuhnya menjadi tanggung jawab antara mitra driver dan pelanggan.",
             notifDiambil: "siap njikot pesenan", notifSelesai: "wis beres. Aja klalen aweh rating!",
             adTitle: "Kembangkan Bisnismu!", adDesc: "Jasa Pembuatan Aplikasi, Website & Sistem Manajemen Profesional.",
-            waDevMsg: "Halo Mas Riski, nyong weruh sekang aplikasi TulangTulung Gombong. Nyong minat arep gawe Aplikasi/Website nggo bisnisku. Bisa diskusi sedela?"
+            waDevMsg: "Halo Mas Riski, nyong weruh sekang aplikasi TulangTulung Gombong. Nyong minat arep gawe Aplikasi/Website nggo bisnisku. Bisa diskusi sedela?",
+            locSearch: "Lagi nggolek lokasi GPS...", locError: "Gagal njikot lokasi. Pastikna GPS murup lan diizini (Allow) nang browser!",
+            locHint: "💡 Pencet 📍 nek arep nggunakna titik lokasimu sing siki."
         },
         id: {
             loginTitle: "Selamat Datang 👋", subtitle: "Layanan Asli Warga Lokal", loginDesc: "Masukkan data kamu untuk mulai pesan", lblNama: "Nama Panggilan", lblWa: "Nomor WhatsApp Aktif", noteWa: "⚠️ Pastikan nomor WA aktif agar driver bisa menghubungi kamu!", btnLogin: "Mulai Pesan 🚀", ph_nama: "Ketik di sini...", ph_wa: "Contoh: 0813xxxx", btnAdminLogin: "📞 Butuh Bantuan Admin?",
@@ -735,7 +771,9 @@
             aboutH3: "Syarat & Ketentuan", aboutP3: "TulangTulung adalah platform penghubung. Untuk pengiriman barang bernilai tinggi sangat disarankan menggunakan asuransi. Segala kerusakan atau kehilangan barang sepenuhnya menjadi tanggung jawab antara mitra driver dan pelanggan.",
             notifDiambil: "siap mengambil pesanan", notifSelesai: "telah selesai. Jangan lupa beri rating!",
             adTitle: "Kembangkan Bisnismu!", adDesc: "Jasa Pembuatan Aplikasi, Website & Sistem Manajemen Profesional.",
-            waDevMsg: "Halo Mas Riski, saya mengetahui dari aplikasi TulangTulung Gombong. Saya tertarik untuk berdiskusi mengenai jasa pembuatan Aplikasi/Website untuk bisnis saya."
+            waDevMsg: "Halo Mas Riski, saya mengetahui dari aplikasi TulangTulung Gombong. Saya tertarik untuk berdiskusi mengenai jasa pembuatan Aplikasi/Website untuk bisnis saya.",
+            locSearch: "Sedang mencari lokasi GPS...", locError: "Gagal mengambil lokasi. Pastikan GPS aktif dan diizinkan (Allow) di browser!",
+            locHint: "💡 Tekan 📍 jika ingin menggunakan titik lokasimu saat ini."
         },
         en: {
             loginTitle: "Welcome 👋", subtitle: "Authentic Local Services", loginDesc: "Enter your details to get started", lblNama: "Nickname", lblWa: "Active WhatsApp Number", noteWa: "⚠️ Ensure your WA number is active so the driver can contact you!", btnLogin: "Start Ordering 🚀", ph_nama: "Type here...", ph_wa: "Example: 0813xxxx", btnAdminLogin: "📞 Admin Help?",
@@ -754,7 +792,9 @@
             aboutH3: "Terms & Conditions", aboutP3: "TulangTulung is a connecting platform. For delivering high-value items, personal insurance is highly recommended. Any damage or loss of goods is entirely the responsibility between the driver partner and the customer.",
             notifDiambil: "is ready to take your order", notifSelesai: "is completed. Don't forget to rate!",
             adTitle: "Grow Your Business!", adDesc: "Professional App, Website & Management System Development.",
-            waDevMsg: "Hello Mr. Riski, I found your contact from the TulangTulung Gombong app. I am interested in discussing App/Website development for my business."
+            waDevMsg: "Hello Mr. Riski, I found your contact from the TulangTulung Gombong app. I am interested in discussing App/Website development for my business.",
+            locSearch: "Searching GPS location...", locError: "Failed to get location. Turn on GPS and Allow permission in browser!",
+            locHint: "💡 Tap 📍 to use your current location."
         }
     };
 
@@ -791,6 +831,9 @@
         setText('ui-about-h3', t.aboutH3); setHTML('ui-about-p3', t.aboutP3);
 
         setText('ui-ad-title', t.adTitle); setText('ui-ad-desc', t.adDesc);
+        
+        // Petunjuk Tombol Lokasi (GPS)
+        setText('ui-loc-hint1', t.locHint); setText('ui-loc-hint2', t.locHint);
 
         if(userAktif.wa !== "") pantauDataPesenanWarga();
         if(!document.getElementById('page-form').classList.contains('hidden')) bukaForm(layananAktif);
@@ -923,6 +966,39 @@
     window.kembaliKeMenu = function() {
         document.getElementById('page-form').classList.add('hidden');
         navigasiKe('home');
+    }
+
+    // ── FUNGSI AMBIL LOKASI (GPS) ──
+    window.ambilLokasiAkurat = function(inputId) {
+        const t = langDict[currentLang];
+        const inputEl = document.getElementById(inputId);
+        
+        if (!navigator.geolocation) {
+            alert(t.locError || "GPS tidak didukung oleh browser Anda.");
+            return;
+        }
+
+        const oldVal = inputEl.value;
+        inputEl.value = t.locSearch || "Sedang mencari lokasi...";
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+                const mapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
+                
+                if(oldVal.trim() !== "") {
+                    inputEl.value = oldVal + "\nLokasi GPS: " + mapsUrl;
+                } else {
+                    inputEl.value = mapsUrl;
+                }
+            },
+            (error) => {
+                inputEl.value = oldVal; 
+                alert(t.locError || "Gagal mengambil lokasi. Pastikan GPS aktif dan izin diberikan.");
+            },
+            { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+        );
     }
 
     function pantauDataPesenanWarga() {
