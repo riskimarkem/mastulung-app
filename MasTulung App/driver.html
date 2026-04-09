@@ -55,21 +55,22 @@
         .check-row input { width:18px; height:18px; margin-top:1px; accent-color:var(--primary); cursor:pointer; flex-shrink:0; }
         .check-row span { font-size:13px; font-weight:600; color:var(--text2); line-height:1.4; }
 
+        /* ── INSTALL BAR ── */
         .install-bar { background: var(--primary-light); border: 1.5px dashed var(--primary); border-radius: var(--radius-sm); padding: 14px 16px; text-align: center; margin-bottom: 20px; display: none; }
         .install-bar p { font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 8px; }
         @media all and (display-mode: standalone) { .install-bar { display: none !important; } #row-install-app { display: none !important; } }
 
+        /* ── PILIHAN BAHASA GLOBAL ── */
+        .lang-pill { display: flex; background: rgba(0,0,0,0.25); border-radius: 24px; padding: 3px; gap: 2px; backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.1); }
+        .lang-btn { background: none; border: none; color: rgba(255,255,255,0.7); font-size: 10px; font-weight: 700; padding: 5px 10px; border-radius: 20px; cursor: pointer; font-family: inherit; transition: all 0.2s; position: relative; z-index: 2; letter-spacing: 0.3px; }
+        .lang-btn.active { background: white; color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+
+        /* ── TOPBAR DASHBOARD ── */
         .driver-topbar { background:linear-gradient(135deg, var(--primary-deep) 0%, var(--primary-dark) 60%, var(--primary) 100%); padding:16px 18px 18px; flex-shrink:0; position:relative; overflow:hidden; }
         .driver-topbar::after { content:''; position:absolute; right:-30px; top:-30px; width:120px; height:120px; background:rgba(255,255,255,0.05); border-radius:50%; z-index:0; pointer-events: none;}
         .dtb-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; position:relative; z-index:1; }
         .dtb-logo { color:white; font-size:18px; font-weight:800; }
         .dtb-logo span { color:var(--accent); }
-        
-        .lang-pill { display:flex; background:rgba(255,255,255,0.12); border-radius:20px; padding:3px; gap:2px; }
-        .lang-btn { background:none; border:none; color:rgba(255,255,255,0.7); font-size:10px; font-weight:700; padding:4px 9px; border-radius:16px; cursor:pointer; font-family:inherit; transition:all 0.2s; position:relative; z-index:2; }
-        .lang-btn.active { background:white; color:var(--primary); }
-        .lang-pill.light-bg .lang-btn { color: var(--text2); }
-        .lang-pill.light-bg .lang-btn.active { color: var(--primary); background: white; box-shadow: var(--shadow-sm); }
         
         .driver-info-row { display:flex; align-items:center; gap:12px; position:relative; z-index:1; }
         .driver-avatar-sm { width:42px; height:42px; background:rgba(255,255,255,0.15); border-radius:50%; border:2px solid rgba(255,255,255,0.3); display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
@@ -97,7 +98,7 @@
         .sec-title-dot.blue { background:var(--blue); }
         .sec-title-dot.green { background:var(--green); }
         
-        /* ORDER CARDS */
+        /* ── ORDER CARDS ── */
         .order-card { background:var(--card); border-radius:var(--radius); margin-bottom:12px; box-shadow:var(--shadow); overflow:hidden; }
         .order-card-new { border-top:3px solid var(--accent); }
         .order-card-active { border-top:3px solid var(--blue); }
@@ -117,7 +118,7 @@
         .oc-route-row + .oc-route-row { margin-top:8px; padding-top:8px; border-top:1px dashed var(--border); }
         .oc-route-icon { width:24px; height:24px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0; margin-top:1px; }
         .oc-route-label { font-size:10px; font-weight:700; color:var(--text3); text-transform:uppercase; letter-spacing:0.3px; }
-        .oc-route-val { font-size:13px; font-weight:600; color:var(--text); line-height:1.4; }
+        .oc-route-val { font-size:13px; font-weight:600; color:var(--text); line-height:1.4; word-break: break-word;}
         .oc-note { background:var(--accent-light); border-radius:8px; padding:8px 12px; margin-bottom:12px; font-size:12px; color:#78350F; font-weight:600; }
         
         .btn-wa-chat { width:100%; background:#25D366; color:white; border:none; border-radius:var(--radius-sm); padding:12px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:10px; }
@@ -134,7 +135,7 @@
         .empty-icon { font-size:48px; display:block; margin-bottom:10px; }
         .empty-title { font-size:14px; font-weight:700; color:var(--text2); }
         
-        /* WALLET & HISTORY */
+        /* ── WALLET & HISTORY ── */
         .wallet-hero { margin:16px; background:linear-gradient(135deg, var(--primary-deep) 0%, var(--primary-dark) 50%, var(--primary) 100%); border-radius:var(--radius); padding:24px; position:relative; overflow:hidden; box-shadow:var(--shadow-lg); }
         .wallet-hero::after { content:''; position:absolute; right:-30px; bottom:-30px; width:150px; height:150px; background:rgba(255,255,255,0.06); border-radius:50%; z-index:0; pointer-events: none;}
         .wh-label { font-size:11px; font-weight:700; color:rgba(255,255,255,0.65); text-transform:uppercase; letter-spacing:0.5px; position:relative; z-index:1; }
@@ -166,15 +167,17 @@
         .hc-toggle-btn:active { background: var(--border); }
         .hc-details { display: none; margin-top: 12px; border-top: 1px dashed var(--border); padding-top: 12px; }
         .hc-details.show { display: block; }
-        .hc-route-box { background:var(--bg); border-radius:8px; padding:10px 12px; font-size:12px; color:var(--text2); line-height:1.6; }
+        .hc-route-box { background:var(--bg); border-radius:8px; padding:10px 12px; font-size:12px; color:var(--text2); line-height:1.6; word-break: break-word;}
         .hc-rating { margin-top:10px; font-size:13px; color:var(--accent-dark); font-weight:700; }
         .hc-no-rating { font-size:11px; color:var(--text3); font-style:italic; margin-top:8px; }
 
-        /* PROFILE */
-        .profile-hero { background:linear-gradient(160deg, var(--primary-deep), var(--primary)); padding:36px 20px 28px; text-align:center; flex-shrink:0; }
-        .prof-avatar { width:80px; height:80px; background:rgba(255,255,255,0.15); border-radius:50%; border:3px solid rgba(255,255,255,0.35); display:flex; align-items:center; justify-content:center; font-size:36px; margin:0 auto 12px; }
-        .prof-name { color:white; font-size:20px; font-weight:800; }
-        .prof-wa { color:rgba(255,255,255,0.65); font-size:13px; margin-top:4px; }
+        /* ── PROFILE ── */
+        .profile-hero { background:linear-gradient(160deg, var(--primary-deep), var(--primary)); padding:36px 20px 28px; text-align:center; flex-shrink:0; position:relative; overflow:hidden;}
+        .profile-hero::after { content: ''; position: absolute; right: -30px; top: -30px; width: 150px; height: 150px; background: rgba(255,255,255,0.06); border-radius: 50%; pointer-events: none;}
+        .prof-avatar { width:80px; height:80px; background:rgba(255,255,255,0.15); border-radius:50%; border:3px solid rgba(255,255,255,0.35); display:flex; align-items:center; justify-content:center; font-size:36px; margin:0 auto 12px; position:relative; z-index:1;}
+        .prof-name { color:white; font-size:20px; font-weight:800; position:relative; z-index:1;}
+        .prof-wa { color:rgba(255,255,255,0.65); font-size:13px; margin-top:4px; position:relative; z-index:1;}
+        
         .profile-card { background:var(--card); margin:16px; border-radius:var(--radius); box-shadow:var(--shadow-sm); }
         .profile-row { display:flex; align-items:center; gap:14px; padding:15px 18px; border-bottom:1px solid var(--border); cursor:pointer; }
         .profile-row:last-child { border-bottom:none; }
@@ -190,7 +193,7 @@
         .btn-logout { margin:0 16px 16px; width:calc(100% - 32px); background:var(--red-light); color:var(--red); border:none; border-radius:var(--radius-sm); padding:15px; font-size:15px; font-weight:700; cursor:pointer; font-family:inherit; }
         
         /* ── IKLAN JASA PEMBUATAN APLIKASI (PREMIUM CARD) ── */
-        .dev-ad-card { background: linear-gradient(135deg, #11181f 0%, #2c3e50 100%); margin: 0 16px 16px; border-radius: var(--radius); padding: 16px 18px; display: flex; align-items: center; gap: 14px; cursor: pointer; box-shadow: 0 8px 20px rgba(44,62,80,0.4); border: 1px solid rgba(255,255,255,0.1); position: relative; overflow: hidden; transition: 0.2s; }
+        .dev-ad-card { background: linear-gradient(135deg, #11181f 0%, #2c3e50 100%); margin: 16px 16px 16px; border-radius: var(--radius); padding: 16px 18px; display: flex; align-items: center; gap: 14px; cursor: pointer; box-shadow: 0 8px 20px rgba(44,62,80,0.4); border: 1px solid rgba(255,255,255,0.1); position: relative; overflow: hidden; transition: 0.2s; }
         .dev-ad-card:active { transform: scale(0.97); }
         .dev-ad-card::before { content: ''; position: absolute; top: -50%; right: -20%; width: 100px; height: 100px; background: rgba(241, 196, 15, 0.2); border-radius: 50%; filter: blur(20px); pointer-events: none;}
         .dev-ad-icon { font-size: 32px; flex-shrink: 0; }
@@ -201,6 +204,7 @@
 
         .about-card { background: var(--card); border-radius: var(--radius); margin: 16px; box-shadow: var(--shadow); padding: 20px; }
         
+        /* ── BOTTOM NAV ── */
         .bottom-nav { position:absolute; bottom:0; left:0; right:0; background:white; display:none; border-top:1px solid var(--border); padding:8px 0 14px; z-index:100; }
         .bottom-nav.visible { display:flex; }
         .nav-item { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer; padding:6px 0; }
@@ -209,6 +213,7 @@
         .nav-label { font-size:10px; font-weight:600; color:var(--text3); }
         .nav-item.active .nav-label { color:var(--primary); }
         
+        /* ── MODAL ── */
         .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:200; display:flex; align-items:flex-end; justify-content:center; padding:0; }
         .modal-box { background:white; border-radius:24px 24px 0 0; padding:28px 24px 40px; width:100%; max-width:480px; }
         .modal-handle { width:40px; height:4px; background:var(--border); border-radius:2px; margin:0 auto 20px; }
@@ -229,7 +234,7 @@
         
         .form-topbar { background: var(--primary); padding: 16px 18px; display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
         .back-btn { background: rgba(255,255,255,0.2); border: none; color: white; width: 38px; height: 38px; border-radius: 50%; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .form-topbar-title { color: white; font-size: 16px; font-weight: 700; }
+        .form-topbar-title { color: white; font-size: 16px; font-weight: 700; flex:1;}
         
         .hidden { display:none !important; }
         .mt10 { margin-top:10px; } .mt12 { margin-top:12px; } .mt16 { margin-top:16px; }
@@ -264,21 +269,21 @@
 
     <div id="page-login" class="login-wrapper">
         <div class="login-hero">
+            <div style="position:absolute; top:16px; right:16px; z-index:10;">
+                <div class="lang-pill">
+                    <button class="lang-btn lang-ngapak active" onclick="setLang('ngapak')">Ngapak</button>
+                    <button class="lang-btn lang-id" onclick="setLang('id')">ID</button>
+                    <button class="lang-btn lang-en" onclick="setLang('en')">EN</button>
+                </div>
+            </div>
+            
             <div class="login-hero-badge">🛵 PORTAL MITRA DRIVER</div>
             <span class="login-hero-icon">👷</span>
             <div class="login-hero-title">TulangTulung <span>Gombong</span></div>
             <div class="login-hero-sub" id="ui-login-hero-sub">Selamat datang, Pahlawan Jalanan Gombong!</div>
         </div>
         <div class="login-body">
-            <div style="position:absolute; top:16px; right:20px;">
-                <div class="lang-pill light-bg" style="background:#F0F2F5;">
-                    <button class="lang-btn active" onclick="setLang('ngapak')" id="btn-ngapak">Ngapak</button>
-                    <button class="lang-btn" onclick="setLang('id')" id="btn-id">ID</button>
-                    <button class="lang-btn" onclick="setLang('en')" id="btn-en">EN</button>
-                </div>
-            </div>
-
-            <div id="install-banner" class="install-bar" style="margin-top: 24px;">
+            <div id="install-banner" class="install-bar">
                 <p id="ui-install-txt">Pasang Aplikasi Driver nang HP-mu lur!</p>
                 <button id="btn-install-pwa" class="btn-primary" style="padding:10px;" onclick="installAplikasi()">INSTALL 📲</button>
             </div>
@@ -306,6 +311,14 @@
 
     <div id="page-register" class="login-wrapper hidden">
         <div class="login-hero" style="padding-bottom:50px;">
+            <div style="position:absolute; top:16px; right:16px; z-index:10;">
+                <div class="lang-pill">
+                    <button class="lang-btn lang-ngapak active" onclick="setLang('ngapak')">Ngapak</button>
+                    <button class="lang-btn lang-id" onclick="setLang('id')">ID</button>
+                    <button class="lang-btn lang-en" onclick="setLang('en')">EN</button>
+                </div>
+            </div>
+            
             <div class="login-hero-badge">🛵 DAFTAR MITRA BARU</div>
             <span class="login-hero-icon">📝</span>
             <div class="login-hero-title">Gabung <span>Dadi Mitra</span></div>
@@ -360,9 +373,9 @@
             <div class="dtb-top">
                 <div class="dtb-logo">TulangTulung <span>Gombong</span></div>
                 <div class="lang-pill">
-                    <button class="lang-btn active" onclick="setLang('ngapak')" id="btn-ngapak2">Ngapak</button>
-                    <button class="lang-btn" onclick="setLang('id')" id="btn-id2">ID</button>
-                    <button class="lang-btn" onclick="setLang('en')" id="btn-en2">EN</button>
+                    <button class="lang-btn lang-ngapak active" onclick="setLang('ngapak')">Ngapak</button>
+                    <button class="lang-btn lang-id" onclick="setLang('id')">ID</button>
+                    <button class="lang-btn lang-en" onclick="setLang('en')">EN</button>
                 </div>
             </div>
             <div class="driver-info-row">
@@ -444,7 +457,7 @@
                     <div class="prof-wa" id="profDisplayWA">—</div>
                 </div>
                 <div style="height:16px;"></div>
-                
+
                 <div class="dev-ad-card" onclick="hubungiDeveloper()">
                     <div class="dev-ad-icon">🚀</div>
                     <div class="dev-ad-content">
@@ -453,7 +466,7 @@
                     </div>
                     <div class="dev-ad-arrow">›</div>
                 </div>
-
+                
                 <div class="sound-section">
                     <div class="sound-row">
                         <div class="sound-label" id="ui-lbl-sound">🔊 Swara Notif</div>
@@ -492,14 +505,19 @@
                 </div>
                 <div style="height:16px;"></div>
                 <button class="btn-logout" onclick="keluarAplikasi()" id="ui-btn-logout">🚪 Metu (Logout)</button>
-                <div style="text-align:center; padding:14px; font-size:11px; color:var(--text3);">TulangTulung Driver v3.0 · © 2026</div>
+                <div style="text-align:center; padding:14px; font-size:11px; color:var(--text3);">TulangTulung Driver v3.1 · © 2026</div>
             </div>
         </div>
 
         <div id="page-about" class="hidden" style="display:flex; flex-direction:column; height:100%;">
             <div class="form-topbar" style="flex-shrink:0;">
                 <button class="back-btn" onclick="tutupTentang()">←</button>
-                <div class="form-topbar-title" id="ui-about-topbar">Tentang Aplikasi</div>
+                <div class="form-topbar-title" id="ui-about-topbar" style="flex:1;">Tentang Aplikasi</div>
+                <div class="lang-pill">
+                    <button class="lang-btn lang-ngapak active" onclick="setLang('ngapak')">Ngapak</button>
+                    <button class="lang-btn lang-id" onclick="setLang('id')">ID</button>
+                    <button class="lang-btn lang-en" onclick="setLang('en')">EN</button>
+                </div>
             </div>
             <div class="page" style="padding: 20px 16px;">
                 <div class="about-card">
@@ -557,6 +575,7 @@
     import { getDatabase, ref, onValue, runTransaction, get, child, set, update } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
     import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-messaging.js";
 
+    // ── 1. KONFIGURASI FIREBASE ASLI TULANGTULUNG GOMBONG ──
     const firebaseConfig = {
       apiKey: "AIzaSyCO4vDd6Z1NnrMx5gK7nMCyDceaGZj_bQw",
       authDomain: "mastulungmasgombong.firebaseapp.com",
@@ -573,17 +592,17 @@
     let messaging;
     try { messaging = getMessaging(app); } catch(e) { console.log('FCM not supported'); }
 
+    // ── VAPID KEY & KONTAK ──
     const VAPID_KEY = "BHrjLUSNG-h2NcRw_ypWBHTr3cc-iEZ7jCA8fYzjrWO6Yh4Sqg3xTevCEAcUAbncnWwrZZfOXkuFeWMQCHnkLDs";
-    const NOMOR_ADMIN_DRIVER = "6285870422464";
-    // Nomor Developer (Riski Hariyanto) DIPERBARUI DI SINI
-    const NOMOR_DEVELOPER = "6281383179209"; 
+    const NOMOR_ADMIN_DRIVER = "6285870422464"; 
+    const NOMOR_DEVELOPER = "6281383179209"; // Nomor Riski Hariyanto
 
     // ── SETUP PUSH NOTIFICATION (FCM) ──
     async function setupPushNotification() {
         if (!('serviceWorker' in navigator) || !('Notification' in window) || !messaging) return;
         let swReg;
         try { swReg = await navigator.serviceWorker.register('/firebase-messaging-sw.js'); } 
-        catch(e) { return; }
+        catch(e) { console.error('SW gagal:', e); return; }
 
         const permission = await Notification.requestPermission();
         if (permission !== 'granted') return;
@@ -596,7 +615,7 @@
                     token: fcmToken, nama: namaDriverAktif, wa: waDriverAktif, updated: Date.now()
                 });
             }
-        } catch(e) {}
+        } catch(e) { console.error('FCM token gagal:', e); }
 
         onMessage(messaging, (payload) => {
             const t = langDict[currentLang];
@@ -607,6 +626,7 @@
         });
     }
 
+    // ── FLOATING TOAST NOTIFICATION ──
     function showFloatingNotif(title, body) {
         const old = document.getElementById('sb-drv-notif');
         if (old) old.remove();
@@ -642,6 +662,7 @@
     `;
     document.head.appendChild(_ns);
 
+    // ── AUTO-LOGIN (SESSION) ──
     function simpanSesiDriver(wa, nama) { localStorage.setItem('ttg_driver', JSON.stringify({ wa, nama })); }
     function hapusSesiDriver() { localStorage.removeItem('ttg_driver'); }
     async function periksaSesiDriver() {
@@ -675,6 +696,7 @@
     let namaDriverAktif = "", waDriverAktif = "", saldoDriverAktif = 0; let orderYangSudahBunyi = new Set(); let latestOrdersData = []; let currentLang = "ngapak";
     const BIAYA_PLATFORM = 1000; 
 
+    // SOUND SYSTEM
     const soundUrls = { 'default': 'https://actions.google.com/sounds/v1/alarms/beep_short.ogg', 'doorbell': 'https://actions.google.com/sounds/v1/doors/doorbell_1.ogg', 'chime': 'https://actions.google.com/sounds/v1/alarms/dinner_chimes.ogg', 'horn': 'https://actions.google.com/sounds/v1/transportation/car_horn.ogg' };
 
     function muatPengaturanSuara() {
@@ -692,7 +714,7 @@
     window.prosesUploadSuara = function(event) {
         const file = event.target.files[0];
         if(!file) { document.getElementById('soundSelect').value = localStorage.getItem('suaraDriverTTG')||'default'; return; }
-        if(file.size > 2*1024*1024) { alert(currentLang === 'en' ? "File too large! Max 2MB." : "Ukuran file kegedhen lur! Maksimal 2MB bae."); document.getElementById('soundSelect').value = localStorage.getItem('suaraDriverTTG') || 'default'; return; }
+        if(file.size > 2*1024*1024) { alert("Max 2MB!"); document.getElementById('soundSelect').value = 'default'; return; }
         const reader = new FileReader();
         reader.onload = e => { 
             localStorage.setItem('customSoundTTG', e.target.result); localStorage.setItem('suaraDriverTTG', 'custom'); 
@@ -706,7 +728,7 @@
         navigator.clipboard.writeText(teks).then(() => { alert(currentLang==='en'?'Number copied!':'Nomer sukses disalin!'); }).catch(err => { alert('Gagal menyalin: ', err); });
     }
 
-    // ── KAMUS 3 BAHASA LENGKAP ──
+    // ── KAMUS 3 BAHASA (NGAPAK, ID, EN) ──
     const langDict = {
         ngapak: {
             titleLogin:"Masuk Akun Driver", loginSub:"Lebokna datamu nggo mulai narik", lblWaLog:"Nomer WA Terdaftar", lblPassLog:"Kata Sandi (Password)", btnLogin:"Mulai Narik 🟢", txtNoReg:"Urung duwe akun?", linkDaftar:"Daftar dadi Mitra",
@@ -724,7 +746,7 @@
             btnLogout:"🚪 Metu (Logout)", histTitle:"Riwayat Tarikan", lblAvg:"Rating Rata-rata",
             navRadar:"Radar", navWallet:"Dompet", navHistory:"Riwayat", navProfile:"Profil",
             profHist:"Riwayat & Ratingku", profWallet:"Dompet Saldo", titleRiwayatSaldo:"Riwayat Potongan Saldo",
-            txtHelp:"Butuh Bantuan Admin?", linkHelp:"Hubungi Admin", profHelp:"Pusat Bantuan", profileShare: "Bagikan Aplikasi", profileInstall: "Pasang Aplikasi",
+            txtHelp:"Butuh Bantuan Admin?", linkHelp:"Hubungi Admin", profHelp:"Pusat Bantuan", profileShare: "Bagikan Aplikasi", profileInstall: "Pasang Aplikasi", profileAbout: "Tentang Aplikasi",
             modalTitle:"Instruksi Top-Up", modalDesc:"Transfer nominal sing arep diisi maring nomer DANA kiye:", modalDanaLbl:"📱 Dompet DANA", modalNote:"⚠️ Aja klalen di-screenshot bukti transfere lur!", btnConfirmWA:"💬 Kirim Bukti via WA", btnCloseModal:"Batal",
             btnCancelOrder:"❌ Batal Jikot (Saldo Mbalik)", btnCompleteOrder:"✅ Orderan Beres", btnDetail:"Ndelok Detail ▼", btnTutupDetail:"Tutup Detail ▲",
             alertTnc:"Kudu centang Setuju disit lur!", alertIsi:"Isi kabeh datane disit!", alertPass:"Password minimal 6 karakter!", alertRegWait:"Pendaftaran sukses! Dienteni ya, Admin lagi ngecek datamu.", alertRegExist:"Nomer WA kiye wis tau didaftarna!", alertWrong:"Nomer WA utawa Password salah!", alertPending:"Akunmu urung diverifikasi nang Admin. Dienteni sedela ya lur.", alertSuspend:"⛔ AKUN DITANGGUHKAN ⛔\nHubungi admin ben bisa narik maning!", alertSaldoHabis:"Saldomu entong lur! Top-up disit maring Admin ben bisa njikot orderan.", alertSuccess:"Berhasil dijikot! Saldomu kepotong Rp 1.000.", alertLate:"Yah telat! Orderan wis dijikot driver liya.",
@@ -732,15 +754,14 @@
             waTemplate1:"Halo kak ", waTemplate2:", kiye nyong ", waTemplate3:" sekang TulangTulung. Orderane rika wis aman tek jikot, nyong siap meluncur!",
             waTopUpMsg:"Halo Admin TulangTulung, nyong driver [NAMA] (WA: [WA]). Nyong nembe bae transfer DANA nggo Top-Up saldo koin. Kiye bukti transfere ngisor kiye: ",
             noRating:"Pelanggan urung aweh ulasan", installTxt: "Pasang Aplikasi Driver nang HP-mu lur!", btnInstall: "PASANG 📲",
-            aboutTagline: "Layanan Asli Wong Gombong", profileAbout: "Tentang Aplikasi",
-            aboutH1: "Tentang Kami", aboutP1: "TulangTulung Gombong adalah platform penyedia layanan transportasi dan jasa harian on-demand khusus warga lokal. Mengusung konsep dari warga untuk warga, saling menolong dan memberdayakan.",
+            aboutTagline: "Layanan Asli Wong Gombong", aboutH1: "Tentang Kami", aboutP1: "TulangTulung Gombong adalah platform penyedia layanan transportasi dan jasa harian on-demand khusus warga lokal. Mengusung konsep dari warga untuk warga, saling menolong dan memberdayakan.",
             aboutH2: "Misi", aboutP2: "<li style='margin-bottom:6px;'><b>Kebutuhan Warga:</b> Layanan praktis & cepat tanggap.</li><li style='margin-bottom:6px;'><b>Adil:</b> Tanpa potongan persentase penghasilan yang merugikan.</li><li style='margin-bottom:6px;'><b>Aman:</b> Dilayani oleh sesama warga yang saling mengenal.</li>",
             aboutH3: "Syarat & Ketentuan", aboutP3: "TulangTulung adalah platform penghubung. Untuk pengiriman barang bernilai tinggi sangat disarankan menggunakan asuransi. Segala kerusakan atau kehilangan barang sepenuhnya menjadi tanggung jawab antara mitra driver dan pelanggan.",
             pillDone: "Beres ✓", pillOngoing: "Lagi Mlaku", emptyHistory: "Urung ana riwayat tarikan.",
             mutasiOrder: "Orderan:", mutasiMinus: "- Rp 1.000", mutasiEmpty: "Urung ana potongan saldo.",
             starTxt: "Bintang", histCust: "👤 Pelanggan:", toastNewOrderTitle: "⚡ Orderan Anyar!", toastNewOrderDesc: "Ana pesenan nunggu. Ndang jikot lur!",
             adTitle: "Kembangkan Bisnismu!", adDesc: "Jasa Pembuatan Aplikasi, Website & Sistem Manajemen Profesional.",
-            waDevMsg: "Halo Mas Riski, nyong weruh sekang aplikasi TulangTulung Gombong. Nyong minat arep gawe Aplikasi/Website/Tools nggo bisnisku. Bisa diskusi sedela?",
+            waDevMsg: "Halo Mas Riski, nyong weruh sekang aplikasi TulangTulung Gombong. Nyong minat arep gawe Aplikasi/Website nggo bisnisku. Bisa diskusi sedela?",
             sndDef: "Standar (Beep)", sndDoor: "Bel Umah", sndChime: "Bel Toko", sndHorn: "Klakson Motor"
         },
         id: {
@@ -754,21 +775,20 @@
             lblSaldo:"Sisa Saldo Koin", saldoSub:"Dipotong Rp 1.000 tiap orderan", btnTopup:"➕ Isi Saldo (Top-Up)", lblSound:"🔊 Suara Notif", optCustom:"🎵 Suara Sendiri",
             btnLogout:"🚪 Keluar (Logout)", histTitle:"Riwayat Pekerjaan", lblAvg:"Rating Rata-rata", navRadar:"Radar", navWallet:"Dompet", navHistory:"Riwayat", navProfile:"Profil",
             profHist:"Riwayat & Rating Saya", profWallet:"Dompet Saldo", titleRiwayatSaldo:"Riwayat Potongan Saldo",
-            txtHelp:"Butuh Bantuan Admin?", linkHelp:"Hubungi Admin", profHelp:"Pusat Bantuan", profileShare: "Bagikan Aplikasi", profileInstall: "Install Aplikasi",
+            txtHelp:"Butuh Bantuan Admin?", linkHelp:"Hubungi Admin", profHelp:"Pusat Bantuan", profileShare: "Bagikan Aplikasi", profileInstall: "Install Aplikasi", profileAbout: "Tentang Aplikasi",
             modalTitle:"Instruksi Top-Up", modalDesc:"Transfer nominal yang ingin diisi ke nomor DANA berikut:", modalDanaLbl:"📱 Dompet DANA", modalNote:"⚠️ Jangan lupa screenshot bukti transfernya!", btnConfirmWA:"💬 Kirim Bukti via WA", btnCloseModal:"Batal",
-            btnCancelOrder:"❌ Batal Ambil (Refund)", btnCompleteOrder:"✅ Orderan Selesai", btnDetail:"Lihat Detail ▼", btnTutupDetail:"Tutup Detail ▲",
+            btnCancelOrder:"❌ Batal Ambil (Refund Saldo)", btnCompleteOrder:"✅ Orderan Selesai", btnDetail:"Lihat Detail ▼", btnTutupDetail:"Tutup Detail ▲",
             alertTnc:"Harap centang persetujuan terlebih dahulu!", alertIsi:"Harap isi semua data!", alertPass:"Password minimal 6 karakter!", alertRegWait:"Pendaftaran sukses! Mohon tunggu, Admin sedang memverifikasi akun Anda.", alertRegExist:"Nomor WA ini sudah terdaftar!", alertWrong:"Nomor WA atau Password salah!", alertPending:"Akun Anda berstatus PENDING. Silakan tunggu verifikasi Admin.", alertSuspend:"⛔ AKUN DITANGGUHKAN ⛔\nHubungi Admin agar bisa login kembali.", alertSaldoHabis:"Saldo Anda habis! Silakan Top-Up ke Admin untuk mengambil orderan.", alertSuccess:"Berhasil diambil! Saldo Anda terpotong Rp 1.000.", alertLate:"Yah telat! Orderan sudah diambil driver lain.", alertCancelConf:"Yakin ingin membatalkan? Saldo Rp 1.000 akan dikembalikan ke dompet Anda.", alertCancelSucc:"Berhasil dibatalkan! Saldo Anda telah dikembalikan.", alertCompleteConf:"Yakin orderan ini sudah selesai dan pembayaran sudah diterima?",
             waTemplate1:"Halo kak ", waTemplate2:", saya ", waTemplate3:" dari TulangTulung. Orderan sudah saya ambil, saya meluncur sekarang!", waTopUpMsg:"Halo Admin TulangTulung, saya driver [NAMA] (WA: [WA]). Saya baru saja transfer DANA untuk Top-Up saldo koin. Berikut bukti transfernya: ",
             noRating:"Pelanggan belum memberikan ulasan", installTxt: "Install Aplikasi Driver di HP Anda!", btnInstall: "INSTALL 📲",
-            aboutTagline: "Layanan Asli Wong Gombong", profileAbout: "Tentang Aplikasi",
-            aboutH1: "Tentang Kami", aboutP1: "TulangTulung Gombong adalah platform penyedia layanan transportasi dan jasa harian on-demand khusus warga lokal. Mengusung konsep dari warga untuk warga, saling menolong dan memberdayakan.",
+            aboutTagline: "Layanan Asli Wong Gombong", aboutH1: "Tentang Kami", aboutP1: "TulangTulung Gombong adalah platform penyedia layanan transportasi dan jasa harian on-demand khusus warga lokal. Mengusung konsep dari warga untuk warga, saling menolong dan memberdayakan.",
             aboutH2: "Misi", aboutP2: "<li style='margin-bottom:6px;'><b>Kebutuhan Warga:</b> Layanan praktis & cepat tanggap.</li><li style='margin-bottom:6px;'><b>Adil:</b> Tanpa potongan persentase penghasilan yang merugikan.</li><li style='margin-bottom:6px;'><b>Aman:</b> Dilayani oleh sesama warga yang saling mengenal.</li>",
             aboutH3: "Syarat & Ketentuan", aboutP3: "TulangTulung adalah platform penghubung. Untuk pengiriman barang bernilai tinggi sangat disarankan menggunakan asuransi. Segala kerusakan atau kehilangan barang sepenuhnya menjadi tanggung jawab antara mitra driver dan pelanggan.",
             pillDone: "Selesai ✓", pillOngoing: "Sedang Jalan", emptyHistory: "Belum ada riwayat pesanan.",
             mutasiOrder: "Pesanan:", mutasiMinus: "- Rp 1.000", mutasiEmpty: "Belum ada potongan saldo.",
             starTxt: "Bintang", histCust: "👤 Pelanggan:", toastNewOrderTitle: "⚡ Pesanan Baru!", toastNewOrderDesc: "Ada pesanan menunggu. Segera ambil!",
             adTitle: "Kembangkan Bisnismu!", adDesc: "Jasa Pembuatan Aplikasi, Website & Sistem Manajemen Profesional.",
-            waDevMsg: "Halo Mas Riski, saya mengetahui dari aplikasi TulangTulung Gombong. Saya tertarik untuk berdiskusi mengenai jasa pembuatan Aplikasi/Website/Tools untuk bisnis saya.",
+            waDevMsg: "Halo Mas Riski, saya mengetahui dari aplikasi TulangTulung Gombong. Saya tertarik untuk berdiskusi mengenai jasa pembuatan Aplikasi/Website untuk bisnis saya.",
             sndDef: "Standar (Beep)", sndDoor: "Bel Rumah", sndChime: "Bel Toko", sndHorn: "Klakson Motor"
         },
         en: {
@@ -782,28 +802,30 @@
             lblSaldo:"Coin Balance", saldoSub:"Rp 1,000 deducted per order", btnTopup:"➕ Top-Up", lblSound:"🔊 Alert Sound", optCustom:"🎵 Custom Sound",
             btnLogout:"🚪 Logout", histTitle:"Job History", lblAvg:"Average Rating", navRadar:"Radar", navWallet:"Wallet", navHistory:"History", navProfile:"Profile",
             profHist:"My History & Ratings", profWallet:"Coin Wallet", titleRiwayatSaldo:"Balance Deduction History",
-            txtHelp:"Need Admin Help?", linkHelp:"Contact Admin", profHelp:"Help Center", profileShare: "Share App", profileInstall: "Install App",
+            txtHelp:"Need Admin Help?", linkHelp:"Contact Admin", profHelp:"Help Center", profileShare: "Share App", profileInstall: "Install App", profileAbout: "About App",
             modalTitle:"Top-Up Guide", modalDesc:"Transfer any amount to this DANA number:", modalDanaLbl:"📱 DANA Wallet", modalNote:"⚠️ Don't forget to screenshot your receipt!", btnConfirmWA:"💬 Send via WA", btnCloseModal:"Close",
             btnCancelOrder:"❌ Cancel (Refund)", btnCompleteOrder:"✅ Mark Completed", btnDetail:"View Details ▼", btnTutupDetail:"Hide Details ▲",
             alertTnc:"Please agree to terms!", alertIsi:"Fill all fields!", alertPass:"Password 6+ chars!", alertRegWait:"Success! Wait for Admin verification.", alertRegExist:"WA already registered!", alertWrong:"Wrong WA or Password!", alertPending:"Account PENDING. Wait for Admin.", alertSuspend:"⛔ ACCOUNT SUSPENDED ⛔\nContact Admin.", alertSaldoHabis:"Insufficient balance! Please Top-Up.", alertSuccess:"Successfully taken! Deducted Rp 1,000.", alertLate:"Too late! Taken by another driver.", alertCancelConf:"Sure to cancel? Rp 1,000 will be refunded.", alertCancelSucc:"Cancelled! Refunded.", alertCompleteConf:"Confirm completed and paid?",
             waTemplate1:"Hi ", waTemplate2:", I'm ", waTemplate3:" from TulangTulung. I took your order, on my way!", waTopUpMsg:"Hello Admin, I'm partner [NAMA] (WA: [WA]). I transferred for Top-Up. Receipt: ",
             noRating:"No review yet", installTxt: "Install Driver App!", btnInstall: "INSTALL 📲",
-            aboutTagline: "Authentic Local Services", profileAbout: "About App",
-            aboutH1: "About Us", aboutP1: "TulangTulung Gombong is an on-demand transport and daily service platform exclusively for locals. Bringing the concept of 'from residents, for residents'.",
+            aboutTagline: "Authentic Local Services", aboutH1: "About Us", aboutP1: "TulangTulung Gombong is an on-demand transport and daily service platform exclusively for locals. Bringing the concept of 'from residents, for residents'.",
             aboutH2: "Mission", aboutP2: "<li style='margin-bottom:6px;'><b>Resident Needs:</b> Practical & fast service.</li><li style='margin-bottom:6px;'><b>Fair:</b> Zero percent commission, 100% to partners.</li><li style='margin-bottom:6px;'><b>Safe:</b> Served by verified local residents.</li>",
             aboutH3: "Terms & Conditions", aboutP3: "TulangTulung is a connecting platform. For delivering high-value items, personal insurance is highly recommended. Any damage or loss of goods is entirely the responsibility between the driver partner and the customer.",
             pillDone: "Completed ✓", pillOngoing: "In Progress", emptyHistory: "No order history yet.",
             mutasiOrder: "Order:", mutasiMinus: "- Rp 1,000", mutasiEmpty: "No balance deductions yet.",
             starTxt: "Stars", histCust: "👤 Customer:", toastNewOrderTitle: "⚡ New Order!", toastNewOrderDesc: "There's an order waiting. Take it now!",
             adTitle: "Grow Your Business!", adDesc: "Professional App, Website & Management System Development.",
-            waDevMsg: "Hello Mr. Riski, I found your contact from the TulangTulung Gombong app. I am interested in discussing App/Website/Tools development for my business.",
+            waDevMsg: "Hello Mr. Riski, I found your contact from the TulangTulung Gombong app. I am interested in discussing App/Website development for my business.",
             sndDef: "Standard (Beep)", sndDoor: "House Doorbell", sndChime: "Shop Chime", sndHorn: "Car Horn"
         }
     };
 
     window.setLang = function(langKey) {
         currentLang = langKey;
-        ['btn-ngapak','btn-id','btn-en','btn-ngapak2','btn-id2','btn-en2'].forEach(id => { const el = document.getElementById(id); if(el) el.classList.toggle('active', id.replace('2','').endsWith(langKey)); });
+        // Ganti visual tombol di semua tempat (Login & Topbar & About)
+        document.querySelectorAll('.lang-btn').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.lang-' + langKey).forEach(el => el.classList.add('active'));
+        
         const t = langDict[langKey];
         
         setText('ui-login-title', t.titleLogin); setText('ui-login-sub', t.loginSub); setText('ui-lbl-wa-login', t.lblWaLog); setText('ui-lbl-pass-login', t.lblPassLog); setText('ui-btn-login', t.btnLogin); setText('ui-txt-noreg', t.txtNoReg); setText('ui-link-daftar', t.linkDaftar);
@@ -823,9 +845,8 @@
         setText('ui-about-topbar', t.profileAbout); setText('ui-about-tagline', t.aboutTagline);
         setText('ui-about-h1', t.aboutH1); setText('ui-about-p1', t.aboutP1);
         setText('ui-about-h2', t.aboutH2); setHTML('ui-about-p2', t.aboutP2);
-        setText('ui-about-h3', t.aboutH3); setText('ui-about-p3', t.aboutP3);
+        setText('ui-about-h3', t.aboutH3); setHTML('ui-about-p3', t.aboutP3);
 
-        // Iklan Developer
         setText('ui-ad-title', t.adTitle); setText('ui-ad-desc', t.adDesc);
         
         // Pilihan Suara
@@ -1027,7 +1048,9 @@
     }
 
     window.toggleHistory = function(id) {
-        const el = document.getElementById('hist-det-'+id); const btn = document.getElementById('hist-btn-'+id); const t = langDict[currentLang];
+        const el = document.getElementById('hist-det-'+id);
+        const btn = document.getElementById('hist-btn-'+id);
+        const t = langDict[currentLang];
         if(el.classList.contains('show')) { el.classList.remove('show'); btn.innerHTML = t.btnDetail; } else { el.classList.add('show'); btn.innerHTML = t.btnTutupDetail; }
     }
 
