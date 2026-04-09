@@ -5,39 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Admin - TulangTulung Gombong</title>
     
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #ecf0f1; margin: 0; padding: 0; }
+        body { font-family: 'Plus Jakarta Sans', Tahoma, Geneva, sans-serif; background-color: #ecf0f1; margin: 0; padding: 0; }
         
         /* LOGIN ADMIN */
         #login-screen { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; background-color: #2c3e50; }
         .login-box { background: white; padding: 30px; border-radius: 15px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.3); width: 300px; }
-        .login-box h2 { margin-top: 0; color: #27ae60; }
-        .login-box input { width: 100%; padding: 12px; margin: 15px 0; border: 2px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; text-align: center; font-weight: bold; }
-        .login-box button { width: 100%; padding: 12px; background: #27ae60; color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; }
+        .login-box h2 { margin-top: 0; color: #27ae60; font-weight: 800; }
+        .login-box input { width: 100%; padding: 12px; margin: 15px 0; border: 2px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; text-align: center; font-weight: bold; font-family: inherit;}
+        .login-box button { width: 100%; padding: 12px; background: #27ae60; color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; font-family: inherit;}
         
         /* DASHBOARD ADMIN */
-        .header { background-color: #00a859; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .header h2 { margin: 0; }
+        .header { background-color: #2c3e50; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .header h2 { margin: 0; font-weight: 800;}
+        .header span { color: #f1c40f; }
         
-        .tab-menu { display: flex; background: #2c3e50; padding: 10px 20px; gap: 10px; flex-wrap: wrap; }
-        .tab-btn { background: none; border: none; color: white; padding: 10px 20px; font-size: 16px; font-weight: bold; cursor: pointer; border-radius: 5px; opacity: 0.6; transition: 0.3s; flex: 1; min-width: 150px; }
+        .tab-menu { display: flex; background: #1a252f; padding: 10px 20px; gap: 10px; flex-wrap: wrap; }
+        .tab-btn { background: none; border: none; color: white; padding: 10px 20px; font-size: 15px; font-weight: bold; cursor: pointer; border-radius: 8px; opacity: 0.6; transition: 0.3s; flex: 1; min-width: 150px; font-family: inherit;}
         .tab-btn.active { background: #f1c40f; color: #2c3e50; opacity: 1; }
 
         .container { padding: 20px; max-width: 1200px; margin: 0 auto; }
         
         /* KOTAK STATISTIK RINGKAS */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 25px; }
         .stat-box { background: white; padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-bottom: 5px solid #ddd; }
         .stat-box.green { border-color: #27ae60; }
         .stat-box.blue { border-color: #3498db; }
-        .stat-box.gold { border-color: #f1c40f; background: linear-gradient(135deg, #fffcf0, #fff); }
-        .stat-angka { font-size: 32px; font-weight: bold; color: #2c3e50; margin-top: 5px; }
-        .stat-label { font-size: 12px; color: #7f8c8d; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; }
+        .stat-box.gold { border-color: #f39c12; background: linear-gradient(135deg, #fffcf0, #fff); }
+        .stat-box.purple { border-color: #8e44ad; background: linear-gradient(135deg, #f9f0ff, #fff); }
+        
+        .stat-angka { font-size: 30px; font-weight: 800; color: #2c3e50; margin-top: 5px; }
+        .stat-label { font-size: 11px; color: #7f8c8d; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; }
 
         /* SEARCH BAR & EXPORT BUTTON */
-        .search-bar { width: 100%; padding: 15px; border: 2px solid #bdc3c7; border-radius: 8px; font-size: 16px; box-sizing: border-box; margin-bottom: 20px; font-weight: bold; }
+        .search-bar { width: 100%; padding: 15px; border: 2px solid #bdc3c7; border-radius: 8px; font-size: 15px; box-sizing: border-box; margin-bottom: 20px; font-weight: bold; font-family: inherit;}
         .search-bar:focus { border-color: #3498db; outline: none; }
-        .btn-excel { background-color: #1d6f42; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s; }
+        .btn-excel { background-color: #1d6f42; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s; font-family: inherit;}
         .btn-excel:hover { background-color: #155530; }
 
         /* GRID KARTU */
@@ -48,23 +54,23 @@
         .card.aktif { border-color: #27ae60; }
         .card.suspend { border-color: #e74c3c; }
         
-        .card-title { font-size: 18px; font-weight: bold; color: #2c3e50; margin-bottom: 5px; display: flex; justify-content: space-between; }
-        .badge { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; color: white; }
+        .card-title { font-size: 16px; font-weight: 800; color: #2c3e50; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center;}
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 800; color: white; letter-spacing: 0.5px;}
         .bg-pending { background: #f39c12; } .bg-aktif { background: #27ae60; } .bg-suspend { background: #e74c3c; }
         
-        .card-detail { font-size: 14px; color: #555; margin-bottom: 5px; }
-        .saldo-text { font-size: 20px; font-weight: bold; color: #2980b9; margin: 10px 0; }
+        .card-detail { font-size: 13px; color: #555; margin-bottom: 5px; font-weight: 600;}
+        .saldo-text { font-size: 18px; font-weight: 800; color: #2980b9; margin: 10px 0; }
 
         /* FORM TOP-UP */
-        .topup-box { background: #e8f5e9; padding: 10px; border-radius: 8px; margin-top: 15px; border: 1px dashed #27ae60; }
-        .topup-box input { width: 100%; padding: 8px; margin-bottom: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        .btn-topup { width: 100%; background: #27ae60; color: white; border: none; padding: 8px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        .topup-box { background: #e8f5e9; padding: 12px; border-radius: 8px; margin-top: 15px; border: 1.5px dashed #27ae60; }
+        .topup-box input { width: 100%; padding: 10px; margin-bottom: 8px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-family: inherit; font-weight: bold;}
+        .btn-topup { width: 100%; background: #27ae60; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; font-family: inherit;}
 
         /* TOMBOL AKSI */
         .action-btns { display: flex; gap: 10px; margin-top: 15px; }
-        .btn-setuju { flex: 1; background: #3498db; color: white; border: none; padding: 8px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        .btn-suspend { flex: 1; background: #e74c3c; color: white; border: none; padding: 8px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        .btn-hapus { background: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+        .btn-setuju { flex: 1; background: #3498db; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; font-family: inherit;}
+        .btn-suspend { flex: 1; background: #e74c3c; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; font-family: inherit;}
+        .btn-hapus { background: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; font-family: inherit;}
 
         .hidden { display: none !important; }
     </style>
@@ -74,16 +80,16 @@
 <div id="login-screen">
     <div class="login-box">
         <h2>Admin TulangTulung</h2>
-        <p style="color:#7f8c8d; font-size:14px;">Masukkan PIN Rahasia</p>
-        <input type="password" id="adminPin" placeholder="******">
-        <button onclick="loginAdmin()">MASUK</button>
+        <p style="color:#7f8c8d; font-size:13px; font-weight:600;">Masukkan PIN Rahasia</p>
+        <input type="password" id="adminPin" placeholder="••••••">
+        <button onclick="loginAdmin()">MASUK SISTEM</button>
     </div>
 </div>
 
 <div id="dashboard-admin" class="hidden">
     <div class="header">
-        <h2>🛠️ Panel Admin</h2>
-        <button onclick="keluarAdmin()" style="background:#e74c3c; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer;">Keluar</button>
+        <h2>🛠️ Panel <span>CEO</span></h2>
+        <button onclick="keluarAdmin()" style="background:#e74c3c; color:white; border:none; padding:8px 16px; border-radius:8px; font-weight:bold; cursor:pointer; font-family:inherit;">Keluar</button>
     </div>
 
     <div class="tab-menu">
@@ -103,14 +109,18 @@
                 <div class="stat-angka" id="adminStatDriver">0</div>
             </div>
             <div class="stat-box gold">
-                <div class="stat-label">Total Saldo Ngendap</div>
+                <div class="stat-label">Total Saldo Ngendap (Milik Driver)</div>
                 <div class="stat-angka" id="adminStatSaldo">Rp 0</div>
+            </div>
+            <div class="stat-box purple">
+                <div class="stat-label">Total Pemasukan Admin (Rp 1.000/Order)</div>
+                <div class="stat-angka" id="adminStatPendapatan" style="color: #8e44ad;">Rp 0</div>
             </div>
         </div>
 
         <div id="tab-driver">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <h3 style="margin: 0;">Daftar Mitra Driver</h3>
+                <h3 style="margin: 0; color: #2c3e50; font-weight: 800;">Daftar Mitra Driver</h3>
             </div>
             <input type="text" id="searchDriver" class="search-bar" placeholder="🔍 Cari Nama utawa Nomer WA Driver..." onkeyup="renderDrivers()">
             
@@ -120,8 +130,8 @@
 
         <div id="tab-order" class="hidden">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
-                <h3 style="margin: 0;">Riwayat Pesenan (Real-time)</h3>
-                <button class="btn-excel" onclick="exportToCSV()">📥 Download Excel (.csv)</button>
+                <h3 style="margin: 0; color: #2c3e50; font-weight: 800;">Riwayat Pesenan (Real-time)</h3>
+                <button class="btn-excel" onclick="exportToCSV()">📥 Download Laporan (.csv)</button>
             </div>
             <div class="grid-container" id="listOrders">
                 </div>
@@ -133,6 +143,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getDatabase, ref, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
+    // ── FIREBASE ASLI TULANGTULUNG GOMBONG ──
     const firebaseConfig = {
         apiKey: "AIzaSyCO4vDd6Z1NnrMx5gK7nMCyDceaGZj_bQw",
         authDomain: "mastulungmasgombong.firebaseapp.com",
@@ -140,7 +151,8 @@
         projectId: "mastulungmasgombong",
         storageBucket: "mastulungmasgombong.firebasestorage.app",
         messagingSenderId: "4547691331",
-        appId: "1:4547691331:web:45ecd39aab90f45b4f25f6"
+        appId: "1:4547691331:web:45ecd39aab90f45b4f25f6",
+        measurementId: "G-MCYH7YMQXQ"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -183,7 +195,7 @@
     }
 
     // ==========================================
-    // BAGIAN 1: MANAJEMEN DRIVER
+    // BAGIAN 1: MANAJEMEN DRIVER 
     // ==========================================
     function muatDataDriver() {
         const driversRef = ref(database, 'drivers');
@@ -195,27 +207,31 @@
             if(snapshot.exists()) {
                 snapshot.forEach((child) => { 
                     const data = child.val();
-                    data.wa = child.key; 
+                    data.wa = child.key; // Simpan WA sbg key
                     allDriversData.push(data); 
 
+                    // Hitung Statistik
                     if(data.status === 'aktif') totalAktif++;
                     totalSaldoSistem += (data.saldo || 0);
                 });
             }
             
+            // Update UI Statistik
             document.getElementById('adminStatDriver').innerText = totalAktif;
             document.getElementById('adminStatSaldo').innerText = "Rp " + totalSaldoSistem.toLocaleString('id-ID');
 
-            renderDrivers(); 
+            renderDrivers(); // Panggil fungsi cetak UI
         });
     }
 
+    // Fungsi Render UI Daftar Driver dengan Filter Pencarian
     window.renderDrivers = function() {
         const listDiv = document.getElementById('listDrivers');
         listDiv.innerHTML = "";
         
         const keyword = document.getElementById('searchDriver').value.toLowerCase();
 
+        // Saring array driver berdasarkan input pencarian
         const filteredDrivers = allDriversData.filter(d => 
             d.nama.toLowerCase().includes(keyword) || 
             d.wa.includes(keyword)
@@ -243,7 +259,7 @@
             if(data.status !== 'pending') {
                 formTopUp = `
                     <div class="topup-box">
-                        <div style="font-size:12px; margin-bottom:5px; font-weight:bold;">Isi Saldo Driver:</div>
+                        <div style="font-size:12px; margin-bottom:5px; font-weight:800; color:#1e7e34;">Isi Saldo Driver:</div>
                         <input type="number" id="topup-${wa}" placeholder="Ketik nominal (misal: 10000)">
                         <button class="btn-topup" onclick="isiSaldo('${wa}', ${data.saldo || 0})">💰 Tambah Saldo</button>
                     </div>
@@ -257,7 +273,7 @@
                     <span>${data.nama}</span>
                     <span class="badge ${badgeClass}">${data.status.toUpperCase()}</span>
                 </div>
-                <div class="card-detail">📱 WA: <b><a href="https://wa.me/62${wa.substring(1)}" target="_blank" style="color:#2980b9;">${wa}</a></b></div>
+                <div class="card-detail">📱 WA: <b><a href="https://wa.me/62${wa.substring(1)}" target="_blank" style="color:#2980b9; text-decoration:none;">${wa}</a></b></div>
                 <div class="card-detail">📅 Daftar: ${data.tanggal_daftar}</div>
                 <div class="saldo-text">Saldo: Rp ${saldoText}</div>
                 
@@ -315,19 +331,28 @@
                     data.id = child.key;
                     allOrdersData.push(data); 
 
-                    if(data.status === 'selesai') totalOrderSelesai++;
+                    // Hitung Statistik Pemasukan (Dari orderan yang Selesai)
+                    if(data.status === 'selesai') {
+                        totalOrderSelesai++;
+                    }
                 });
             }
 
+            // Update UI Statistik Orderan & Pemasukan
             document.getElementById('adminStatOrder').innerText = totalOrderSelesai;
+            
+            // LOGIKA PEMASUKAN ADMIN: Order Selesai x Rp 1.000
+            const totalPemasukanAdmin = totalOrderSelesai * 1000;
+            document.getElementById('adminStatPendapatan').innerText = "Rp " + totalPemasukanAdmin.toLocaleString('id-ID');
 
-            allOrdersData.reverse(); 
+            // Render Kartu Orderan
+            allOrdersData.reverse(); // Terbaru di atas
             if(allOrdersData.length === 0) {
-                listDiv.innerHTML = "<p>Database orderan masih kosong.</p>"; return;
+                listDiv.innerHTML = "<p style='font-weight:600; color:#7f8c8d;'>Database orderan masih kosong.</p>"; return;
             }
 
             allOrdersData.forEach((data) => {
-                let statusColor = data.status === 'selesai' ? 'green' : data.status === 'batal' || data.status === 'batal_cust' ? 'red' : data.status === 'diambil' ? 'blue' : 'orange';
+                let statusColor = data.status === 'selesai' ? '#27ae60' : data.status === 'batal' || data.status === 'batal_cust' ? '#e74c3c' : data.status === 'diambil' ? '#2980b9' : '#f39c12';
                 
                 let waktuTampil = data.waktu_order; 
                 if (data.timestamp) {
@@ -337,9 +362,9 @@
                     waktuTampil = `${tgl} - ${jam} WIB`;
                 }
 
-                // LOGIKA MENAMPILKAN ULASAN (JIKA ADA)
+                // LOGIKA MENAMPILKAN ULASAN JIKA ADA
                 let ulasanHtml = data.ulasan ? `
-                    <div class="card-detail" style="margin-top:10px; background:#fdf2e9; padding:10px; border-radius:8px; border-left:4px solid #8e44ad; color:#8e44ad; font-style:italic;">
+                    <div class="card-detail" style="margin-top:10px; background:#fdf2e9; padding:12px; border-radius:8px; border-left:4px solid #8e44ad; color:#8e44ad; font-style:italic; font-weight:700;">
                         💬 <b>Ulasan Pelanggan:</b><br>"${data.ulasan}"
                     </div>
                 ` : '';
@@ -347,19 +372,21 @@
                 const card = document.createElement('div');
                 card.className = "card";
                 card.innerHTML = `
-                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                        <span style="font-size:12px; color:#7f8c8d; font-weight:bold;">${waktuTampil}</span>
-                        <span style="font-size:12px; font-weight:bold; color:${statusColor}; text-transform:uppercase;">${data.status}</span>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+                        <span style="font-size:11px; color:#7f8c8d; font-weight:800;">${waktuTampil}</span>
+                        <span style="font-size:11px; font-weight:800; color:${statusColor}; text-transform:uppercase; padding:3px 8px; border-radius:12px; border:1px solid ${statusColor}40; background:${statusColor}10;">${data.status}</span>
                     </div>
                     <div class="card-title" style="font-size: 16px;">${data.layanan}</div>
                     <div class="card-detail">👤 Cust: ${data.customer_nama} (<a href="https://wa.me/62${data.customer_wa.substring(1)}" target="_blank" style="color:#2980b9; text-decoration:none;">${data.customer_wa}</a>)</div>
                     <div class="card-detail">🛵 Driver: <b>${data.driver_nama || 'Belum ada'}</b> ${data.rating ? ' (⭐'+data.rating+')' : ''}</div>
-                    <div class="card-detail" style="margin-top:10px; background:#f4f7f6; padding:8px; border-radius:5px;">
-                        ${data.detail_1} <br>➔<br> ${data.detail_2}
+                    <div class="card-detail" style="margin-top:12px; background:#f8f9fa; padding:10px; border-radius:6px; border:1px solid #eee;">
+                        ${data.detail_1} <br><span style="color:#bdc3c7;">⬇</span><br> ${data.detail_2}
                     </div>
-                    ${data.catatan ? `<div class="card-detail" style="margin-top:5px; color:#e67e22;">📝 Catatan: ${data.catatan}</div>` : ''}
+                    ${data.catatan ? `<div class="card-detail" style="margin-top:8px; color:#d35400; font-weight:700; background:#fff3e0; padding:8px; border-radius:6px;">📝 Catatan: ${data.catatan}</div>` : ''}
                     
-                    ${ulasanHtml} <div style="margin-top:15px; text-align:right;">
+                    ${ulasanHtml}
+                    
+                    <div style="margin-top:15px; text-align:right;">
                         <button class="btn-hapus" onclick="hapusOrder('${data.id}')">🗑️ Hapus Data Lama</button>
                     </div>
                 `;
@@ -368,11 +395,10 @@
         });
     }
 
-    // FUNGSI DOWNLOAD KE EXCEL (.CSV) (SUDAH DITAMBAHKAN KOLOM ULASAN)
+    // FUNGSI DOWNLOAD KE EXCEL (.CSV)
     window.exportToCSV = function() {
         if(allOrdersData.length === 0) { alert("Belum ada data pesanan untuk di-download."); return; }
         
-        // Buat Header Tabel (Baris Pertama) + Kolom Ulasan Baru
         let csvContent = "Tanggal & Waktu,Layanan,Status,Nama Customer,WA Customer,Nama Driver,Detail 1 (Penjemputan),Detail 2 (Tujuan),Catatan,Bintang (Rating),Ulasan\n";
         
         allOrdersData.forEach(o => {
@@ -391,7 +417,6 @@
             let d2 = `"${(o.detail_2||"").replace(/"/g, '""')}"`;
             let cat = `"${(o.catatan||"").replace(/"/g, '""')}"`;
             let rat = o.rating || "";
-            // Tambahkan data ulasan pelanggan
             let uls = `"${(o.ulasan||"").replace(/"/g, '""')}"`;
 
             csvContent += `${waktuStr},${lay},${stat},${cNama},${cWa},${dNama},${d1},${d2},${cat},${rat},${uls}\n`;
@@ -401,7 +426,7 @@
         const link = document.createElement("a");
         const url = URL.createObjectURL(blob);
         link.setAttribute("href", url);
-        link.setAttribute("download", "Laporan_TulangTulung_" + new Date().toLocaleDateString('id-ID') + ".csv");
+        link.setAttribute("download", "Laporan_TTG_" + new Date().toLocaleDateString('id-ID') + ".csv");
         link.style.visibility = 'hidden';
         document.body.appendChild(link);
         link.click();
