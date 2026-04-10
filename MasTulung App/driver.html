@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Portal Driver - TulangTulung Gombong</title>
     
-   <link rel="manifest" href="manifest-driver.json?v=6">
+   <link rel="manifest" href="manifest-driver.json?v=5">
     <meta name="theme-color" content="#2c3e50">
     <link rel="icon" href="logo-driver.png">
 <link rel="apple-touch-icon" href="logo-driver.png">
@@ -692,7 +692,7 @@
         } catch(e) { console.error('Auto-login gagal:', e); }
     }
 
-    if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(()=>{}); }); }
+    if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw-driver.js').catch(()=>{}); }); }
 
     let namaDriverAktif = "", waDriverAktif = "", saldoDriverAktif = 0; let orderYangSudahBunyi = new Set(); let latestOrdersData = []; let currentLang = "ngapak";
     const BIAYA_PLATFORM = 1000; 
