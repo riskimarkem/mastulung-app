@@ -1,8 +1,9 @@
 {
-  "id": "tulangtulung_customer_v1",
+  "id": "tulangtulung-customer",
   "name": "TulangTulung Gombong",
   "short_name": "TulangTulung",
-  "start_url": "./index.html",
+  "start_url": "/index.html",
+  "scope": "/index.html",
   "display": "standalone",
   "background_color": "#F3F5F8",
   "theme_color": "#2c3e50",
