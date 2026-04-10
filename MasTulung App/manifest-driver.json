@@ -1,11 +1,13 @@
 {
-  "id": "ttg_driver_app_v1",
+  "id": "ttg_driver_v2",
   "name": "Portal Driver TulangTulung",
   "short_name": "TTG Driver",
-  "start_url": "/driver.html?app=driver",
+  "start_url": "/driver.html",
+  "scope": "/driver.html",
   "display": "standalone",
   "background_color": "#F0F2F5",
   "theme_color": "#2c3e50",
+  "description": "Aplikasi Khusus Mitra Driver TulangTulung",
   "icons": [
     {
       "src": "logo-driver.png",
