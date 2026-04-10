@@ -1,9 +1,7 @@
 {
-  "id": "ttg_driver_v2",
   "name": "Portal Driver TulangTulung",
   "short_name": "TTG Driver",
-  "start_url": "/driver.html",
-  "scope": "/driver.html",
+  "start_url": "./driver.html",
   "display": "standalone",
   "background_color": "#F0F2F5",
   "theme_color": "#2c3e50",
