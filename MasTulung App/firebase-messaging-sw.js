@@ -26,8 +26,8 @@ messaging.onBackgroundMessage((payload) => {
     const notificationOptions = {
         body: payload.notification?.body || 'Ada pembaruan pesanan untuk Anda.',
         // Ikon yang muncul di notifikasi HP (menggunakan ikon aplikasi Anda)
-        icon: 'https://cdn-icons-png.flaticon.com/512/3063/3063822.png',
-        badge: 'https://cdn-icons-png.flaticon.com/512/3063/3063822.png',
+        icon: 'logo-driver.png',
+        badge: 'logo-driver.png',
         // Getaran HP saat notif masuk
         vibrate: [200, 100, 200, 100, 200],
         data: {
