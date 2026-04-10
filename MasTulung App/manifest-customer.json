@@ -1,11 +1,13 @@
-
 {
+  "id": "/app-customer/",
   "name": "TulangTulung Gombong",
   "short_name": "TulangTulung",
-  "start_url": "./index.html",
+  "start_url": "./index.html?app=customer",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#F3F5F8",
   "theme_color": "#2c3e50",
+  "description": "Layanan Asli Wong Gombong",
   "icons": [
     {
       "src": "logo-pelanggan.png",
