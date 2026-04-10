@@ -1,9 +1,7 @@
 {
-  "id": "ttg_customer_v2",
   "name": "TulangTulung Gombong",
   "short_name": "TulangTulung",
-  "start_url": "/index.html",
-  "scope": "/",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#F3F5F8",
   "theme_color": "#2c3e50",
