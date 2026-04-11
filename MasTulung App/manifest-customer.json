@@ -9,7 +9,11 @@
   "background_color": "#F3F5F8",
   "theme_color": "#2c3e50",
   "description": "Layanan Asli Wong Gombong - Antar Jemput & Titip Belanja",
-  "categories": ["lifestyle", "shopping", "transportation"],
+  "categories": [
+    "lifestyle",
+    "shopping",
+    "transportation"
+  ],
   "icons": [
     {
       "src": "logo-pelanggan.png",
