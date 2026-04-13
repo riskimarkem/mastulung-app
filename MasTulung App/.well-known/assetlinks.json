@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.tulangtulung.customer",
+      "sha256_cert_fingerprints": [
+        "D2:78:B3:75:51:86:8C:A1:D4:FC:92:C4:C7:3A:92:A0:43:82:7A:34:BC:F5:0A:C3:B2:A9:40:77:9B:74:89:56"
+      ]
+    }
+  }
+]
