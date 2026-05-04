@@ -198,16 +198,18 @@
     // BAGIAN 1: MANAJEMEN DRIVER 
     // ==========================================
     function muatDataDriver() {
+        console.log("Memulai penarikan data driver...");
         const driversRef = ref(database, 'drivers');
         onValue(driversRef, (snapshot) => {
+            console.log("Respons database driver diterima:", snapshot.val());
             allDriversData = [];
             let totalAktif = 0;
             let totalSaldoSistem = 0;
 
             if(snapshot.exists()) {
                 snapshot.forEach((child) => { 
-                    const data = child.val();
-                    data.wa = child.key; // Simpan WA sbg key
+                    const data = child.val() || {};
+                    data.wa = child.key || '00'; // Simpan WA sbg key
                     allDriversData.push(data); 
 
                     // Hitung Statistik
@@ -221,6 +223,8 @@
             document.getElementById('adminStatSaldo').innerText = "Rp " + totalSaldoSistem.toLocaleString('id-ID');
 
             renderDrivers(); // Panggil fungsi cetak UI
+        }, (error) => {
+            console.error("Gagal menarik data driver:", error);
         });
     }
 
@@ -233,8 +237,8 @@
 
         // Saring array driver berdasarkan input pencarian
         const filteredDrivers = allDriversData.filter(d => 
-            d.nama.toLowerCase().includes(keyword) || 
-            d.wa.includes(keyword)
+            (d.nama || '').toLowerCase().includes(keyword) || 
+            (d.wa || '').includes(keyword)
         );
 
         if(filteredDrivers.length === 0) {
@@ -242,21 +246,23 @@
         }
 
         filteredDrivers.forEach((data) => {
-            const wa = data.wa;
-            let badgeClass = data.status === 'aktif' ? 'bg-aktif' : data.status === 'suspend' ? 'bg-suspend' : 'bg-pending';
+            const wa = data.wa || '00';
+            const safeStatus = data.status || 'pending';
+            
+            let badgeClass = safeStatus === 'aktif' ? 'bg-aktif' : safeStatus === 'suspend' ? 'bg-suspend' : 'bg-pending';
             let saldoText = (data.saldo || 0).toLocaleString('id-ID');
 
             let tombolAksi = "";
-            if(data.status === 'pending') {
+            if(safeStatus === 'pending') {
                 tombolAksi = `<button class="btn-setuju" onclick="ubahStatusDriver('${wa}', 'aktif')">✅ Setujui (Aktifkan)</button>`;
-            } else if(data.status === 'aktif') {
+            } else if(safeStatus === 'aktif') {
                 tombolAksi = `<button class="btn-suspend" onclick="ubahStatusDriver('${wa}', 'suspend')">⛔ Suspend Akun</button>`;
-            } else if(data.status === 'suspend') {
+            } else if(safeStatus === 'suspend') {
                 tombolAksi = `<button class="btn-setuju" onclick="ubahStatusDriver('${wa}', 'aktif')">✅ Buka Suspend (Aktifkan)</button>`;
             }
 
             let formTopUp = "";
-            if(data.status !== 'pending') {
+            if(safeStatus !== 'pending') {
                 formTopUp = `
                     <div class="topup-box">
                         <div style="font-size:12px; margin-bottom:5px; font-weight:800; color:#1e7e34;">Isi Saldo Driver:</div>
@@ -267,14 +273,14 @@
             }
 
             const card = document.createElement('div');
-            card.className = `card ${data.status}`;
+            card.className = `card ${safeStatus}`;
             card.innerHTML = `
                 <div class="card-title">
-                    <span>${data.nama}</span>
-                    <span class="badge ${badgeClass}">${data.status.toUpperCase()}</span>
+                    <span>${data.nama || 'Tanpa Nama'}</span>
+                    <span class="badge ${badgeClass}">${safeStatus.toUpperCase()}</span>
                 </div>
                 <div class="card-detail">📱 WA: <b><a href="https://wa.me/62${wa.substring(1)}" target="_blank" style="color:#2980b9; text-decoration:none;">${wa}</a></b></div>
-                <div class="card-detail">📅 Daftar: ${data.tanggal_daftar}</div>
+                <div class="card-detail">📅 Daftar: ${data.tanggal_daftar || '-'}</div>
                 <div class="saldo-text">Saldo: Rp ${saldoText}</div>
                 
                 ${formTopUp}
@@ -318,8 +324,10 @@
     // BAGIAN 2: PANTAU ORDERAN & EXPORT EXCEL
     // ==========================================
     function muatDataOrder() {
+        console.log("Memulai penarikan data pesanan...");
         const ordersRef = ref(database, 'orders');
         onValue(ordersRef, (snapshot) => {
+            console.log("Respons database pesanan diterima:", snapshot.val());
             const listDiv = document.getElementById('listOrders');
             listDiv.innerHTML = "";
             allOrdersData = [];
@@ -327,7 +335,7 @@
             
             if(snapshot.exists()) {
                 snapshot.forEach((child) => { 
-                    const data = child.val();
+                    const data = child.val() || {};
                     data.id = child.key;
                     allOrdersData.push(data); 
 
@@ -352,9 +360,10 @@
             }
 
             allOrdersData.forEach((data) => {
-                let statusColor = data.status === 'selesai' ? '#27ae60' : data.status === 'batal' || data.status === 'batal_cust' ? '#e74c3c' : data.status === 'diambil' ? '#2980b9' : '#f39c12';
+                const safeStatus = data.status || 'pending';
+                let statusColor = safeStatus === 'selesai' ? '#27ae60' : safeStatus === 'batal' || safeStatus === 'batal_cust' ? '#e74c3c' : safeStatus === 'diambil' ? '#2980b9' : '#f39c12';
                 
-                let waktuTampil = data.waktu_order; 
+                let waktuTampil = data.waktu_order || ''; 
                 if (data.timestamp) {
                     const dt = new Date(data.timestamp);
                     const tgl = dt.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
@@ -369,18 +378,20 @@
                     </div>
                 ` : '';
 
+                const customerWA = data.customer_wa || '00';
+
                 const card = document.createElement('div');
                 card.className = "card";
                 card.innerHTML = `
                     <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
                         <span style="font-size:11px; color:#7f8c8d; font-weight:800;">${waktuTampil}</span>
-                        <span style="font-size:11px; font-weight:800; color:${statusColor}; text-transform:uppercase; padding:3px 8px; border-radius:12px; border:1px solid ${statusColor}40; background:${statusColor}10;">${data.status}</span>
+                        <span style="font-size:11px; font-weight:800; color:${statusColor}; text-transform:uppercase; padding:3px 8px; border-radius:12px; border:1px solid ${statusColor}40; background:${statusColor}10;">${safeStatus}</span>
                     </div>
-                    <div class="card-title" style="font-size: 16px;">${data.layanan}</div>
-                    <div class="card-detail">👤 Cust: ${data.customer_nama} (<a href="https://wa.me/62${data.customer_wa.substring(1)}" target="_blank" style="color:#2980b9; text-decoration:none;">${data.customer_wa}</a>)</div>
+                    <div class="card-title" style="font-size: 16px;">${data.layanan || 'Layanan Tidak Diketahui'}</div>
+                    <div class="card-detail">👤 Cust: ${data.customer_nama || 'Tanpa Nama'} (<a href="https://wa.me/62${customerWA.substring(1)}" target="_blank" style="color:#2980b9; text-decoration:none;">${customerWA}</a>)</div>
                     <div class="card-detail">🛵 Driver: <b>${data.driver_nama || 'Belum ada'}</b> ${data.rating ? ' (⭐'+data.rating+')' : ''}</div>
                     <div class="card-detail" style="margin-top:12px; background:#f8f9fa; padding:10px; border-radius:6px; border:1px solid #eee;">
-                        ${data.detail_1} <br><span style="color:#bdc3c7;">⬇</span><br> ${data.detail_2}
+                        ${data.detail_1 || '-'} <br><span style="color:#bdc3c7;">⬇</span><br> ${data.detail_2 || '-'}
                     </div>
                     ${data.catatan ? `<div class="card-detail" style="margin-top:8px; color:#d35400; font-weight:700; background:#fff3e0; padding:8px; border-radius:6px;">📝 Catatan: ${data.catatan}</div>` : ''}
                     
@@ -392,6 +403,8 @@
                 `;
                 listDiv.appendChild(card);
             });
+        }, (error) => {
+            console.error("Gagal menarik data pesanan:", error);
         });
     }
 
