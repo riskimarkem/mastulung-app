@@ -12,14 +12,6 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Google Maps Platform -->
-    <script>
-        // ═══════════════════════════════════════════════════════
-        // GANTI "AIzaSyBvW7x7bElI9LUZ0WTRa2yzWYefrRuK9AY" dengan API Key Anda!
-        // Aktifkan: Maps JavaScript API + Geocoding API + Places API
-        // ═══════════════════════════════════════════════════════
-        const GOOGLE_MAPS_API_KEY = "AIzaSyBvW7x7bElI9LUZ0WTRa2yzWYefrRuK9AY";
-    </script>
     <style>
     :root {
         --primary: #2c3e50; 
@@ -333,88 +325,6 @@
     .page { animation: pageIn 0.3s ease-out; }
     .service-card:hover { box-shadow: var(--shadow); border-color: rgba(44, 62, 80, 0.2); }
     #page-about .tracking-card { border: 1px solid var(--border); }
-
-    /* ── MAP PICKER MODAL ── */
-    .map-modal-overlay {
-        position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9999;
-        display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
-        backdrop-filter: blur(3px); animation: fadeIn 0.2s ease;
-    }
-    .map-modal-overlay.hidden { display: none; }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    .map-modal-sheet {
-        background: white; width: 100%; max-width: 480px; border-radius: 24px 24px 0 0;
-        overflow: hidden; animation: slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1);
-        max-height: 90vh; display: flex; flex-direction: column;
-    }
-    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-    .map-modal-handle { width: 40px; height: 4px; background: #ddd; border-radius: 4px; margin: 12px auto 4px; flex-shrink: 0; }
-    .map-modal-header {
-        display: flex; align-items: center; gap: 10px; padding: 8px 18px 14px;
-        border-bottom: 1.5px solid var(--border); flex-shrink: 0;
-    }
-    .map-modal-title { font-size: 15px; font-weight: 800; color: var(--text); flex: 1; }
-    .map-modal-close {
-        width: 32px; height: 32px; border: none; background: var(--border); border-radius: 50%;
-        font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center;
-        color: var(--text2); font-weight: 700;
-    }
-    #map-picker-container { flex: 1; min-height: 300px; position: relative; isolation: isolate; }
-    .map-pin-center {
-        position: absolute; top: 50%; left: 50%; transform: translate(-50%, -100%) translateZ(0);
-        font-size: 44px; line-height: 1; pointer-events: none; z-index: 999999;
-        filter: drop-shadow(0 6px 10px rgba(0,0,0,0.45));
-        animation: pinBounce 0.4s cubic-bezier(0.34,1.56,0.64,1);
-        will-change: transform; backface-visibility: hidden;
-    }
-    @keyframes pinBounce {
-        from { transform: translate(-50%,-130%) translateZ(0) scale(0.6); opacity: 0; }
-        to   { transform: translate(-50%,-100%) translateZ(0) scale(1); opacity: 1; }
-    }
-    /* Titik presisi persis di tengah peta -- ini koordinat yang akan dipakai */
-    .map-pin-dot {
-        position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) translateZ(0);
-        width: 10px; height: 10px; border-radius: 50%; background: var(--primary, #FF5722);
-        border: 2px solid #fff; box-shadow: 0 0 0 4px rgba(255,87,34,0.25), 0 1px 3px rgba(0,0,0,0.4);
-        z-index: 999998; pointer-events: none;
-        animation: dotPulse 1.6s ease-in-out infinite;
-    }
-    @keyframes dotPulse {
-        0%, 100% { box-shadow: 0 0 0 4px rgba(255,87,34,0.25), 0 1px 3px rgba(0,0,0,0.4); }
-        50%      { box-shadow: 0 0 0 8px rgba(255,87,34,0.12), 0 1px 3px rgba(0,0,0,0.4); }
-    }
-    .map-modal-footer { padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; background: white; }
-    .map-addr-box {
-        background: var(--bg); border: 2px solid var(--border); border-radius: var(--radius-sm);
-        padding: 11px 14px; font-size: 13px; color: var(--text); font-weight: 600; line-height: 1.4;
-        min-height: 46px; display: flex; align-items: center; gap: 8px;
-    }
-    .map-addr-icon { font-size: 16px; flex-shrink: 0; }
-    .map-addr-text { flex: 1; color: var(--text2); }
-    .map-search-row { display: flex; gap: 8px; }
-    .map-search-input {
-        flex: 1; padding: 11px 14px; border: 2px solid var(--border); border-radius: var(--radius-sm);
-        font-size: 14px; font-family: inherit; background: var(--bg); color: var(--text);
-        outline: none; font-weight: 600; transition: border-color 0.2s;
-    }
-    .map-search-input:focus { border-color: var(--primary); }
-    .map-search-btn {
-        padding: 11px 14px; background: var(--primary); color: white; border: none;
-        border-radius: var(--radius-sm); font-size: 13px; font-weight: 700; cursor: pointer;
-        white-space: nowrap; font-family: inherit;
-    }
-    .btn-pakai-lokasi {
-        background: var(--primary); color: white; border: none; border-radius: var(--radius-sm);
-        padding: 15px; font-size: 15px; font-weight: 800; font-family: inherit; cursor: pointer;
-        width: 100%; transition: all 0.2s; letter-spacing: -0.2px;
-    }
-    .btn-pakai-lokasi:active { transform: scale(0.97); opacity: 0.9; }
-    .btn-gps-map {
-        background: var(--primary-light); color: var(--primary); border: 2px solid var(--border);
-        border-radius: var(--radius-sm); padding: 10px; font-size: 13px; font-weight: 700;
-        font-family: inherit; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
-    }
-    .map-loading-text { font-size: 12px; color: var(--text3); text-align: center; padding: 4px 0; font-weight: 600; }
     </style>
 </head>
 <body>
@@ -560,18 +470,18 @@
                         <label class="form-section-label" id="labelDetail1">Detail 1</label>
                         <div class="input-with-btn">
                             <textarea class="form-textarea" id="inputDetail1" rows="2"></textarea>
-                            <button class="btn-lokasi" onclick="bukaMapPicker('inputDetail1', 'detail1')" title="Pilih Lokasi di Peta">🗺️</button>
+                            <button class="btn-lokasi" onclick="ambilLokasiAkurat('inputDetail1')" title="Ambil Lokasi Saat Ini">📍</button>
                         </div>
-                        <div class="form-hint-loc" id="ui-loc-hint1">💡 Pencet 🗺️ nek arep milih titik lokasine nang peta.</div>
+                        <div class="form-hint-loc" id="ui-loc-hint1">💡 Pencet 📍 nek arep nggunakna titik lokasimu sing siki.</div>
                     </div>
                     
                     <div class="form-group">
                         <label class="form-section-label" id="labelDetail2">Detail 2</label>
                         <div class="input-with-btn">
                             <textarea class="form-textarea" id="inputDetail2" rows="2"></textarea>
-                            <button class="btn-lokasi" onclick="bukaMapPicker('inputDetail2', 'detail2')" title="Pilih Lokasi di Peta">🗺️</button>
+                            <button class="btn-lokasi" onclick="ambilLokasiAkurat('inputDetail2')" title="Ambil Lokasi Saat Ini">📍</button>
                         </div>
-                        <div class="form-hint-loc" id="ui-loc-hint2">💡 Pencet 🗺️ nek arep milih titik lokasine nang peta.</div>
+                        <div class="form-hint-loc" id="ui-loc-hint2">💡 Pencet 📍 nek arep nggunakna titik lokasimu sing siki.</div>
                     </div>
                     
                     <div class="form-group">
@@ -687,47 +597,6 @@
             <div class="nav-item" id="tab-order" onclick="navigasiKe('order')" style="position:relative;"><div class="nav-icon-wrap">🛵</div><div class="nav-label" id="nav-order">Pesenan</div></div>
             <div class="nav-item" id="tab-history" onclick="navigasiKe('history')"><div class="nav-icon-wrap">🕒</div><div class="nav-label" id="nav-history">Riwayat</div></div>
             <div class="nav-item" id="tab-profile" onclick="navigasiKe('profile')"><div class="nav-icon-wrap">👤</div><div class="nav-label" id="nav-profile">Profil</div></div>
-        </div>
-    </div>
-</div>
-
-<!-- ═══════════════════════════════════════ -->
-<!--          MAP PICKER MODAL               -->
-<!-- ═══════════════════════════════════════ -->
-<div id="modal-map-picker" class="map-modal-overlay hidden">
-    <div class="map-modal-sheet">
-        <div class="map-modal-handle"></div>
-        <div class="map-modal-header">
-            <div class="map-modal-title" id="map-modal-title">📍 Pilih Titik Lokasi</div>
-            <button class="map-modal-close" onclick="tutupMapPicker()">✕</button>
-        </div>
-        <!-- Map container -->
-        <div id="map-picker-container">
-            <div class="map-pin-dot"></div>
-            <div class="map-pin-center" id="map-center-pin">📍</div>
-        </div>
-        <!-- Footer controls -->
-        <div class="map-modal-footer">
-            <!-- Search bar -->
-            <div class="map-search-row">
-                <input class="map-search-input" id="map-search-input" type="text" placeholder="Cari nama jalan atau tempat..." />
-                <button class="map-search-btn" onclick="cariLokasiDiPeta()">🔍 Cari</button>
-            </div>
-            <!-- Current address display -->
-            <div class="map-addr-box">
-                <span class="map-addr-icon">🗺️</span>
-                <span class="map-addr-text" id="map-addr-text">Geser peta untuk pilih lokasi...</span>
-            </div>
-            <!-- GPS button + confirm button -->
-            <div style="display:flex; gap:8px;">
-                <button class="btn-gps-map" onclick="pakaiGPSSaatIni()" style="flex:0 0 auto; padding: 10px 14px;">
-                    🎯 GPS
-                </button>
-                <button class="btn-pakai-lokasi" id="btn-pakai-lokasi" onclick="konfirmasiLokasiPeta()">
-                    ✓ Pakai Lokasi Ini
-                </button>
-            </div>
-            <div class="map-loading-text" id="map-loading-text"></div>
         </div>
     </div>
 </div>
@@ -1326,12 +1195,7 @@
             waktu_order: new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}),
             timestamp: Date.now(), customer_nama: userAktif.nama, customer_wa: userAktif.wa,
             layanan: layananAktif, detail_1: d1, detail_2: d2,
-            catatan: document.getElementById('inputCatatan').value, status:"terbuka", driver_nama:"",
-            // Simpan koordinat GPS untuk tampilan peta driver
-            pickup_lat: window._mapCoords?.detail1?.lat || null,
-            pickup_lng: window._mapCoords?.detail1?.lng || null,
-            dropoff_lat: window._mapCoords?.detail2?.lat || null,
-            dropoff_lng: window._mapCoords?.detail2?.lng || null,
+            catatan: document.getElementById('inputCatatan').value, status:"terbuka", driver_nama:""
         };
         
         set(newRef, data).then(() => {
@@ -1339,303 +1203,10 @@
             document.getElementById('inputDetail1').value = "";
             document.getElementById('inputDetail2').value = "";
             document.getElementById('inputCatatan').value = "";
-            // Reset koordinat tersimpan
-            window._mapCoords = {};
             document.getElementById('page-form').classList.add('hidden');
             navigasiKe('order');
         }).catch(e=>{alert("Error: "+e);btn.disabled=false;});
     }
-
-    // ═══════════════════════════════════════════════════════════
-    //   MAP PICKER — Customer pilih titik jemput/tujuan di peta
-    // ═══════════════════════════════════════════════════════════
-
-    // State
-    window._mapCoords = {};         // Simpan koordinat tiap field
-    let _pickerMap = null;          // Instance Google Maps
-    let _pickerGeocoder = null;     // Geocoder instance
-    let _pickerInputId = null;      // inputDetail1 atau inputDetail2
-    let _pickerFieldKey = null;     // 'detail1' atau 'detail2'
-    let _geocodeTimeout = null;     // Debounce timeout
-    let _myLocationMarker = null;   // Marker titik biru "lokasi saya" (GPS asli)
-    let _myLocationCircle = null;   // Lingkaran akurasi GPS
-    let _mapsLoaded = false;        // Cek apakah Maps sudah dimuat
-
-    // Load Google Maps Script on-demand (hemat kuota — hanya dimuat kalau dipencet)
-    function muatGoogleMaps(callback) {
-        if (_mapsLoaded && window.google && window.google.maps) { callback(); return; }
-        if (document.getElementById('gmaps-script')) {
-            // Sudah dalam proses loading
-            const wait = setInterval(() => {
-                if (window.google && window.google.maps) { clearInterval(wait); _mapsLoaded = true; callback(); }
-            }, 200);
-            return;
-        }
-        const script = document.createElement('script');
-        script.id = 'gmaps-script';
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places&language=id`;
-        script.async = true;
-        script.onload = () => { _mapsLoaded = true; callback(); };
-        script.onerror = () => alert('Gagal memuat Google Maps. Periksa API Key atau koneksi internet.');
-        document.head.appendChild(script);
-    }
-
-    // Buka modal map picker
-    window.bukaMapPicker = function(inputId, fieldKey) {
-        _pickerInputId = inputId;
-        _pickerFieldKey = fieldKey;
-
-        // Tampilkan modal DULU sebelum update element di dalamnya
-        document.getElementById('modal-map-picker').classList.remove('hidden');
-
-        // Setelah modal visible, update elemen-elemennya
-        const t = langDict[currentLang];
-        const judul = fieldKey === 'detail1'
-            ? `📍 ${t.t_jemput || 'Titik Jemput'}`
-            : `🏁 ${t.t_antar || 'Titik Tujuan'}`;
-
-        const titleEl = document.getElementById('map-modal-title');
-        const addrEl  = document.getElementById('map-addr-text');
-        const loadEl  = document.getElementById('map-loading-text');
-        const pinEl   = document.getElementById('map-center-pin');
-
-        if (titleEl) titleEl.textContent = judul;
-        if (addrEl)  addrEl.textContent  = 'Memuat peta...';
-        if (loadEl)  loadEl.textContent  = '';
-        if (pinEl)   pinEl.textContent   = fieldKey === 'detail1' ? '📍' : '🏁';
-
-        muatGoogleMaps(() => { inisialisasiMapPicker(); });
-    }
-
-    // Tutup modal
-    window.tutupMapPicker = function() {
-        document.getElementById('modal-map-picker').classList.add('hidden');
-    }
-
-    // Pastikan pin (📍/🏁) dan titik presisi selalu jadi elemen PALING ATAS
-    // (child terakhir) di dalam container peta. Dipanggil berkali-kali (saat
-    // modal dibuka + beberapa saat sesudahnya) karena Google Maps bisa
-    // menyisipkan ulang elemen internalnya secara async setelah peta
-    // disembunyikan/ditampilkan, yang bisa menutupi pin kita lagi.
-    function paksaPinDiAtas() {
-        const container = document.getElementById('map-picker-container');
-        if (!container) return;
-        const dotEl = container.querySelector('.map-pin-dot');
-        if (dotEl) container.appendChild(dotEl);
-        const pinElTop = document.getElementById('map-center-pin');
-        if (pinElTop) container.appendChild(pinElTop);
-    }
-
-    // Inisialisasi Google Maps instance
-    function inisialisasiMapPicker() {
-        const container = document.getElementById('map-picker-container');
-
-        // Pusat default: Gombong, Kebumen, Jawa Tengah
-        const GOMBONG_CENTER = { lat: -7.6057, lng: 109.5140 };
-
-        // Cek apakah sudah ada koordinat sebelumnya untuk field ini
-        const prevCoord = window._mapCoords[_pickerFieldKey];
-        const startCenter = prevCoord ? { lat: prevCoord.lat, lng: prevCoord.lng } : GOMBONG_CENTER;
-
-        if (!_pickerMap) {
-            _pickerMap = new google.maps.Map(container, {
-                center: startCenter,
-                zoom: prevCoord ? 17 : 15,
-                disableDefaultUI: true,
-                zoomControl: true,
-                gestureHandling: 'greedy',
-                styles: [
-                    { featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] },
-                    { featureType: 'transit', stylers: [{ visibility: 'simplified' }] }
-                ]
-            });
-            _pickerGeocoder = new google.maps.Geocoder();
-
-            // Debounced geocode saat peta digeser (idle = selesai digeser)
-            _pickerMap.addListener('idle', () => {
-                clearTimeout(_geocodeTimeout);
-                const center = _pickerMap.getCenter();
-                document.getElementById('map-addr-text').textContent = '🔍 Mencari alamat...';
-                _geocodeTimeout = setTimeout(() => reverseGeocode(center.lat(), center.lng()), 600);
-            });
-        } else {
-            // Pindah ke koordinat yang sesuai
-            _pickerMap.setCenter(startCenter);
-            _pickerMap.setZoom(prevCoord ? 17 : 15);
-            // Peta sempat disembunyikan (display:none) saat modal ditutup --
-            // paksa Google Maps menghitung ulang ukuran & redraw layer internalnya.
-            google.maps.event.trigger(_pickerMap, 'resize');
-            _pickerMap.setCenter(startCenter);
-        }
-
-        // Jaga-jaga: paksa pin & dot SELALU jadi child paling akhir di container,
-        // setiap kali modal dibuka (bukan cuma sekali saat map pertama dibuat).
-        // Google Maps suka menyisipkan ulang elemen internalnya saat peta
-        // disembunyikan lalu ditampilkan lagi, sehingga urutan DOM bisa berubah
-        // dan pin kita ketutup lagi.
-        paksaPinDiAtas();
-        setTimeout(paksaPinDiAtas, 150);
-        setTimeout(paksaPinDiAtas, 500);
-
-        // Trigger reverse geocode untuk posisi awal
-        const center = _pickerMap.getCenter();
-        reverseGeocode(center.lat(), center.lng());
-
-        // Setup autocomplete pada search input
-        setupAutocomplete();
-
-        // Tampilkan titik biru lokasi GPS asli (otomatis, tidak perlu klik GPS)
-        tampilkanLokasiSayaDiPeta();
-    }
-
-    // Tampilkan marker titik biru "lokasi saya saat ini" (GPS asli) di peta.
-    // Marker ini NEMPEL di koordinat asli sehingga ikut diam saat peta digeser
-    // -- berbeda dari pin tengah (📍) yang fixed di tengah layar untuk memilih titik.
-    function tampilkanLokasiSayaDiPeta() {
-        if (!navigator.geolocation || !_pickerMap) return;
-        navigator.geolocation.getCurrentPosition(pos => {
-            const lat = pos.coords.latitude;
-            const lng = pos.coords.longitude;
-            const akurasi = pos.coords.accuracy || 30; // meter
-            const posisi = { lat, lng };
-
-            // Ikon titik biru ala Google Maps (lingkaran biru + border putih)
-            const iconTitikBiru = {
-                path: google.maps.SymbolPath.CIRCLE,
-                scale: 8,
-                fillColor: '#4285F4',
-                fillOpacity: 1,
-                strokeColor: '#FFFFFF',
-                strokeWeight: 2.5,
-            };
-
-            if (_myLocationMarker) {
-                _myLocationMarker.setPosition(posisi);
-            } else {
-                _myLocationMarker = new google.maps.Marker({
-                    position: posisi,
-                    map: _pickerMap,
-                    icon: iconTitikBiru,
-                    zIndex: 5,
-                    clickable: false,
-                    title: 'Lokasi Anda saat ini',
-                });
-            }
-
-            // Lingkaran radius akurasi GPS (mirip halo biru transparan di Google Maps)
-            if (_myLocationCircle) {
-                _myLocationCircle.setCenter(posisi);
-                _myLocationCircle.setRadius(akurasi);
-            } else {
-                _myLocationCircle = new google.maps.Circle({
-                    center: posisi,
-                    radius: akurasi,
-                    map: _pickerMap,
-                    strokeColor: '#4285F4',
-                    strokeOpacity: 0.5,
-                    strokeWeight: 1,
-                    fillColor: '#4285F4',
-                    fillOpacity: 0.15,
-                    clickable: false,
-                    zIndex: 4,
-                });
-            }
-        }, () => {
-            // Diam-diam gagal (tidak perlu alert) -- pengguna tetap bisa pilih lokasi manual.
-            // Tombol "🎯 GPS" tetap tersedia untuk coba ulang / kalau mau pindah ke lokasi GPS.
-        }, { enableHighAccuracy: true, timeout: 8000, maximumAge: 15000 });
-    }
-
-    // Reverse geocode: koordinat → nama alamat
-    function reverseGeocode(lat, lng) {
-        if (!_pickerGeocoder) return;
-        _pickerGeocoder.geocode({ location: { lat, lng } }, (results, status) => {
-            const addrEl = document.getElementById('map-addr-text');
-            if (status === 'OK' && results[0]) {
-                addrEl.textContent = results[0].formatted_address;
-            } else {
-                addrEl.textContent = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
-            }
-        });
-    }
-
-    // Setup Places Autocomplete pada search input
-    function setupAutocomplete() {
-        const input = document.getElementById('map-search-input');
-        if (!input || input.dataset.acReady) return;
-        input.dataset.acReady = '1';
-
-        const ac = new google.maps.places.Autocomplete(input, {
-            componentRestrictions: { country: 'id' },
-            fields: ['geometry', 'formatted_address', 'name'],
-        });
-        ac.addListener('place_changed', () => {
-            const place = ac.getPlace();
-            if (place.geometry && place.geometry.location) {
-                _pickerMap.setCenter(place.geometry.location);
-                _pickerMap.setZoom(17);
-                const addrEl = document.getElementById('map-addr-text');
-                addrEl.textContent = place.formatted_address || place.name || '';
-            }
-        });
-    }
-
-    // Cari lokasi dengan tombol 🔍
-    window.cariLokasiDiPeta = function() {
-        const q = document.getElementById('map-search-input').value.trim();
-        if (!q || !_pickerGeocoder) return;
-        document.getElementById('map-loading-text').textContent = 'Mencari...';
-        _pickerGeocoder.geocode({ address: q + ', Kebumen, Jawa Tengah, Indonesia' }, (results, status) => {
-            document.getElementById('map-loading-text').textContent = '';
-            if (status === 'OK' && results[0]) {
-                _pickerMap.setCenter(results[0].geometry.location);
-                _pickerMap.setZoom(17);
-            } else {
-                alert('Lokasi tidak ditemukan. Coba nama yang lebih spesifik.');
-            }
-        });
-    }
-
-    // Pakai GPS saat ini di dalam modal peta
-    window.pakaiGPSSaatIni = function() {
-        if (!navigator.geolocation) { alert('GPS tidak didukung browser ini.'); return; }
-        document.getElementById('map-loading-text').textContent = '🎯 Mencari posisi GPS...';
-        navigator.geolocation.getCurrentPosition(pos => {
-            document.getElementById('map-loading-text').textContent = '';
-            const latlng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
-            _pickerMap.setCenter(latlng);
-            _pickerMap.setZoom(18);
-            tampilkanLokasiSayaDiPeta(); // refresh titik biru juga
-        }, () => {
-            document.getElementById('map-loading-text').textContent = '';
-            alert('Gagal ambil GPS. Pastikan izin lokasi aktif.');
-        }, { enableHighAccuracy: true, timeout: 10000 });
-    }
-
-    // Konfirmasi: simpan lokasi ke field dan tutup modal
-    window.konfirmasiLokasiPeta = function() {
-        if (!_pickerMap) return;
-        const center = _pickerMap.getCenter();
-        const lat = center.lat();
-        const lng = center.lng();
-        const addr = document.getElementById('map-addr-text').textContent;
-
-        // Simpan koordinat
-        window._mapCoords[_pickerFieldKey] = { lat, lng };
-
-        // Update textarea dengan alamat yang terbaca
-        const inputEl = document.getElementById(_pickerInputId);
-        if (inputEl) inputEl.value = addr;
-
-        tutupMapPicker();
-    }
-
-    // Cek Enter pada search input
-    document.getElementById('map-search-input').addEventListener('keydown', e => {
-        if (e.key === 'Enter') { e.preventDefault(); cariLokasiDiPeta(); }
-    });
-
-
 
     window.batalPesenanRealtime = function(orderId) {
         if(confirm(currentLang==='en'?'Are you sure you want to cancel?':(currentLang==='ngapak'?'Tenane arep dibatalna?':'Naha leres badé ngabolaykeun pesenan ieu?')))
