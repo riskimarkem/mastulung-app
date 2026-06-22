@@ -12,6 +12,13 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        // ═══════════════════════════════════════════════════════
+        // GANTI "AIzaSyBvW7x7bElI9LUZ0WTRa2yzWYefrRuK9AY" dengan API Key Anda!
+        // (sama dengan yang di index.html)
+        // ═══════════════════════════════════════════════════════
+        const GOOGLE_MAPS_API_KEY = "AIzaSyBvW7x7bElI9LUZ0WTRa2yzWYefrRuK9AY";
+    </script>
     <style>
         :root { 
             --primary: #2c3e50; --primary-dark: #1a252f; --primary-deep: #11181f; --primary-light: #ebf0f5; 
@@ -239,6 +246,29 @@
         
         .hidden { display:none !important; }
         .mt10 { margin-top:10px; } .mt12 { margin-top:12px; } .mt16 { margin-top:16px; }
+
+        /* ── MAP VIEW MODAL (Driver) ── */
+        .map-modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.65); z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; backdrop-filter:blur(3px); animation:fadeInD 0.2s ease; }
+        .map-modal-overlay.hidden { display:none; }
+        @keyframes fadeInD { from{opacity:0;} to{opacity:1;} }
+        .map-modal-sheet { background:white; width:100%; max-width:480px; border-radius:24px 24px 0 0; overflow:hidden; animation:slideUpD 0.3s cubic-bezier(0.34,1.56,0.64,1); max-height:92vh; display:flex; flex-direction:column; }
+        @keyframes slideUpD { from{transform:translateY(100%);} to{transform:translateY(0);} }
+        .map-modal-handle { width:40px; height:4px; background:#ddd; border-radius:4px; margin:12px auto 4px; flex-shrink:0; }
+        .map-modal-header { display:flex; align-items:center; gap:10px; padding:8px 18px 14px; border-bottom:1.5px solid var(--border); flex-shrink:0; }
+        .map-modal-title { font-size:15px; font-weight:800; color:var(--text); flex:1; }
+        .map-modal-close { width:32px; height:32px; border:none; background:var(--border); border-radius:50%; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--text2); font-weight:700; }
+        #map-view-container { flex:1; min-height:340px; }
+        .map-modal-footer { padding:14px 16px; display:flex; flex-direction:column; gap:8px; flex-shrink:0; background:white; }
+        .map-route-info { background:var(--primary-light); border-radius:12px; padding:12px 14px; font-size:13px; }
+        .map-route-row { display:flex; align-items:flex-start; gap:8px; padding:4px 0; }
+        .map-route-dot { font-size:18px; line-height:1.2; flex-shrink:0; }
+        .map-route-label { font-size:10px; font-weight:800; color:var(--text3); text-transform:uppercase; letter-spacing:0.5px; display:block; }
+        .map-route-val { font-size:13px; font-weight:700; color:var(--text); line-height:1.4; }
+        .map-actions-row { display:flex; gap:8px; }
+        .btn-navigate { flex:1; background:#34A853; color:white; border:none; border-radius:12px; padding:14px; font-size:14px; font-weight:800; font-family:inherit; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; }
+        .btn-navigate.blue { background:#4285F4; }
+        .btn-navigate:active { opacity:0.85; transform:scale(0.97); }
+        .map-no-coord { text-align:center; padding:40px 20px; color:var(--text3); font-size:14px; font-weight:600; }
     </style>
 </head>
 <body>
@@ -567,6 +597,26 @@
                 <div class="nav-icon-wrap">⚙️</div>
                 <div class="nav-label" id="nav-profile">Profil</div>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!--       MAP VIEW MODAL — DRIVER           -->
+<!-- ═══════════════════════════════════════ -->
+<div id="modal-map-view" class="map-modal-overlay hidden">
+    <div class="map-modal-sheet">
+        <div class="map-modal-handle"></div>
+        <div class="map-modal-header">
+            <div class="map-modal-title" id="map-view-title">🗺️ Rute Orderan</div>
+            <button class="map-modal-close" onclick="tutupMapView()">✕</button>
+        </div>
+        <!-- Map container -->
+        <div id="map-view-container"></div>
+        <!-- Info rute + tombol navigasi -->
+        <div class="map-modal-footer" id="map-view-footer">
+            <div class="map-route-info" id="map-view-route-info"></div>
+            <div class="map-actions-row" id="map-view-actions"></div>
         </div>
     </div>
 </div>
@@ -1023,6 +1073,7 @@
                         ${data.catatan ? `<div class="oc-note">📝 ${t.lblNote}: ${data.catatan}</div>` : ''}
                         <div class="oc-note-bottom">${t.noteAktif}</div>
                         <button class="btn-wa-chat" onclick="chatUlang('${data.customer_wa}')">${t.btnWa}</button>
+                        ${(data.pickup_lat && data.pickup_lng) ? `<button class="btn-wa-chat" style="background:#E8F5E9;color:#1B5E20;border-color:#A5D6A7;margin-top:6px;" onclick="bukaPetaOrderan('${data.pickup_lat}','${data.pickup_lng}','${data.dropoff_lat||''}','${data.dropoff_lng||''}','${(data.detail_1||'').replace(/'/g,'')}','${(data.detail_2||'').replace(/'/g,'')}')">🗺️ Lihat Peta & Navigasi</button>` : ''}
                         <div class="action-grid"><button class="btn-cancel-order" onclick="batalAmbilOrderan('${data.id}')">${t.btnCancelOrder}</button><button class="btn-complete-order" onclick="selesaikanOrderanDriver('${data.id}')">${t.btnCompleteOrder}</button></div>
                     </div>`; listAktif.appendChild(card);
             }
@@ -1035,6 +1086,7 @@
                         <div class="oc-customer"><div class="oc-cust-avatar">👤</div><div><div class="oc-cust-name">${data.customer_nama||''}</div><div class="oc-cust-wa">${t.lblCust}</div></div></div>
                         <div class="oc-route"><div class="oc-route-row"><div class="oc-route-icon" style="background:#FEF9E7;">📍</div><div><div class="oc-route-label">${t.lblDet1}</div><div class="oc-route-val">${data.detail_1||''}</div></div></div><div class="oc-route-row"><div class="oc-route-icon" style="background:#D1FAE5;">🏁</div><div><div class="oc-route-label">${t.lblDet2}</div><div class="oc-route-val">${data.detail_2||''}</div></div></div></div>
                         ${data.catatan ? `<div class="oc-note">📝 ${t.lblNote}: ${data.catatan}</div>` : ''}
+                        ${(data.pickup_lat && data.pickup_lng) ? `<button class="btn-wa-chat" style="background:#E3F2FD;color:#0D47A1;border-color:#90CAF9;margin-bottom:6px;" onclick="bukaPetaOrderan('${data.pickup_lat}','${data.pickup_lng}','${data.dropoff_lat||''}','${data.dropoff_lng||''}','${(data.detail_1||'').replace(/'/g,'')}','${(data.detail_2||'').replace(/'/g,'')}')">🗺️ Preview Peta</button>` : ''}
                         <button class="btn-ambil" onclick="ambilOrderan('${data.id}','${data.customer_wa}','${data.customer_nama}')">${t.btnAmbil}</button>
                     </div>`; listBaru.appendChild(card);
             }
@@ -1104,6 +1156,147 @@
 
     periksaSesiDriver();
     setLang('ngapak');
+
+    // ═══════════════════════════════════════════════════════════
+    //   MAP VIEW — Driver lihat rute orderan di peta
+    // ═══════════════════════════════════════════════════════════
+
+    let _driverMap = null;
+    let _driverMapsLoaded = false;
+    let _pickupMarker = null;
+    let _dropoffMarker = null;
+    let _driverMarker = null;
+    let _directionsRenderer = null;
+    let _directionsService = null;
+
+    function muatGoogleMapsDriver(callback) {
+        if (_driverMapsLoaded && window.google && window.google.maps) { callback(); return; }
+        if (document.getElementById('gmaps-driver-script')) {
+            const wait = setInterval(() => {
+                if (window.google && window.google.maps) { clearInterval(wait); _driverMapsLoaded = true; callback(); }
+            }, 200);
+            return;
+        }
+        const script = document.createElement('script');
+        script.id = 'gmaps-driver-script';
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&language=id`;
+        script.async = true;
+        script.onload = () => { _driverMapsLoaded = true; callback(); };
+        script.onerror = () => alert('Gagal memuat Google Maps. Periksa API Key.');
+        document.head.appendChild(script);
+    }
+
+    window.bukaPetaOrderan = function(pickupLat, pickupLng, dropoffLat, dropoffLng, labelJemput, labelTujuan) {
+        const pLat = parseFloat(pickupLat);
+        const pLng = parseFloat(pickupLng);
+        const dLat = dropoffLat ? parseFloat(dropoffLat) : null;
+        const dLng = dropoffLng ? parseFloat(dropoffLng) : null;
+
+        document.getElementById('modal-map-view').classList.remove('hidden');
+        
+        // Update info rute
+        const routeInfo = document.getElementById('map-view-route-info');
+        routeInfo.innerHTML = `
+            <div class="map-route-row"><span class="map-route-dot">📍</span><div><span class="map-route-label">Titik Jemput</span><span class="map-route-val">${labelJemput || 'Lihat di peta'}</span></div></div>
+            ${dLat ? `<div class="map-route-row"><span class="map-route-dot">🏁</span><div><span class="map-route-label">Tujuan</span><span class="map-route-val">${labelTujuan || 'Lihat di peta'}</span></div></div>` : ''}
+        `;
+
+        // Tombol navigasi
+        const actionsDiv = document.getElementById('map-view-actions');
+        const gMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${pLat},${pLng}&travelmode=driving`;
+        const wazeUrl = `https://waze.com/ul?ll=${pLat},${pLng}&navigate=yes`;
+        actionsDiv.innerHTML = `
+            <button class="btn-navigate" onclick="window.open('${gMapsUrl}','_blank')">🧭 Google Maps</button>
+            <button class="btn-navigate blue" onclick="window.open('${wazeUrl}','_blank')">🔵 Waze</button>
+        `;
+
+        muatGoogleMapsDriver(() => {
+            const container = document.getElementById('map-view-container');
+            
+            const center = { lat: pLat, lng: pLng };
+            
+            if (!_driverMap) {
+                _driverMap = new google.maps.Map(container, {
+                    center, zoom: 15,
+                    disableDefaultUI: true, zoomControl: true,
+                    gestureHandling: 'greedy',
+                });
+                _directionsService = new google.maps.DirectionsService();
+                _directionsRenderer = new google.maps.DirectionsRenderer({
+                    suppressMarkers: false,
+                    polylineOptions: { strokeColor: '#2c3e50', strokeWeight: 5 }
+                });
+                _directionsRenderer.setMap(_driverMap);
+            } else {
+                _driverMap.setCenter(center);
+                _driverMap.setZoom(15);
+                // Hapus marker sebelumnya
+                if (_pickupMarker) _pickupMarker.setMap(null);
+                if (_dropoffMarker) _dropoffMarker.setMap(null);
+                if (_driverMarker) _driverMarker.setMap(null);
+                _directionsRenderer.setMap(_driverMap);
+            }
+
+            // Marker titik jemput (merah)
+            _pickupMarker = new google.maps.Marker({
+                position: { lat: pLat, lng: pLng },
+                map: _driverMap,
+                title: 'Titik Jemput',
+                label: { text: 'J', color: 'white', fontWeight: 'bold' },
+                icon: { path: google.maps.SymbolPath.CIRCLE, scale: 14, fillColor: '#EF4444', fillOpacity: 1, strokeColor: 'white', strokeWeight: 2 }
+            });
+
+            // Marker tujuan (hijau) jika ada
+            if (dLat && dLng) {
+                _dropoffMarker = new google.maps.Marker({
+                    position: { lat: dLat, lng: dLng },
+                    map: _driverMap,
+                    title: 'Tujuan',
+                    label: { text: 'T', color: 'white', fontWeight: 'bold' },
+                    icon: { path: google.maps.SymbolPath.CIRCLE, scale: 14, fillColor: '#10B981', fillOpacity: 1, strokeColor: 'white', strokeWeight: 2 }
+                });
+
+                // Gambar rute jemput → tujuan
+                _directionsService.route({
+                    origin: { lat: pLat, lng: pLng },
+                    destination: { lat: dLat, lng: dLng },
+                    travelMode: google.maps.TravelMode.DRIVING
+                }, (result, status) => {
+                    if (status === 'OK') {
+                        _directionsRenderer.setDirections(result);
+                        _pickupMarker.setMap(null); // Hapus marker manual, pakai marker directions
+                        _dropoffMarker.setMap(null);
+                    }
+                });
+
+                // Sesuaikan bounds untuk tampilkan kedua marker
+                const bounds = new google.maps.LatLngBounds();
+                bounds.extend({ lat: pLat, lng: pLng });
+                bounds.extend({ lat: dLat, lng: dLng });
+                _driverMap.fitBounds(bounds, { top: 40, right: 20, bottom: 20, left: 20 });
+            }
+
+            // Posisi driver saat ini (opsional)
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(pos => {
+                    const dPos = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                    if (_driverMarker) _driverMarker.setMap(null);
+                    _driverMarker = new google.maps.Marker({
+                        position: dPos,
+                        map: _driverMap,
+                        title: 'Posisi Saya',
+                        icon: { path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW, scale: 6, fillColor: '#4285F4', fillOpacity: 1, strokeColor: 'white', strokeWeight: 2, rotation: 0 }
+                    });
+                }, () => {}, { enableHighAccuracy: true, timeout: 5000 });
+            }
+        });
+    }
+
+    window.tutupMapView = function() {
+        document.getElementById('modal-map-view').classList.add('hidden');
+        // Bersihkan directions supaya hemat
+        if (_directionsRenderer) _directionsRenderer.setMap(null);
+    }
 </script>
 </body>
 </html>
