@@ -220,6 +220,21 @@
     .form-body { padding: 22px 18px; }
     .tarif-box { background: #f8faff; border: 1.5px solid #bfdbfe; border-radius: var(--radius-sm); padding: 16px 18px; margin-bottom: 22px; font-size: 13px; color: #1e3a8a; line-height: 1.7; box-shadow: 0 2px 10px rgba(59,130,246,0.1); }
     .tarif-box b { color: #1e40af; }
+
+    /* Kotak estimasi jarak & ongkos -- muncul begitu titik jemput & tujuan sudah dipilih di peta */
+    .estimasi-jarak-box {
+        background: #f0fdf4; border: 1.5px solid #86efac; border-radius: var(--radius-sm);
+        padding: 14px 18px; margin: 4px 0 18px 0;
+        box-shadow: 0 2px 10px rgba(34,197,94,0.12);
+        animation: estimasiPopIn 0.3s ease;
+    }
+    .estimasi-jarak-box.hidden { display: none; }
+    @keyframes estimasiPopIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+    .estimasi-row { display: flex; justify-content: space-between; align-items: center; padding: 3px 0; }
+    .estimasi-label { font-size: 13px; font-weight: 700; color: #166534; }
+    .estimasi-value { font-size: 14px; font-weight: 800; color: #15803d; }
+    .estimasi-value.estimasi-harga { font-size: 17px; color: #166534; }
+    .estimasi-note { font-size: 11px; color: #4d7c5f; margin-top: 6px; font-style: italic; }
     
     .form-section-label { font-size: 12px; font-weight: 800; color: var(--text2); margin-bottom: 8px; display: block; text-transform: uppercase; letter-spacing: 0.5px; }
     
@@ -572,6 +587,18 @@
                             <button class="btn-lokasi" onclick="bukaMapPicker('inputDetail2', 'detail2')" title="Pilih Lokasi di Peta">🗺️</button>
                         </div>
                         <div class="form-hint-loc" id="ui-loc-hint2">💡 Pencet 🗺️ nek arep milih titik lokasine nang peta.</div>
+                    </div>
+
+                    <div id="boxEstimasiJarak" class="estimasi-jarak-box hidden">
+                        <div class="estimasi-row">
+                            <span class="estimasi-label">📏 Jarak</span>
+                            <span class="estimasi-value" id="txtEstimasiJarak">-</span>
+                        </div>
+                        <div class="estimasi-row">
+                            <span class="estimasi-label">💰 Estimasi Ongkos</span>
+                            <span class="estimasi-value estimasi-harga" id="txtEstimasiHarga">-</span>
+                        </div>
+                        <div class="estimasi-note">*Argo: 1-4 km Rp 8.000, selanjutnya +Rp 2.000/km. Jarak garis lurus, ongkos riil bisa beda dirembug karo driver</div>
                     </div>
                     
                     <div class="form-group">
@@ -1090,6 +1117,11 @@
         document.getElementById('inputDetail2').value = '';
         document.getElementById('inputCatatan').value = '';
 
+        // Reset koordinat & estimasi jarak dari order sebelumnya (kalau ada & belum dikirim)
+        window._mapCoords = {};
+        const boxEst = document.getElementById('boxEstimasiJarak');
+        if (boxEst) boxEst.classList.add('hidden');
+
         document.getElementById('page-home').classList.add('hidden');
         document.getElementById('page-form').classList.remove('hidden');
     }
@@ -1321,6 +1353,11 @@
         const btn = document.getElementById('btnKirim');
         btn.innerText = "⏳..."; btn.disabled = true;
         
+        const c1 = window._mapCoords?.detail1;
+        const c2 = window._mapCoords?.detail2;
+        const adaJarak = LAYANAN_PER_KM.includes(layananAktif) && c1 && c2;
+        const jarakKm = adaJarak ? hitungJarakKm(c1.lat, c1.lng, c2.lat, c2.lng) : null;
+
         const newRef = push(ref(database,'orders'));
         const data = {
             waktu_order: new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}),
@@ -1328,10 +1365,13 @@
             layanan: layananAktif, detail_1: d1, detail_2: d2,
             catatan: document.getElementById('inputCatatan').value, status:"terbuka", driver_nama:"",
             // Simpan koordinat GPS untuk tampilan peta driver
-            pickup_lat: window._mapCoords?.detail1?.lat || null,
-            pickup_lng: window._mapCoords?.detail1?.lng || null,
-            dropoff_lat: window._mapCoords?.detail2?.lat || null,
-            dropoff_lng: window._mapCoords?.detail2?.lng || null,
+            pickup_lat: c1?.lat || null,
+            pickup_lng: c1?.lng || null,
+            dropoff_lat: c2?.lat || null,
+            dropoff_lng: c2?.lng || null,
+            // Estimasi jarak & ongkos (jarak garis lurus, bukan jarak jalan riil)
+            jarak_km: jarakKm ? Number(jarakKm.toFixed(1)) : null,
+            estimasi_ongkos: jarakKm ? hitungOngkosArgo(jarakKm) : null,
         };
         
         set(newRef, data).then(() => {
@@ -1341,6 +1381,8 @@
             document.getElementById('inputCatatan').value = "";
             // Reset koordinat tersimpan
             window._mapCoords = {};
+            const boxEst = document.getElementById('boxEstimasiJarak');
+            if (boxEst) boxEst.classList.add('hidden');
             document.getElementById('page-form').classList.add('hidden');
             navigasiKe('order');
         }).catch(e=>{alert("Error: "+e);btn.disabled=false;});
@@ -1352,6 +1394,12 @@
 
     // State
     window._mapCoords = {};         // Simpan koordinat tiap field
+    // Struktur argo: 1-4 km flat, km ke-5 dst kena tambahan per-km
+    const ARGO_KM_DASAR = 4;          // batas jarak yang kena tarif flat
+    const ARGO_TARIF_DASAR = 8000;    // Rp 8.000 untuk jarak 1-4 km
+    const ARGO_TARIF_TAMBAHAN = 2000; // Rp 2.000 / km untuk tiap km di atas 4 km
+    // Layanan yang ongkosnya dihitung per-km. "Bantu Bersih" & "Jasa Lainnya" nego/fleksibel jadi tidak dihitung.
+    const LAYANAN_PER_KM = ['Antar Jemput', 'Kirim Barang', 'Titip Belanja'];
     let _pickerMap = null;          // Instance Google Maps
     let _pickerGeocoder = null;     // Geocoder instance
     let _pickerInputId = null;      // inputDetail1 atau inputDetail2
@@ -1576,6 +1624,10 @@
                 _pickerMap.setZoom(17);
                 const addrEl = document.getElementById('map-addr-text');
                 addrEl.textContent = place.formatted_address || place.name || '';
+                // Sama seperti tombol GPS/Cari -- paksa pin tetap di atas setelah peta pindah.
+                paksaPinDiAtas();
+                setTimeout(paksaPinDiAtas, 150);
+                setTimeout(paksaPinDiAtas, 500);
             }
         });
     }
@@ -1590,6 +1642,10 @@
             if (status === 'OK' && results[0]) {
                 _pickerMap.setCenter(results[0].geometry.location);
                 _pickerMap.setZoom(17);
+                // Sama seperti tombol GPS -- paksa pin tetap di atas setelah peta pindah.
+                paksaPinDiAtas();
+                setTimeout(paksaPinDiAtas, 150);
+                setTimeout(paksaPinDiAtas, 500);
             } else {
                 alert('Lokasi tidak ditemukan. Coba nama yang lebih spesifik.');
             }
@@ -1627,7 +1683,58 @@
         const inputEl = document.getElementById(_pickerInputId);
         if (inputEl) inputEl.value = addr;
 
+        updateEstimasiJarak();
         tutupMapPicker();
+    }
+
+    // Jarak garis lurus antara 2 koordinat (rumus Haversine), hasil dalam kilometer.
+    // Catatan: ini jarak lurus burung terbang, bukan jarak jalan riil -- makanya
+    // ongkos yang ditampilkan cuma ESTIMASI, harga pasti tetap dirembug ke driver.
+    function hitungJarakKm(lat1, lng1, lat2, lng2) {
+        const R = 6371; // radius bumi (km)
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLng = (lng2 - lng1) * Math.PI / 180;
+        const a = Math.sin(dLat / 2) ** 2 +
+                  Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                  Math.sin(dLng / 2) ** 2;
+        return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    }
+
+    function formatRupiah(angka) {
+        return 'Rp ' + Math.round(angka).toLocaleString('id-ID');
+    }
+
+    // Hitung ongkos pakai struktur argo: 1-4 km flat Rp 8.000, km ke-5 dst +Rp 2.000/km.
+    // Jarak dibulatkan KE ATAS ke km penuh terdekat (gaya argo/meter taksi),
+    // minimal 1 km supaya order jarak sangat pendek tetap kena tarif dasar.
+    function hitungOngkosArgo(jarakKmAsli) {
+        const jarakBulat = Math.max(1, Math.ceil(jarakKmAsli));
+        if (jarakBulat <= ARGO_KM_DASAR) return ARGO_TARIF_DASAR;
+        return ARGO_TARIF_DASAR + (jarakBulat - ARGO_KM_DASAR) * ARGO_TARIF_TAMBAHAN;
+    }
+
+    // Tampilkan/sembunyikan kotak jarak & estimasi ongkos.
+    // Hanya tampil kalau: layanan saat ini pakai tarif per-km, DAN kedua titik
+    // (jemput & tujuan) sudah dipilih lewat peta.
+    function updateEstimasiJarak() {
+        const box = document.getElementById('boxEstimasiJarak');
+        if (!box) return;
+
+        const c1 = window._mapCoords?.detail1;
+        const c2 = window._mapCoords?.detail2;
+        const layananPerKm = LAYANAN_PER_KM.includes(layananAktif);
+
+        if (!layananPerKm || !c1 || !c2) {
+            box.classList.add('hidden');
+            return;
+        }
+
+        const jarakKm = hitungJarakKm(c1.lat, c1.lng, c2.lat, c2.lng);
+        const ongkos = hitungOngkosArgo(jarakKm);
+
+        document.getElementById('txtEstimasiJarak').textContent = jarakKm.toFixed(1) + ' km';
+        document.getElementById('txtEstimasiHarga').textContent = formatRupiah(ongkos);
+        box.classList.remove('hidden');
     }
 
     // Cek Enter pada search input
