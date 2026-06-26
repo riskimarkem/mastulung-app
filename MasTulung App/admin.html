@@ -72,6 +72,19 @@
         .btn-suspend { flex: 1; background: #e74c3c; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; font-family: inherit;}
         .btn-hapus { background: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; font-family: inherit;}
 
+        /* TAB KEUANGAN */
+        .keuangan-form-box { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 25px; }
+        .keuangan-form-box h3 { margin: 0 0 15px 0; color: #2c3e50; font-weight: 800; }
+        .jenis-pilih-row { display: flex; gap: 10px; margin-bottom: 15px; }
+        .jenis-btn { flex: 1; padding: 12px; border-radius: 8px; border: 2px solid #ddd; background: #f8f9fa; font-weight: 800; cursor: pointer; font-family: inherit; transition: 0.2s; color: #7f8c8d; font-size: 14px; }
+        .jenis-btn.selected.tipe-masuk { background: #27ae60; color: white; border-color: #27ae60; }
+        .jenis-btn.selected.tipe-keluar { background: #e74c3c; color: white; border-color: #e74c3c; }
+        .keuangan-form-box input { width: 100%; padding: 12px 15px; margin-bottom: 12px; border: 2px solid #bdc3c7; border-radius: 8px; box-sizing: border-box; font-size: 14px; font-weight: 600; font-family: inherit; }
+        .keuangan-form-box input:focus { border-color: #3498db; outline: none; }
+        .btn-simpan-keuangan { width: 100%; background: #2980b9; color: white; border: none; padding: 14px; border-radius: 8px; font-weight: 800; font-size: 15px; cursor: pointer; font-family: inherit; }
+        .btn-simpan-keuangan:hover { background: #21618c; }
+        .nominal-besar { font-size: 22px; font-weight: 800; margin: 8px 0; }
+
         .hidden { display: none !important; }
     </style>
 </head>
@@ -95,6 +108,7 @@
     <div class="tab-menu">
         <button class="tab-btn active" id="btn-tab-driver" onclick="bukaTab('driver')">👥 Data Mitra Driver</button>
         <button class="tab-btn" id="btn-tab-order" onclick="bukaTab('order')">📦 Pantau Orderan</button>
+        <button class="tab-btn" id="btn-tab-keuangan" onclick="bukaTab('keuangan')">💰 Keuangan</button>
     </div>
 
     <div class="container">
@@ -136,12 +150,47 @@
             <div class="grid-container" id="listOrders">
                 </div>
         </div>
+
+        <div id="tab-keuangan" class="hidden">
+            <div class="stats-grid">
+                <div class="stat-box green">
+                    <div class="stat-label">Total Pemasukan</div>
+                    <div class="stat-angka" id="keuStatPemasukan" style="color:#27ae60;">Rp 0</div>
+                </div>
+                <div class="stat-box" style="border-color:#e74c3c;">
+                    <div class="stat-label">Total Pengeluaran</div>
+                    <div class="stat-angka" id="keuStatPengeluaran" style="color:#e74c3c;">Rp 0</div>
+                </div>
+                <div class="stat-box blue">
+                    <div class="stat-label">Saldo Bersih</div>
+                    <div class="stat-angka" id="keuStatSaldo">Rp 0</div>
+                </div>
+            </div>
+
+            <div class="keuangan-form-box">
+                <h3>➕ Catat Transaksi Baru</h3>
+                <div class="jenis-pilih-row">
+                    <button type="button" id="btnJenisPemasukan" class="jenis-btn tipe-masuk selected" onclick="pilihJenisKeuangan('pemasukan')">⬆️ Pemasukan</button>
+                    <button type="button" id="btnJenisPengeluaran" class="jenis-btn tipe-keluar" onclick="pilihJenisKeuangan('pengeluaran')">⬇️ Pengeluaran</button>
+                </div>
+                <input type="text" id="keuKeterangan" placeholder="Keterangan (misal: Sewa Google Maps API)">
+                <input type="number" id="keuNominal" placeholder="Nominal (Rp), misal: 50000">
+                <button class="btn-simpan-keuangan" onclick="simpanTransaksiKeuangan()">💾 Simpan Transaksi</button>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
+                <h3 style="margin: 0; color: #2c3e50; font-weight: 800;">Riwayat Transaksi</h3>
+                <button class="btn-excel" onclick="exportKeuanganCSV()">📥 Download Laporan (.csv)</button>
+            </div>
+            <div class="grid-container" id="listKeuangan">
+                </div>
+        </div>
     </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getDatabase, ref, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+    import { getDatabase, ref, onValue, update, remove, push, set } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
     // ── FIREBASE ASLI TULANGTULUNG GOMBONG ──
     const firebaseConfig = {
@@ -161,6 +210,8 @@
     // VARIABEL GLOBAL UNTUK PENCARIAN & EXPORT
     let allDriversData = [];
     let allOrdersData = [];
+    let allKeuanganData = [];
+    let jenisKeuanganAktif = 'pemasukan';
 
     // LOGIKA LOGIN SEDERHANA
     const PIN_ADMIN = "admin123";
@@ -172,6 +223,7 @@
             document.getElementById('dashboard-admin').classList.remove('hidden');
             muatDataDriver();
             muatDataOrder();
+            muatDataKeuangan();
         } else {
             alert("PIN Salah! Coba lagi.");
         }
@@ -185,11 +237,10 @@
 
     // LOGIKA PINDAH TAB
     window.bukaTab = function(namaTab) {
-        document.getElementById('btn-tab-driver').classList.remove('active');
-        document.getElementById('btn-tab-order').classList.remove('active');
-        document.getElementById('tab-driver').classList.add('hidden');
-        document.getElementById('tab-order').classList.add('hidden');
-
+        ['driver', 'order', 'keuangan'].forEach(t => {
+            document.getElementById(`btn-tab-${t}`).classList.remove('active');
+            document.getElementById(`tab-${t}`).classList.add('hidden');
+        });
         document.getElementById(`btn-tab-${namaTab}`).classList.add('active');
         document.getElementById(`tab-${namaTab}`).classList.remove('hidden');
     }
@@ -452,6 +503,141 @@
                 .then(() => console.log("Terhapus"))
                 .catch(e => alert("Gagal hapus: " + e));
         }
+    }
+
+    // ==========================================
+    // BAGIAN 3: KEUANGAN (PEMASUKAN & PENGELUARAN)
+    // ==========================================
+    function muatDataKeuangan() {
+        console.log("Memulai penarikan data keuangan...");
+        const keuRef = ref(database, 'keuangan');
+        onValue(keuRef, (snapshot) => {
+            allKeuanganData = [];
+            let totalMasuk = 0, totalKeluar = 0;
+
+            if (snapshot.exists()) {
+                snapshot.forEach((child) => {
+                    const data = child.val() || {};
+                    data.id = child.key;
+                    allKeuanganData.push(data);
+                    if (data.jenis === 'pemasukan') totalMasuk += (data.nominal || 0);
+                    else totalKeluar += (data.nominal || 0);
+                });
+            }
+
+            document.getElementById('keuStatPemasukan').innerText = "Rp " + totalMasuk.toLocaleString('id-ID');
+            document.getElementById('keuStatPengeluaran').innerText = "Rp " + totalKeluar.toLocaleString('id-ID');
+            document.getElementById('keuStatSaldo').innerText = "Rp " + (totalMasuk - totalKeluar).toLocaleString('id-ID');
+
+            renderKeuangan();
+        }, (error) => {
+            console.error("Gagal menarik data keuangan:", error);
+        });
+    }
+
+    // Pilih jenis transaksi (toggle tombol Pemasukan/Pengeluaran)
+    window.pilihJenisKeuangan = function(jenis) {
+        jenisKeuanganAktif = jenis;
+        document.getElementById('btnJenisPemasukan').classList.toggle('selected', jenis === 'pemasukan');
+        document.getElementById('btnJenisPengeluaran').classList.toggle('selected', jenis === 'pengeluaran');
+    }
+
+    // Simpan transaksi baru (pemasukan/pengeluaran)
+    window.simpanTransaksiKeuangan = function() {
+        const ket = document.getElementById('keuKeterangan').value.trim();
+        const nominal = parseInt(document.getElementById('keuNominal').value);
+
+        if (!ket) { alert("Isi keterangan transaksinya dulu lur!"); return; }
+        if (!nominal || nominal <= 0) { alert("Masukkan nominal yang benar!"); return; }
+
+        const newRef = push(ref(database, 'keuangan'));
+        set(newRef, {
+            jenis: jenisKeuanganAktif,
+            keterangan: ket,
+            nominal: nominal,
+            timestamp: Date.now(),
+        }).then(() => {
+            document.getElementById('keuKeterangan').value = "";
+            document.getElementById('keuNominal').value = "";
+        }).catch(e => alert("Gagal simpan transaksi: " + e));
+    }
+
+    // Render daftar riwayat transaksi keuangan
+    window.renderKeuangan = function() {
+        const listDiv = document.getElementById('listKeuangan');
+        listDiv.innerHTML = "";
+
+        if (allKeuanganData.length === 0) {
+            listDiv.innerHTML = "<p style='font-weight:600; color:#7f8c8d;'>Urung ana transaksi keuangan.</p>";
+            return;
+        }
+
+        const sorted = [...allKeuanganData].sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+        sorted.forEach((data) => {
+            const isMasuk = data.jenis === 'pemasukan';
+            const warna = isMasuk ? '#27ae60' : '#e74c3c';
+            const tanda = isMasuk ? '+' : '-';
+
+            let waktuTampil = '-';
+            if (data.timestamp) {
+                const dt = new Date(data.timestamp);
+                waktuTampil = dt.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) + ' - ' + dt.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+            }
+
+            const card = document.createElement('div');
+            card.className = "card";
+            card.style.borderTopColor = warna;
+            card.innerHTML = `
+                <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                    <span style="font-size:11px; color:#7f8c8d; font-weight:800;">${waktuTampil}</span>
+                    <span style="font-size:11px; font-weight:800; color:${warna}; text-transform:uppercase; padding:3px 8px; border-radius:12px; border:1px solid ${warna}40; background:${warna}10;">${isMasuk ? 'PEMASUKAN' : 'PENGELUARAN'}</span>
+                </div>
+                <div class="card-title" style="font-size:15px;">${data.keterangan || '-'}</div>
+                <div class="nominal-besar" style="color:${warna};">${tanda} Rp ${(data.nominal || 0).toLocaleString('id-ID')}</div>
+                <div style="text-align:right; margin-top:10px;">
+                    <button class="btn-hapus" onclick="hapusKeuangan('${data.id}')">🗑️ Hapus</button>
+                </div>
+            `;
+            listDiv.appendChild(card);
+        });
+    }
+
+    window.hapusKeuangan = function(id) {
+        if (confirm("Yakin hapus transaksi ini secara permanen?")) {
+            remove(ref(database, `keuangan/${id}`))
+                .then(() => console.log("Transaksi terhapus"))
+                .catch(e => alert("Gagal hapus: " + e));
+        }
+    }
+
+    // Export riwayat keuangan ke CSV
+    window.exportKeuanganCSV = function() {
+        if (allKeuanganData.length === 0) { alert("Belum ada data transaksi untuk di-download."); return; }
+
+        let csvContent = "Tanggal & Waktu,Jenis,Keterangan,Nominal\n";
+        const sorted = [...allKeuanganData].sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+        sorted.forEach(d => {
+            let waktuStr = "";
+            if (d.timestamp) {
+                const dt = new Date(d.timestamp);
+                waktuStr = dt.toLocaleDateString('id-ID') + " " + dt.toLocaleTimeString('id-ID');
+            }
+            const jenis = d.jenis === 'pemasukan' ? 'Pemasukan' : 'Pengeluaran';
+            const ket = `"${(d.keterangan || "").replace(/"/g, '""')}"`;
+            csvContent += `${waktuStr},${jenis},${ket},${d.nominal || 0}\n`;
+        });
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", "Laporan_Keuangan_TTG_" + new Date().toLocaleDateString('id-ID') + ".csv");
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     }
 
 </script>
