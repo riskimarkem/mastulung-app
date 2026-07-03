@@ -1355,8 +1355,10 @@
         
         const c1 = window._mapCoords?.detail1;
         const c2 = window._mapCoords?.detail2;
-        const adaJarak = LAYANAN_PER_KM.includes(layananAktif) && c1 && c2;
-        const jarakKm = adaJarak ? hitungJarakKm(c1.lat, c1.lng, c2.lat, c2.lng) : null;
+        // Pakai jarak hasil Directions API yang sudah dihitung waktu customer pilih lokasi di peta
+        // (lihat updateEstimasiJarak) -- supaya tidak panggil Directions API lagi di sini.
+        const jarakKm = window._mapCoords?._jarakKm || null;
+        const durasiMenit = window._mapCoords?._durasiMenit || null;
 
         const newRef = push(ref(database,'orders'));
         const data = {
@@ -1369,9 +1371,10 @@
             pickup_lng: c1?.lng || null,
             dropoff_lat: c2?.lat || null,
             dropoff_lng: c2?.lng || null,
-            // Estimasi jarak & ongkos (jarak garis lurus, bukan jarak jalan riil)
+            // Jarak & ongkos dari Google Directions API (jarak jalan asli, sama seperti Google Maps)
             jarak_km: jarakKm ? Number(jarakKm.toFixed(1)) : null,
             estimasi_ongkos: jarakKm ? hitungOngkosArgo(jarakKm) : null,
+            durasi_menit: durasiMenit,
         };
         
         set(newRef, data).then(() => {
@@ -1687,17 +1690,31 @@
         tutupMapPicker();
     }
 
-    // Jarak garis lurus antara 2 koordinat (rumus Haversine), hasil dalam kilometer.
-    // Catatan: ini jarak lurus burung terbang, bukan jarak jalan riil -- makanya
-    // ongkos yang ditampilkan cuma ESTIMASI, harga pasti tetap dirembug ke driver.
-    function hitungJarakKm(lat1, lng1, lat2, lng2) {
-        const R = 6371; // radius bumi (km)
-        const dLat = (lat2 - lat1) * Math.PI / 180;
-        const dLng = (lng2 - lng1) * Math.PI / 180;
-        const a = Math.sin(dLat / 2) ** 2 +
-                  Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-                  Math.sin(dLng / 2) ** 2;
-        return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    // Hitung jarak via Google Directions API (jarak jalan asli, bukan garis lurus).
+    // Hasilnya sama persis dengan yang ditampilkan Google Maps navigasi.
+    // Callback dipanggil dengan (jarakKm, durasiMenit) setelah API merespons.
+    function hitungJarakDirAPI(lat1, lng1, lat2, lng2, callback) {
+        const service = new google.maps.DirectionsService();
+        service.route({
+            origin: new google.maps.LatLng(lat1, lng1),
+            destination: new google.maps.LatLng(lat2, lng2),
+            travelMode: google.maps.TravelMode.DRIVING,
+        }, (result, status) => {
+            if (status === 'OK' && result.routes[0]) {
+                const leg = result.routes[0].legs[0];
+                const jarakKm = leg.distance.value / 1000;   // meter -> km
+                const durasiMenit = Math.ceil(leg.duration.value / 60); // detik -> menit
+                callback(jarakKm, durasiMenit);
+            } else {
+                // Fallback ke Haversine (garis lurus) kalau Directions API gagal, misal offline
+                const R = 6371;
+                const dLat = (lat2 - lat1) * Math.PI / 180;
+                const dLng = (lng2 - lng1) * Math.PI / 180;
+                const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+                const jarakKm = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+                callback(jarakKm, null);
+            }
+        });
     }
 
     function formatRupiah(angka) {
@@ -1713,7 +1730,7 @@
         return ARGO_TARIF_DASAR + (jarakBulat - ARGO_KM_DASAR) * ARGO_TARIF_TAMBAHAN;
     }
 
-    // Tampilkan/sembunyikan kotak jarak & estimasi ongkos.
+    // Tampilkan jarak & estimasi ongkos via Google Directions API (jarak jalan asli).
     // Hanya tampil kalau: layanan saat ini pakai tarif per-km, DAN kedua titik
     // (jemput & tujuan) sudah dipilih lewat peta.
     function updateEstimasiJarak() {
@@ -1729,12 +1746,20 @@
             return;
         }
 
-        const jarakKm = hitungJarakKm(c1.lat, c1.lng, c2.lat, c2.lng);
-        const ongkos = hitungOngkosArgo(jarakKm);
-
-        document.getElementById('txtEstimasiJarak').textContent = jarakKm.toFixed(1) + ' km';
-        document.getElementById('txtEstimasiHarga').textContent = formatRupiah(ongkos);
+        // Tampilkan kotak dulu dengan status "Menghitung..." sambil nunggu API
         box.classList.remove('hidden');
+        document.getElementById('txtEstimasiJarak').textContent = '⏳ Menghitung...';
+        document.getElementById('txtEstimasiHarga').textContent = '⏳';
+
+        hitungJarakDirAPI(c1.lat, c1.lng, c2.lat, c2.lng, (jarakKm, durasiMenit) => {
+            const ongkos = hitungOngkosArgo(jarakKm);
+            const durasiTeks = durasiMenit ? ` (~${durasiMenit} menit)` : '';
+            document.getElementById('txtEstimasiJarak').textContent = jarakKm.toFixed(1) + ' km' + durasiTeks;
+            document.getElementById('txtEstimasiHarga').textContent = formatRupiah(ongkos);
+            // Simpan hasil Directions API supaya dipakai lagi saat order dikirim (tidak panggil API 2x)
+            window._mapCoords._jarakKm = jarakKm;
+            window._mapCoords._durasiMenit = durasiMenit;
+        });
     }
 
     // Cek Enter pada search input
