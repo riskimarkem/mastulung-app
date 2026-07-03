@@ -235,6 +235,16 @@
     .estimasi-value { font-size: 14px; font-weight: 800; color: #15803d; }
     .estimasi-value.estimasi-harga { font-size: 17px; color: #166534; }
     .estimasi-note { font-size: 11px; color: #4d7c5f; margin-top: 6px; font-style: italic; }
+
+    /* Peta preview kecil menampilkan pin jemput (hijau) & tujuan (merah) + rutenya,
+       supaya customer bisa cek visual sebelum order -- bukan cuma teks alamat. */
+    .preview-route-map { width: 100%; height: 160px; border-radius: 10px; margin-top: 10px; overflow: hidden; position: relative; border: 1.5px solid #86efac; }
+    .preview-route-map.hidden { display: none; }
+    .preview-route-legend { position: absolute; top: 8px; left: 8px; z-index: 5; background: rgba(255,255,255,0.92); border-radius: 8px; padding: 5px 10px; font-size: 11px; font-weight: 700; color: var(--text2); display: flex; gap: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.12); pointer-events: none; }
+    .preview-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
+    .preview-dot-jemput { background: #16A34A; }
+    .preview-dot-tujuan { background: #EF4444; }
+
     
     .form-section-label { font-size: 12px; font-weight: 800; color: var(--text2); margin-bottom: 8px; display: block; text-transform: uppercase; letter-spacing: 0.5px; }
     
@@ -598,7 +608,13 @@
                             <span class="estimasi-label">💰 Estimasi Ongkos</span>
                             <span class="estimasi-value estimasi-harga" id="txtEstimasiHarga">-</span>
                         </div>
-                        <div class="estimasi-note">*Argo: 1-4 km Rp 8.000, selanjutnya +Rp 2.000/km. Jarak garis lurus, ongkos riil bisa beda dirembug karo driver</div>
+                        <div id="previewRouteMap" class="preview-route-map hidden">
+                            <div class="preview-route-legend">
+                                <span><i class="preview-dot preview-dot-jemput"></i> Jemput</span>
+                                <span><i class="preview-dot preview-dot-tujuan"></i> Tujuan</span>
+                            </div>
+                        </div>
+                        <div class="estimasi-note">*Argo: 1-4 km Rp 8.000, selanjutnya +Rp 2.000/km. Jarak jalan sesungguhnya (via Google Maps), ongkos riil bisa beda dirembug karo driver</div>
                     </div>
                     
                     <div class="form-group">
@@ -1121,6 +1137,7 @@
         window._mapCoords = {};
         const boxEst = document.getElementById('boxEstimasiJarak');
         if (boxEst) boxEst.classList.add('hidden');
+        sembunyikanPreviewRute();
 
         document.getElementById('page-home').classList.add('hidden');
         document.getElementById('page-form').classList.remove('hidden');
@@ -1386,6 +1403,7 @@
             window._mapCoords = {};
             const boxEst = document.getElementById('boxEstimasiJarak');
             if (boxEst) boxEst.classList.add('hidden');
+            sembunyikanPreviewRute();
             document.getElementById('page-form').classList.add('hidden');
             navigasiKe('order');
         }).catch(e=>{alert("Error: "+e);btn.disabled=false;});
@@ -1481,17 +1499,49 @@
     function inisialisasiMapPicker() {
         const container = document.getElementById('map-picker-container');
 
-        // Pusat default: Gombong, Kebumen, Jawa Tengah
+        // Pusat default: Gombong, Kebumen, Jawa Tengah (dipakai kalau GPS tidak tersedia)
         const GOMBONG_CENTER = { lat: -7.6057, lng: 109.5140 };
 
         // Cek apakah sudah ada koordinat sebelumnya untuk field ini
         const prevCoord = window._mapCoords[_pickerFieldKey];
-        const startCenter = prevCoord ? { lat: prevCoord.lat, lng: prevCoord.lng } : GOMBONG_CENTER;
 
+        if (prevCoord) {
+            // Sudah pernah dipilih -- buka lagi tepat di titik itu
+            bangunMapPicker(container, { lat: prevCoord.lat, lng: prevCoord.lng }, 17);
+        } else if (_pickerFieldKey === 'detail1' && navigator.geolocation) {
+            // Titik JEMPUT belum pernah dipilih -- coba pusatkan ke posisi GPS asli customer
+            // dulu, supaya pin tengah langsung menunjukkan lokasi mereka sebenarnya (bukan
+            // default Gombong yang bisa bikin bingung "ini di mana, kok bukan posisiku").
+            document.getElementById('map-loading-text').textContent = '🎯 Mencari posisi Anda...';
+            let sudahJalan = false;
+            const jalankanFallback = () => {
+                if (sudahJalan) return;
+                sudahJalan = true;
+                document.getElementById('map-loading-text').textContent = '';
+                bangunMapPicker(container, GOMBONG_CENTER, 15);
+            };
+            const timeoutFallback = setTimeout(jalankanFallback, 3500);
+            navigator.geolocation.getCurrentPosition(pos => {
+                clearTimeout(timeoutFallback);
+                if (sudahJalan) return;
+                sudahJalan = true;
+                document.getElementById('map-loading-text').textContent = '';
+                bangunMapPicker(container, { lat: pos.coords.latitude, lng: pos.coords.longitude }, 17);
+            }, jalankanFallback, { enableHighAccuracy: true, timeout: 3500, maximumAge: 15000 });
+        } else if (_pickerFieldKey === 'detail2' && window._mapCoords.detail1) {
+            // Titik TUJUAN belum pernah dipilih, tapi titik jemput sudah -- mulai dari
+            // sekitar titik jemput (lebih relevan daripada default Gombong).
+            bangunMapPicker(container, { lat: window._mapCoords.detail1.lat, lng: window._mapCoords.detail1.lng }, 15);
+        } else {
+            bangunMapPicker(container, GOMBONG_CENTER, 15);
+        }
+    }
+
+    function bangunMapPicker(container, startCenter, startZoom) {
         if (!_pickerMap) {
             _pickerMap = new google.maps.Map(container, {
                 center: startCenter,
-                zoom: prevCoord ? 17 : 15,
+                zoom: startZoom,
                 disableDefaultUI: true,
                 zoomControl: true,
                 gestureHandling: 'greedy',
@@ -1512,7 +1562,7 @@
         } else {
             // Pindah ke koordinat yang sesuai
             _pickerMap.setCenter(startCenter);
-            _pickerMap.setZoom(prevCoord ? 17 : 15);
+            _pickerMap.setZoom(startZoom);
             // Peta sempat disembunyikan (display:none) saat modal ditutup --
             // paksa Google Maps menghitung ulang ukuran & redraw layer internalnya.
             google.maps.event.trigger(_pickerMap, 'resize');
@@ -1692,7 +1742,8 @@
 
     // Hitung jarak via Google Directions API (jarak jalan asli, bukan garis lurus).
     // Hasilnya sama persis dengan yang ditampilkan Google Maps navigasi.
-    // Callback dipanggil dengan (jarakKm, durasiMenit) setelah API merespons.
+    // Callback dipanggil dengan (jarakKm, durasiMenit, directionsResult) setelah API merespons.
+    // directionsResult diteruskan supaya bisa dipakai gambar rute di peta preview tanpa panggil API lagi.
     function hitungJarakDirAPI(lat1, lng1, lat2, lng2, callback) {
         const service = new google.maps.DirectionsService();
         service.route({
@@ -1704,7 +1755,7 @@
                 const leg = result.routes[0].legs[0];
                 const jarakKm = leg.distance.value / 1000;   // meter -> km
                 const durasiMenit = Math.ceil(leg.duration.value / 60); // detik -> menit
-                callback(jarakKm, durasiMenit);
+                callback(jarakKm, durasiMenit, result);
             } else {
                 // Fallback ke Haversine (garis lurus) kalau Directions API gagal, misal offline
                 const R = 6371;
@@ -1712,7 +1763,7 @@
                 const dLng = (lng2 - lng1) * Math.PI / 180;
                 const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
                 const jarakKm = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-                callback(jarakKm, null);
+                callback(jarakKm, null, null);
             }
         });
     }
@@ -1743,6 +1794,7 @@
 
         if (!layananPerKm || !c1 || !c2) {
             box.classList.add('hidden');
+            sembunyikanPreviewRute();
             return;
         }
 
@@ -1751,7 +1803,7 @@
         document.getElementById('txtEstimasiJarak').textContent = '⏳ Menghitung...';
         document.getElementById('txtEstimasiHarga').textContent = '⏳';
 
-        hitungJarakDirAPI(c1.lat, c1.lng, c2.lat, c2.lng, (jarakKm, durasiMenit) => {
+        hitungJarakDirAPI(c1.lat, c1.lng, c2.lat, c2.lng, (jarakKm, durasiMenit, dirResult) => {
             const ongkos = hitungOngkosArgo(jarakKm);
             const durasiTeks = durasiMenit ? ` (~${durasiMenit} menit)` : '';
             document.getElementById('txtEstimasiJarak').textContent = jarakKm.toFixed(1) + ' km' + durasiTeks;
@@ -1759,7 +1811,88 @@
             // Simpan hasil Directions API supaya dipakai lagi saat order dikirim (tidak panggil API 2x)
             window._mapCoords._jarakKm = jarakKm;
             window._mapCoords._durasiMenit = durasiMenit;
+
+            // Tampilkan peta kecil dengan pin jemput (hijau) & tujuan (merah) + garis rutenya,
+            // supaya customer bisa cek visual kedua titik sudah benar sebelum order.
+            tampilkanPreviewRute(c1, c2, dirResult);
         });
+    }
+
+    // ── PETA PREVIEW RUTE (jemput + tujuan) di form order ──
+    let _previewMap = null;
+    let _previewPickupMarker = null;
+    let _previewDropoffMarker = null;
+    let _previewRenderer = null;
+    let _previewLine = null; // fallback garis putus-putus kalau Directions gagal
+
+    function sembunyikanPreviewRute() {
+        const el = document.getElementById('previewRouteMap');
+        if (el) el.classList.add('hidden');
+    }
+
+    function tampilkanPreviewRute(c1, c2, dirResult) {
+        const container = document.getElementById('previewRouteMap');
+        if (!container) return;
+        container.classList.remove('hidden');
+
+        if (!_previewMap) {
+            _previewMap = new google.maps.Map(container, {
+                center: c1, zoom: 14,
+                disableDefaultUI: true, zoomControl: false,
+                gestureHandling: 'none', // preview saja, bukan peta interaktif
+                clickableIcons: false,
+            });
+            _previewRenderer = new google.maps.DirectionsRenderer({
+                suppressMarkers: true, // pin jemput/tujuan pakai marker kita sendiri (hijau/merah)
+                preserveViewport: true,
+                polylineOptions: { strokeColor: '#16A34A', strokeWeight: 4 }
+            });
+            _previewRenderer.setMap(_previewMap);
+        } else {
+            // Container sempat hidden (display:none) -- paksa Google Maps hitung ulang ukuran.
+            google.maps.event.trigger(_previewMap, 'resize');
+        }
+
+        // Bersihkan marker/garis lama
+        if (_previewPickupMarker) _previewPickupMarker.setMap(null);
+        if (_previewDropoffMarker) _previewDropoffMarker.setMap(null);
+        if (_previewLine) _previewLine.setMap(null);
+        _previewRenderer.setDirections({ routes: [] });
+
+        // Marker titik jemput (hijau)
+        _previewPickupMarker = new google.maps.Marker({
+            position: c1, map: _previewMap, title: 'Titik Jemput',
+            label: { text: 'J', color: 'white', fontWeight: 'bold', fontSize: '11px' },
+            icon: { path: google.maps.SymbolPath.CIRCLE, scale: 11, fillColor: '#16A34A', fillOpacity: 1, strokeColor: 'white', strokeWeight: 2 },
+            zIndex: 10,
+        });
+
+        // Marker titik tujuan (merah)
+        _previewDropoffMarker = new google.maps.Marker({
+            position: c2, map: _previewMap, title: 'Titik Tujuan',
+            label: { text: 'T', color: 'white', fontWeight: 'bold', fontSize: '11px' },
+            icon: { path: google.maps.SymbolPath.CIRCLE, scale: 11, fillColor: '#EF4444', fillOpacity: 1, strokeColor: 'white', strokeWeight: 2 },
+            zIndex: 10,
+        });
+
+        if (dirResult) {
+            // Gambar rute jalan asli hasil Directions API (dari perhitungan jarak, tidak panggil API lagi)
+            _previewRenderer.setDirections(dirResult);
+        } else {
+            // Directions gagal -- tetap tampilkan garis lurus putus-putus penghubung
+            _previewLine = new google.maps.Polyline({
+                path: [c1, c2],
+                strokeColor: '#94A3B8', strokeOpacity: 0.8, strokeWeight: 3,
+                icons: [{ icon: { path: 'M 0,-1 0,1', strokeOpacity: 1, scale: 3 }, offset: '0', repeat: '12px' }],
+                map: _previewMap,
+            });
+        }
+
+        // Sesuaikan zoom & posisi supaya kedua pin kelihatan
+        const bounds = new google.maps.LatLngBounds();
+        bounds.extend(c1);
+        bounds.extend(c2);
+        _previewMap.fitBounds(bounds, { top: 30, right: 24, bottom: 24, left: 24 });
     }
 
     // Cek Enter pada search input
