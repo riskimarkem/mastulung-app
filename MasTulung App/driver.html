@@ -1072,7 +1072,7 @@
                     <div class="oc-body">
                         <div class="oc-customer"><div class="oc-cust-avatar">👤</div><div><div class="oc-cust-name">${data.customer_nama||''}</div><div class="oc-cust-wa">${data.layanan||''}</div></div></div>
                         <div class="oc-route"><div class="oc-route-row"><div class="oc-route-icon" style="background:#DBEAFE;">📍</div><div><div class="oc-route-label">${t.lblDet1}</div><div class="oc-route-val">${data.detail_1||''}</div></div></div><div class="oc-route-row"><div class="oc-route-icon" style="background:#D1FAE5;">🏁</div><div><div class="oc-route-label">${t.lblDet2}</div><div class="oc-route-val">${data.detail_2||''}</div></div></div></div>
-                        ${data.jarak_km ? `<div class="oc-jarak-ongkos"><span>📏 ${data.jarak_km} km</span><span class="oc-jo-harga">💰 Rp ${(data.estimasi_ongkos||0).toLocaleString('id-ID')}</span></div>` : ''}
+                        ${data.jarak_km ? `<div class="oc-jarak-ongkos"><span>📏 ${data.jarak_km} km${data.durasi_menit ? ` (~${data.durasi_menit} menit)` : ''}</span><span class="oc-jo-harga">💰 Rp ${(data.estimasi_ongkos||0).toLocaleString('id-ID')}</span></div>` : ''}
                         ${data.catatan ? `<div class="oc-note">📝 ${t.lblNote}: ${data.catatan}</div>` : ''}
                         <div class="oc-note-bottom">${t.noteAktif}</div>
                         <button class="btn-wa-chat" onclick="chatUlang('${data.customer_wa}')">${t.btnWa}</button>
@@ -1088,7 +1088,7 @@
                     <div class="oc-body">
                         <div class="oc-customer"><div class="oc-cust-avatar">👤</div><div><div class="oc-cust-name">${data.customer_nama||''}</div><div class="oc-cust-wa">${t.lblCust}</div></div></div>
                         <div class="oc-route"><div class="oc-route-row"><div class="oc-route-icon" style="background:#FEF9E7;">📍</div><div><div class="oc-route-label">${t.lblDet1}</div><div class="oc-route-val">${data.detail_1||''}</div></div></div><div class="oc-route-row"><div class="oc-route-icon" style="background:#D1FAE5;">🏁</div><div><div class="oc-route-label">${t.lblDet2}</div><div class="oc-route-val">${data.detail_2||''}</div></div></div></div>
-                        ${data.jarak_km ? `<div class="oc-jarak-ongkos"><span>📏 ${data.jarak_km} km</span><span class="oc-jo-harga">💰 Rp ${(data.estimasi_ongkos||0).toLocaleString('id-ID')}</span></div>` : ''}
+                        ${data.jarak_km ? `<div class="oc-jarak-ongkos"><span>📏 ${data.jarak_km} km${data.durasi_menit ? ` (~${data.durasi_menit} menit)` : ''}</span><span class="oc-jo-harga">💰 Rp ${(data.estimasi_ongkos||0).toLocaleString('id-ID')}</span></div>` : ''}
                         ${data.catatan ? `<div class="oc-note">📝 ${t.lblNote}: ${data.catatan}</div>` : ''}
                         ${(data.pickup_lat && data.pickup_lng) ? `<button class="btn-wa-chat" style="background:#E3F2FD;color:#0D47A1;border-color:#90CAF9;margin-bottom:6px;" onclick="bukaPetaOrderan('${data.pickup_lat}','${data.pickup_lng}','${data.dropoff_lat||''}','${data.dropoff_lng||''}','${(data.detail_1||'').replace(/'/g,'')}','${(data.detail_2||'').replace(/'/g,'')}')">🗺️ Preview Peta</button>` : ''}
                         <button class="btn-ambil" onclick="ambilOrderan('${data.id}','${data.customer_wa}','${data.customer_nama}')">${t.btnAmbil}</button>
@@ -1130,7 +1130,7 @@
                 <button class="hc-toggle-btn" id="hist-btn-${data.id}" onclick="toggleHistory('${data.id}')">${t.btnDetail}</button>
                 <div class="hc-details" id="hist-det-${data.id}">
                     <div class="hc-route-box">${data.detail_1||''}<br>⬇<br>${data.detail_2||''}</div>
-                    ${data.jarak_km ? `<div class="oc-jarak-ongkos" style="margin-top:8px;"><span>📏 ${data.jarak_km} km</span><span class="oc-jo-harga">💰 Rp ${(data.estimasi_ongkos||0).toLocaleString('id-ID')}</span></div>` : ''}
+                    ${data.jarak_km ? `<div class="oc-jarak-ongkos" style="margin-top:8px;"><span>📏 ${data.jarak_km} km${data.durasi_menit ? ` (~${data.durasi_menit} menit)` : ''}</span><span class="oc-jo-harga">💰 Rp ${(data.estimasi_ongkos||0).toLocaleString('id-ID')}</span></div>` : ''}
                     ${ratingHtml}
                 </div>`; listDiv.appendChild(card);
         });
