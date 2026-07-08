@@ -107,6 +107,7 @@
 
     <div class="tab-menu">
         <button class="tab-btn active" id="btn-tab-driver" onclick="bukaTab('driver')">👥 Data Mitra Driver</button>
+        <button class="tab-btn" id="btn-tab-resto" onclick="bukaTab('resto')">🍜 Data Mitra Resto</button>
         <button class="tab-btn" id="btn-tab-order" onclick="bukaTab('order')">📦 Pantau Orderan</button>
         <button class="tab-btn" id="btn-tab-keuangan" onclick="bukaTab('keuangan')">💰 Keuangan</button>
     </div>
@@ -121,6 +122,10 @@
             <div class="stat-box blue">
                 <div class="stat-label">Total Mitra Aktif</div>
                 <div class="stat-angka" id="adminStatDriver">0</div>
+            </div>
+            <div class="stat-box" style="border-color:#D97706;">
+                <div class="stat-label">Total Resto Aktif</div>
+                <div class="stat-angka" id="adminStatResto" style="color:#D97706;">0</div>
             </div>
             <div class="stat-box gold">
                 <div class="stat-label">Total Saldo Ngendap (Milik Driver)</div>
@@ -139,6 +144,16 @@
             <input type="text" id="searchDriver" class="search-bar" placeholder="🔍 Cari Nama utawa Nomer WA Driver..." onkeyup="renderDrivers()">
             
             <div class="grid-container" id="listDrivers">
+                </div>
+        </div>
+
+        <div id="tab-resto" class="hidden">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 style="margin: 0; color: #2c3e50; font-weight: 800;">Daftar Mitra Resto</h3>
+            </div>
+            <input type="text" id="searchResto" class="search-bar" placeholder="🔍 Cari Nama utawa Nomer WA Resto..." onkeyup="renderRestoran()">
+            
+            <div class="grid-container" id="listResto">
                 </div>
         </div>
 
@@ -209,6 +224,7 @@
 
     // VARIABEL GLOBAL UNTUK PENCARIAN & EXPORT
     let allDriversData = [];
+    let allRestoranData = [];
     let allOrdersData = [];
     let allKeuanganData = [];
     let jenisKeuanganAktif = 'pemasukan';
@@ -222,6 +238,7 @@
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('dashboard-admin').classList.remove('hidden');
             muatDataDriver();
+            muatDataResto();
             muatDataOrder();
             muatDataKeuangan();
         } else {
@@ -237,7 +254,7 @@
 
     // LOGIKA PINDAH TAB
     window.bukaTab = function(namaTab) {
-        ['driver', 'order', 'keuangan'].forEach(t => {
+        ['driver', 'resto', 'order', 'keuangan'].forEach(t => {
             document.getElementById(`btn-tab-${t}`).classList.remove('active');
             document.getElementById(`tab-${t}`).classList.add('hidden');
         });
@@ -368,6 +385,92 @@
                     document.getElementById(`topup-${wa}`).value = ""; 
                 })
                 .catch(e => alert("Gagal isi saldo: " + e));
+        }
+    }
+
+    // ==========================================
+    // BAGIAN 1B: MANAJEMEN RESTO
+    // ==========================================
+    function muatDataResto() {
+        const restoRef = ref(database, 'restoran');
+        onValue(restoRef, (snapshot) => {
+            allRestoranData = [];
+            let totalAktif = 0;
+
+            if(snapshot.exists()) {
+                snapshot.forEach((child) => {
+                    const data = child.val() || {};
+                    data.wa = child.key || '00'; // Simpan WA sbg key
+                    allRestoranData.push(data);
+                    if(data.status === 'aktif') totalAktif++;
+                });
+            }
+
+            document.getElementById('adminStatResto').innerText = totalAktif;
+            renderRestoran();
+        }, (error) => {
+            console.error("Gagal menarik data resto:", error);
+        });
+    }
+
+    window.renderRestoran = function() {
+        const listDiv = document.getElementById('listResto');
+        listDiv.innerHTML = "";
+
+        const keyword = document.getElementById('searchResto').value.toLowerCase();
+        const filteredResto = allRestoranData.filter(d =>
+            (d.nama || '').toLowerCase().includes(keyword) ||
+            (d.wa || '').includes(keyword)
+        );
+
+        if(filteredResto.length === 0) {
+            listDiv.innerHTML = "<p style='color:#7f8c8d; font-style:italic;'>Ora ana resto sing ditemokna.</p>"; return;
+        }
+
+        filteredResto.forEach((data) => {
+            const wa = data.wa || '00';
+            const safeStatus = data.status || 'pending';
+            const jumlahMenu = data.menu ? Object.keys(data.menu).length : 0;
+            const lokasiText = (data.lat && data.lng) ? `✅ Sudah diatur` : `⚠️ Belum diatur`;
+
+            let badgeClass = safeStatus === 'aktif' ? 'bg-aktif' : safeStatus === 'suspend' ? 'bg-suspend' : 'bg-pending';
+
+            let tombolAksi = "";
+            if(safeStatus === 'pending') {
+                tombolAksi = `<button class="btn-setuju" onclick="ubahStatusResto('${wa}', 'aktif')">✅ Setujui (Aktifkan)</button>`;
+            } else if(safeStatus === 'aktif') {
+                tombolAksi = `<button class="btn-suspend" onclick="ubahStatusResto('${wa}', 'suspend')">⛔ Suspend Akun</button>`;
+            } else if(safeStatus === 'suspend') {
+                tombolAksi = `<button class="btn-setuju" onclick="ubahStatusResto('${wa}', 'aktif')">✅ Buka Suspend (Aktifkan)</button>`;
+            }
+
+            const card = document.createElement('div');
+            card.className = `card ${safeStatus}`;
+            card.innerHTML = `
+                <div class="card-title">
+                    <span>${data.nama || 'Tanpa Nama'}</span>
+                    <span class="badge ${badgeClass}">${safeStatus.toUpperCase()}</span>
+                </div>
+                <div class="card-detail">📱 WA: <b><a href="https://wa.me/62${wa.substring(1)}" target="_blank" style="color:#2980b9; text-decoration:none;">${wa}</a></b></div>
+                <div class="card-detail">📍 Alamat: ${data.alamat || '-'}</div>
+                <div class="card-detail">🗺️ Titik Lokasi: ${lokasiText}</div>
+                <div class="card-detail">📋 Jumlah Menu: ${jumlahMenu}</div>
+                <div class="card-detail">📅 Daftar: ${data.tanggal_daftar || '-'}</div>
+                <div class="card-detail">🏪 Warung: ${data.buka === false ? 'Sedang Tutup' : 'Buka'}</div>
+
+                <div class="action-btns">
+                    ${tombolAksi}
+                </div>
+            `;
+            listDiv.appendChild(card);
+        });
+    }
+
+    window.ubahStatusResto = function(wa, statusBaru) {
+        if(confirm(`Yakin ingin mengubah status resto ini menjadi ${statusBaru.toUpperCase()}?`)) {
+            update(ref(database, `restoran/${wa}`), { status: statusBaru })
+                .then(() => alert("Status berhasil diubah!"))
+                .catch(e => alert("Gagal: " + e));
         }
     }
 
