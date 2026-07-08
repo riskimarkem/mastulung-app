@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Portal Resto - TulangTulung Gombong</title>
+
+    <meta name="theme-color" content="#2c3e50">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2c3e50; --primary-dark: #1a252f; --primary-deep: #11181f; --primary-light: #ebf0f5;
+            --accent: #f1c40f; --accent-light: #fef9e7; --accent-dark: #d4ac0d;
+            --bg: #F0F2F5; --card: #FFFFFF; --text: #111827; --text2: #4B5563; --text3: #9CA3AF; --border: #E5E7EB;
+            --red: #EF4444; --red-light: #FEE2E2; --blue: #3B82F6; --blue-light: #DBEAFE; --green: #10B981; --green-light: #D1FAE5;
+            --radius: 16px; --radius-sm: 10px; --shadow: 0 2px 12px rgba(0,0,0,0.08); --shadow-sm: 0 1px 4px rgba(0,0,0,0.06); --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); height: 100vh; height: 100dvh; overflow: hidden; display: flex; justify-content: center; }
+        .app { width: 100%; max-width: 480px; height: 100%; display: flex; flex-direction: column; background: var(--bg); position: relative; overflow: hidden; }
+        .hidden { display: none !important; }
+
+        /* ── LOGIN / REGISTER ── */
+        .login-hero { background: linear-gradient(160deg, var(--primary-deep) 0%, var(--primary-dark) 50%, var(--primary) 100%); padding: 44px 24px 64px; text-align: center; flex-shrink: 0; }
+        .login-hero-icon { font-size: 48px; margin-bottom: 8px; }
+        .login-hero-title { font-size: 22px; font-weight: 800; color: white; }
+        .login-hero-title span { color: var(--accent); }
+        .login-hero-sub { font-size: 13px; color: rgba(255,255,255,0.65); font-weight: 600; margin-top: 4px; }
+        .login-body { flex: 1; background: var(--card); border-radius: 28px 28px 0 0; margin-top: -24px; padding: 28px 24px 40px; overflow-y: auto; }
+        .login-heading { font-size: 20px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+        .login-sub { font-size: 13px; color: var(--text3); margin-bottom: 24px; }
+        .form-label { font-size: 12px; font-weight: 700; color: var(--text2); margin-bottom: 6px; display: block; text-transform: uppercase; letter-spacing: 0.4px; }
+        .form-group { margin-bottom: 16px; }
+        .form-input { width: 100%; padding: 14px 16px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-size: 15px; font-family: inherit; background: var(--bg); color: var(--text); }
+        .form-input:focus { outline: none; border-color: var(--primary); background: white; }
+        textarea.form-input { resize: none; }
+        .btn-primary { width: 100%; background: var(--primary); color: white; border: none; border-radius: var(--radius-sm); padding: 16px; font-size: 16px; font-weight: 700; font-family: inherit; cursor: pointer; box-shadow: 0 4px 14px rgba(44,62,80,0.35); }
+        .btn-primary:disabled { opacity: 0.6; }
+        .link-row { text-align: center; margin-top: 16px; font-size: 13px; color: var(--text3); }
+        .link-row a { color: var(--primary); font-weight: 700; text-decoration: none; cursor: pointer; }
+        .chk-row { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 20px; font-size: 12px; color: var(--text2); font-weight: 600; line-height: 1.5; }
+        .chk-row input { margin-top: 3px; }
+
+        /* ── TOPBAR & NAV ── */
+        .topbar { background: var(--primary); color: white; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+        .topbar-title { font-size: 15px; font-weight: 800; }
+        .topbar-title span { color: var(--accent); }
+        .topbar-status { display: flex; align-items: center; gap: 8px; }
+        .toggle-buka { position: relative; width: 44px; height: 24px; background: #4B5563; border-radius: 20px; cursor: pointer; transition: background 0.2s; }
+        .toggle-buka.on { background: var(--green); }
+        .toggle-buka::after { content: ''; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; background: white; border-radius: 50%; transition: transform 0.2s; }
+        .toggle-buka.on::after { transform: translateX(20px); }
+        .toggle-label { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.85); }
+
+        .page-body { flex: 1; overflow-y: auto; padding: 16px; padding-bottom: 90px; }
+        .empty-state { text-align: center; padding: 60px 20px; color: var(--text3); }
+        .empty-icon { font-size: 44px; display: block; margin-bottom: 10px; }
+        .empty-title { font-size: 13px; font-weight: 700; }
+
+        .bottom-nav { display: flex; background: var(--card); border-top: 1px solid var(--border); padding: 8px 0 max(8px, env(safe-area-inset-bottom)); position: absolute; bottom: 0; left: 0; right: 0; }
+        .nav-item { flex: 1; text-align: center; cursor: pointer; color: var(--text3); font-size: 11px; font-weight: 700; padding: 4px 0; }
+        .nav-item.active { color: var(--primary); }
+        .nav-icon-wrap { font-size: 22px; margin-bottom: 2px; }
+
+        /* ── ORDER CARDS ── */
+        .order-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow-sm); margin-bottom: 14px; overflow: hidden; border: 1.5px solid var(--border); }
+        .order-card-new { border-color: var(--accent-dark); }
+        .oc-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--primary-light); }
+        .oc-badge { font-size: 11px; font-weight: 800; color: var(--primary); text-transform: uppercase; }
+        .oc-time { font-size: 11px; color: var(--text3); font-weight: 700; }
+        .oc-body { padding: 14px; }
+        .oc-cust-name { font-weight: 800; font-size: 14px; color: var(--text); }
+        .oc-items { margin: 10px 0; border-top: 1px dashed var(--border); border-bottom: 1px dashed var(--border); padding: 10px 0; }
+        .oc-item-row { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; color: var(--text2); padding: 3px 0; }
+        .oc-item-row b { color: var(--text); }
+        .oc-total-row { display: flex; justify-content: space-between; font-size: 14px; font-weight: 800; color: var(--text); margin-top: 4px; }
+        .oc-note { background: var(--accent-light); border: 1px dashed var(--accent-dark); border-radius: 8px; padding: 8px 10px; font-size: 12px; font-weight: 600; color: #7c5f0a; margin-bottom: 10px; }
+        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+        .btn-reject { background: var(--red-light); color: var(--red); border: 1.5px solid #FCA5A5; border-radius: var(--radius-sm); padding: 12px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
+        .btn-accept { background: var(--green); color: white; border: none; border-radius: var(--radius-sm); padding: 12px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
+        .pill { display: inline-block; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 20px; margin-top: 6px; }
+        .pill-proses { background: var(--blue-light); color: #1D4ED8; }
+        .pill-diambil { background: var(--accent-light); color: var(--accent-dark); }
+        .pill-selesai { background: var(--green-light); color: #047857; }
+        .pill-tolak { background: var(--red-light); color: var(--red); }
+
+        /* ── MENU MANAGEMENT ── */
+        .btn-tambah-menu { width: 100%; background: var(--primary-light); color: var(--primary); border: 1.5px dashed var(--primary); border-radius: var(--radius-sm); padding: 14px; font-size: 14px; font-weight: 700; font-family: inherit; cursor: pointer; margin-bottom: 16px; }
+        .menu-item-card { background: var(--card); border-radius: var(--radius-sm); box-shadow: var(--shadow-sm); border: 1px solid var(--border); padding: 12px 14px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; }
+        .menu-item-card.tidak-tersedia { opacity: 0.55; }
+        .menu-item-photo { width: 52px; height: 52px; border-radius: 10px; object-fit: cover; background: var(--bg); flex-shrink: 0; }
+        .menu-item-info { flex: 1; min-width: 0; }
+        .menu-item-nama { font-size: 14px; font-weight: 800; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .menu-item-harga { font-size: 13px; font-weight: 700; color: var(--green); }
+        .menu-item-actions { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
+        .btn-icon-sm { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; width: 30px; height: 30px; font-size: 14px; cursor: pointer; }
+        .switch-mini { position: relative; width: 36px; height: 20px; background: var(--border); border-radius: 20px; cursor: pointer; flex-shrink: 0; }
+        .switch-mini.on { background: var(--green); }
+        .switch-mini::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; background: white; border-radius: 50%; transition: transform 0.15s; }
+        .switch-mini.on::after { transform: translateX(16px); }
+
+        /* ── MODAL FORM MENU ── */
+        .modal-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: flex-end; z-index: 50; }
+        .modal-sheet { background: var(--card); width: 100%; border-radius: 20px 20px 0 0; padding: 24px 20px max(24px, env(safe-area-inset-bottom)); max-height: 85%; overflow-y: auto; }
+        .modal-title { font-size: 17px; font-weight: 800; color: var(--text); margin-bottom: 16px; }
+
+        /* ── PROFIL ── */
+        .profil-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: 20px; text-align: center; margin-bottom: 16px; }
+        .profil-avatar { font-size: 44px; margin-bottom: 6px; }
+        .profil-nama { font-size: 17px; font-weight: 800; color: var(--text); }
+        .profil-wa { font-size: 12px; color: var(--text3); font-weight: 600; }
+        .btn-logout { width: 100%; background: var(--red-light); color: var(--red); border: none; border-radius: var(--radius-sm); padding: 14px; font-size: 14px; font-weight: 700; font-family: inherit; cursor: pointer; }
+    </style>
+</head>
+<body>
+<div class="app">
+
+    <!-- ═══ LOGIN ═══ -->
+    <div id="page-login">
+        <div class="login-hero">
+            <div class="login-hero-icon">🍜</div>
+            <div class="login-hero-title">Portal <span>Resto</span></div>
+            <div class="login-hero-sub">TulangTulung Gombong</div>
+        </div>
+        <div class="login-body">
+            <div class="login-heading">Masuk Akun Resto</div>
+            <div class="login-sub">Kelola menu & pesanan warungmu di sini.</div>
+            <div class="form-group"><label class="form-label">No. WhatsApp</label><input class="form-input" id="loginWA" type="tel" placeholder="08xxxxxxxxxx"></div>
+            <div class="form-group"><label class="form-label">Kata Sandi</label><input class="form-input" id="loginPass" type="password" placeholder="Kata sandi"></div>
+            <button class="btn-primary" id="ui-btn-login" onclick="prosesLogin()">Masuk</button>
+            <div class="link-row">Belum punya akun resto? <a onclick="tampilDaftar()">Daftar di sini</a></div>
+        </div>
+    </div>
+
+    <!-- ═══ REGISTER ═══ -->
+    <div id="page-register" class="hidden">
+        <div class="login-hero">
+            <div class="login-hero-icon">🍜</div>
+            <div class="login-hero-title">Daftar <span>Mitra Resto</span></div>
+            <div class="login-hero-sub">Gratis, tanpa biaya bulanan</div>
+        </div>
+        <div class="login-body">
+            <div class="form-group"><label class="form-label">Nama Warung/Resto</label><input class="form-input" id="regNama" placeholder="Contoh: Warung Bu Siti"></div>
+            <div class="form-group"><label class="form-label">No. WhatsApp</label><input class="form-input" id="regWA" type="tel" placeholder="08xxxxxxxxxx"></div>
+            <div class="form-group"><label class="form-label">Alamat Warung</label><textarea class="form-input" id="regAlamat" rows="2" placeholder="Alamat lengkap buat driver jemput"></textarea></div>
+            <div class="form-group"><label class="form-label">Buat Kata Sandi</label><input class="form-input" id="regPass" type="password" placeholder="Minimal 6 karakter"></div>
+            <div class="chk-row"><input type="checkbox" id="chkSetujuResto"><span>Saya setuju pesanan yang masuk akan saya proses dengan baik, dan memahami pembayaran makanan dilakukan tunai (COD) oleh driver saat pengambilan.</span></div>
+            <button class="btn-primary" id="ui-btn-reg" onclick="prosesDaftar()">Daftar Sekarang</button>
+            <div class="link-row">Sudah punya akun? <a onclick="tampilLogin()">Masuk</a></div>
+        </div>
+    </div>
+
+    <!-- ═══ DASHBOARD ═══ -->
+    <div id="page-dashboard" class="hidden" style="display:flex; flex-direction:column; height:100%;">
+        <div class="topbar">
+            <div class="topbar-title">🍜 <span id="displayNamaResto">Resto</span></div>
+            <div class="topbar-status">
+                <span class="toggle-label" id="lblStatusBuka">Buka</span>
+                <div class="toggle-buka on" id="toggleBuka" onclick="toggleStatusBuka()"></div>
+            </div>
+        </div>
+
+        <!-- TAB: PESANAN -->
+        <div id="tab-pesanan" class="page-body">
+            <div id="listPesananResto"></div>
+        </div>
+
+        <!-- TAB: MENU -->
+        <div id="tab-menu" class="page-body hidden">
+            <button class="btn-tambah-menu" onclick="bukaFormMenu()">➕ Tambah Menu Baru</button>
+            <div id="listMenuResto"></div>
+        </div>
+
+        <!-- TAB: PROFIL -->
+        <div id="tab-profil" class="page-body hidden">
+            <div class="profil-card">
+                <div class="profil-avatar">🍜</div>
+                <div class="profil-nama" id="profDisplayNama">-</div>
+                <div class="profil-wa" id="profDisplayWA">-</div>
+            </div>
+            <div class="profil-card" style="text-align:left;">
+                <div style="font-size:14px; font-weight:800; color:var(--text); margin-bottom:6px;">📍 Titik Lokasi Warung</div>
+                <div style="font-size:12px; color:var(--text3); font-weight:600; margin-bottom:12px;" id="txtLokasiWarungStatus">Belum diatur -- driver & customer belum bisa lihat lokasimu di peta.</div>
+                <button class="btn-primary" onclick="aturLokasiWarung()" id="btnAturLokasi">🎯 Pakai Lokasi Saat Ini (GPS)</button>
+                <div style="font-size:11px; color:var(--text3); font-weight:600; margin-top:8px;">*Pastikan kamu berdiri di warung/lokasi jualan saat pencet tombol ini.</div>
+            </div>
+            <button class="btn-logout" onclick="logoutResto()">🚪 Keluar Akun</button>
+        </div>
+
+        <div class="bottom-nav">
+            <div class="nav-item active" id="navtab-pesanan" onclick="pindahTab('pesanan')"><div class="nav-icon-wrap">📥</div>Pesanan</div>
+            <div class="nav-item" id="navtab-menu" onclick="pindahTab('menu')"><div class="nav-icon-wrap">📋</div>Menu</div>
+            <div class="nav-item" id="navtab-profil" onclick="pindahTab('profil')"><div class="nav-icon-wrap">👤</div>Profil</div>
+        </div>
+    </div>
+
+    <!-- ═══ MODAL FORM MENU (tambah/edit) ═══ -->
+    <div id="modal-form-menu" class="modal-overlay hidden">
+        <div class="modal-sheet">
+            <div class="modal-title" id="judulModalMenu">Tambah Menu</div>
+            <input type="hidden" id="menuEditId">
+            <div class="form-group"><label class="form-label">Nama Menu</label><input class="form-input" id="menuNama" placeholder="Contoh: Mie Ayam Spesial"></div>
+            <div class="form-group"><label class="form-label">Harga (Rp)</label><input class="form-input" id="menuHarga" type="number" placeholder="15000"></div>
+            <div class="form-group">
+                <label class="form-label">Foto Menu (opsional)</label>
+                <input type="hidden" id="menuFoto">
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <img id="previewFotoMenu" src="" class="hidden" style="width:60px; height:60px; border-radius:10px; object-fit:cover; background:var(--bg); flex-shrink:0;">
+                    <label for="inputFileFotoMenu" style="flex:1; text-align:center; padding:12px; border:1.5px dashed var(--border); border-radius:var(--radius-sm); font-size:13px; font-weight:700; color:var(--text2); cursor:pointer;" id="labelUploadFoto">📷 Pilih Foto</label>
+                    <input type="file" id="inputFileFotoMenu" accept="image/*" class="hidden" onchange="uploadFotoMenu(this)">
+                </div>
+                <div id="txtStatusUploadFoto" style="font-size:11px; color:var(--text3); font-weight:600; margin-top:6px;"></div>
+            </div>
+            <div class="form-group" style="display:flex; align-items:center; gap:10px;">
+                <div class="switch-mini on" id="switchTersedia" onclick="this.classList.toggle('on')"></div>
+                <span style="font-size:13px; font-weight:700; color:var(--text2);">Tersedia / bisa dipesan</span>
+            </div>
+            <button class="btn-primary" onclick="simpanMenu()" style="margin-top:8px;">💾 Simpan Menu</button>
+            <button class="btn-primary" style="background:var(--bg); color:var(--text2); box-shadow:none; margin-top:10px;" onclick="tutupFormMenu()">Batal</button>
+        </div>
+    </div>
+
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import { getDatabase, ref, onValue, get, child, set, update, remove, push } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyC04vDd6Z1NnrMx5gK7nMCyDceaGZj_bQw",
+      authDomain: "mastulungmasgombong.firebaseapp.com",
+      databaseURL: "https://mastulungmasgombong-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "mastulungmasgombong",
+      storageBucket: "mastulungmasgombong.firebasestorage.app",
+      messagingSenderId: "4547691331",
+      appId: "1:4547691331:web:45ecd39aab90f45b4f25f6",
+      measurementId: "G-MCYH7YMQXQ"
+    };
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+
+    const NOMOR_ADMIN_DRIVER = "6285870422464"; // dipakai juga buat verifikasi resto baru
+    // API key gratis dari https://api.imgbb.com/ -- ganti "GANTI_DENGAN_API_KEY_IMGBB" dengan key aslimu.
+    const IMGBB_API_KEY = "306bb6eb3e0d066fa5d8c7aaada78dad";
+
+    let namaRestoAktif = "", waRestoAktif = "", statusBukaAktif = true;
+    let latestOrdersResto = [];
+    let latestMenuResto = {};
+
+    // ── SESI (biar tidak perlu login ulang tiap buka) ──
+    function simpanSesiResto(wa, nama) { localStorage.setItem('ttg_resto', JSON.stringify({ wa, nama })); }
+    function hapusSesiResto() { localStorage.removeItem('ttg_resto'); }
+    function cekSesiResto() {
+        const simpanan = localStorage.getItem('ttg_resto');
+        if (!simpanan) return;
+        let sesi; try { sesi = JSON.parse(simpanan); } catch(e) { hapusSesiResto(); return; }
+        if (!sesi.wa || !sesi.nama) { hapusSesiResto(); return; }
+        get(child(ref(database), `restoran/${sesi.wa}`)).then(snap => {
+            if (!snap.exists()) { hapusSesiResto(); return; }
+            const d = snap.val();
+            if (d.status === 'pending' || d.status === 'suspend') { hapusSesiResto(); return; }
+            masukDashboard(sesi.wa, d);
+        });
+    }
+
+    window.tampilDaftar = function() { document.getElementById('page-login').classList.add('hidden'); document.getElementById('page-register').classList.remove('hidden'); }
+    window.tampilLogin = function() { document.getElementById('page-register').classList.add('hidden'); document.getElementById('page-login').classList.remove('hidden'); }
+
+    window.prosesDaftar = function() {
+        const nama = document.getElementById('regNama').value.trim();
+        const wa = document.getElementById('regWA').value.trim();
+        const alamat = document.getElementById('regAlamat').value.trim();
+        const pass = document.getElementById('regPass').value;
+        const setuju = document.getElementById('chkSetujuResto').checked;
+        if (!nama || !wa || !alamat || !pass) return alert('Mohon lengkapi semua data.');
+        if (pass.length < 6) return alert('Kata sandi minimal 6 karakter.');
+        if (!setuju) return alert('Mohon centang persetujuan dulu ya.');
+        const btn = document.getElementById('ui-btn-reg'); btn.disabled = true; btn.innerText = 'Loading... ⏳';
+        get(child(ref(database), `restoran/${wa}`)).then(snap => {
+            if (snap.exists()) { btn.disabled = false; btn.innerText = 'Daftar Sekarang'; return alert('No. WA ini sudah terdaftar sebagai resto.'); }
+            set(ref(database, 'restoran/' + wa), { nama, wa, alamat, password: pass, status: 'pending', buka: true, tanggal_daftar: new Date().toLocaleDateString('id-ID') }).then(() => {
+                alert('Pendaftaran terkirim! Tunggu verifikasi admin ya (biasanya cepat, apalagi kalau kamu konfirmasi via WA).');
+                tampilLogin(); document.getElementById('loginWA').value = wa; btn.disabled = false; btn.innerText = 'Daftar Sekarang';
+                const pesan = `Halo Admin TulangTulung Gombong, saya ${nama} (WA: ${wa}) baru saja mendaftar sebagai Mitra Resto melalui aplikasi. Mohon segera diverifikasi/di-ACC ya. Terima kasih!`;
+                window.open(`https://wa.me/${NOMOR_ADMIN_DRIVER}?text=${encodeURIComponent(pesan)}`, '_blank');
+            });
+        }).catch(e => { alert('Error: ' + e); btn.disabled = false; btn.innerText = 'Daftar Sekarang'; });
+    }
+
+    window.prosesLogin = function() {
+        const wa = document.getElementById('loginWA').value.trim();
+        const pass = document.getElementById('loginPass').value;
+        if (!wa || !pass) return alert('Mohon isi No. WA & kata sandi.');
+        const btn = document.getElementById('ui-btn-login'); btn.disabled = true; btn.innerText = 'Loading... ⏳';
+        get(child(ref(database), `restoran/${wa}`)).then(snap => {
+            if (!snap.exists() || snap.val().password !== pass) { btn.disabled = false; btn.innerText = 'Masuk'; return alert('No. WA atau kata sandi salah.'); }
+            const d = snap.val();
+            if (d.status === 'pending') { btn.disabled = false; btn.innerText = 'Masuk'; return alert('Akun kamu masih menunggu verifikasi admin.'); }
+            if (d.status === 'suspend') { btn.disabled = false; btn.innerText = 'Masuk'; return alert('Akun kamu sedang disuspend. Hubungi admin.'); }
+            simpanSesiResto(wa, d.nama);
+            masukDashboard(wa, d);
+        }).catch(e => { alert('Error: ' + e); btn.disabled = false; btn.innerText = 'Masuk'; });
+    }
+
+    function masukDashboard(wa, d) {
+        namaRestoAktif = d.nama; waRestoAktif = wa; statusBukaAktif = d.buka !== false;
+        document.getElementById('displayNamaResto').innerText = d.nama;
+        document.getElementById('profDisplayNama').innerText = d.nama;
+        document.getElementById('profDisplayWA').innerText = wa;
+        updateLokasiWarungUI(d.lat, d.lng);
+        updateToggleBukaUI();
+        document.getElementById('page-login').classList.add('hidden');
+        document.getElementById('page-register').classList.add('hidden');
+        document.getElementById('page-dashboard').classList.remove('hidden');
+        pantauPesananResto();
+        pantauMenuResto();
+    }
+
+    function updateLokasiWarungUI(lat, lng) {
+        const el = document.getElementById('txtLokasiWarungStatus');
+        if (!el) return;
+        if (lat && lng) {
+            el.innerHTML = `✅ Lokasi sudah diatur (${lat.toFixed(5)}, ${lng.toFixed(5)}). Pencet tombol lagi kalau warung pindah tempat.`;
+            el.style.color = '#047857';
+        } else {
+            el.innerHTML = 'Belum diatur -- driver & customer belum bisa lihat lokasimu di peta.';
+            el.style.color = '';
+        }
+    }
+
+    window.aturLokasiWarung = function() {
+        if (!navigator.geolocation) return alert('GPS tidak didukung browser ini.');
+        const btn = document.getElementById('btnAturLokasi');
+        btn.disabled = true; btn.innerText = '🎯 Mencari lokasi...';
+        navigator.geolocation.getCurrentPosition(pos => {
+            const lat = pos.coords.latitude, lng = pos.coords.longitude;
+            update(ref(database, 'restoran/' + waRestoAktif), { lat, lng }).then(() => {
+                updateLokasiWarungUI(lat, lng);
+                alert('Lokasi warung berhasil disimpan!');
+            }).catch(e => alert('Error: ' + e)).finally(() => {
+                btn.disabled = false; btn.innerText = '🎯 Pakai Lokasi Saat Ini (GPS)';
+            });
+        }, () => {
+            alert('Gagal mengambil lokasi GPS. Pastikan izin lokasi diizinkan di browser.');
+            btn.disabled = false; btn.innerText = '🎯 Pakai Lokasi Saat Ini (GPS)';
+        }, { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 });
+    }
+
+    window.logoutResto = function() {
+        if (!confirm('Yakin mau keluar akun?')) return;
+        hapusSesiResto();
+        location.reload();
+    }
+
+    // ── TOGGLE BUKA/TUTUP WARUNG ──
+    function updateToggleBukaUI() {
+        const el = document.getElementById('toggleBuka');
+        const lbl = document.getElementById('lblStatusBuka');
+        el.classList.toggle('on', statusBukaAktif);
+        lbl.innerText = statusBukaAktif ? 'Buka' : 'Tutup';
+    }
+    window.toggleStatusBuka = function() {
+        statusBukaAktif = !statusBukaAktif;
+        updateToggleBukaUI();
+        update(ref(database, 'restoran/' + waRestoAktif), { buka: statusBukaAktif }).catch(e => alert('Error: ' + e));
+    }
+
+    // ── NAVIGASI TAB ──
+    window.pindahTab = function(tab) {
+        ['pesanan','menu','profil'].forEach(t => {
+            document.getElementById('tab-' + t).classList.toggle('hidden', t !== tab);
+            document.getElementById('navtab-' + t).classList.toggle('active', t === tab);
+        });
+    }
+
+    // ── PANTAU & RENDER PESANAN MASUK ──
+    function pantauPesananResto() {
+        onValue(ref(database, 'orders'), snap => {
+            const arr = [];
+            snap.forEach(c => { let obj = c.val(); obj.id = c.key; if (obj.resto_id === waRestoAktif) arr.push(obj); });
+            arr.reverse();
+            latestOrdersResto = arr;
+            renderPesananResto();
+        });
+    }
+
+    function formatRupiah(n) { return 'Rp ' + (n || 0).toLocaleString('id-ID'); }
+
+    function renderPesananResto() {
+        const list = document.getElementById('listPesananResto');
+        list.innerHTML = '';
+        // Tampilkan yang masih relevan: menunggu respon resto, diproses, atau baru selesai hari ini
+        const relevan = latestOrdersResto.filter(o => ['menunggu_resto','diterima_resto','diambil','selesai','ditolak_resto'].includes(o.status));
+        if (relevan.length === 0) {
+            list.innerHTML = `<div class="empty-state"><span class="empty-icon">📭</span><div class="empty-title">Belum ada pesanan masuk.</div></div>`;
+            return;
+        }
+        relevan.forEach(data => {
+            const itemsArr = data.items ? Object.values(data.items) : [];
+            const itemsHtml = itemsArr.map(it => `<div class="oc-item-row"><span>${it.qty}x ${it.nama}</span><b>${formatRupiah(it.harga * it.qty)}</b></div>`).join('');
+
+            let pillHtml = '', actionsHtml = '';
+            if (data.status === 'menunggu_resto') {
+                actionsHtml = `<div class="action-grid">
+                    <button class="btn-reject" onclick="tolakPesananResto('${data.id}')">✕ Tolak</button>
+                    <button class="btn-accept" onclick="terimaPesananResto('${data.id}')">✓ Terima</button>
+                </div>`;
+            } else if (data.status === 'diterima_resto') {
+                pillHtml = `<span class="pill pill-proses">🍳 Sedang disiapkan, menunggu driver</span>`;
+            } else if (data.status === 'diambil') {
+                pillHtml = `<span class="pill pill-diambil">🛵 Driver ${data.driver_nama || ''} sedang menuju resto</span>`;
+            } else if (data.status === 'selesai') {
+                pillHtml = `<span class="pill pill-selesai">✅ Selesai diantar</span>`;
+            } else if (data.status === 'ditolak_resto') {
+                pillHtml = `<span class="pill pill-tolak">✕ Ditolak</span>`;
+            }
+
+            const card = document.createElement('div');
+            card.className = 'order-card' + (data.status === 'menunggu_resto' ? ' order-card-new' : '');
+            card.innerHTML = `
+                <div class="oc-header"><span class="oc-badge">${data.waktu_order || ''}</span><span class="oc-time">${data.customer_nama || ''}</span></div>
+                <div class="oc-body">
+                    <div class="oc-cust-name">👤 ${data.customer_nama || ''}</div>
+                    <div class="oc-items">${itemsHtml}<div class="oc-total-row"><span>Total Makanan</span><span>${formatRupiah(data.subtotal_makanan)}</span></div></div>
+                    ${data.catatan ? `<div class="oc-note">📝 ${data.catatan}</div>` : ''}
+                    ${pillHtml}
+                    ${actionsHtml}
+                </div>`;
+            list.appendChild(card);
+        });
+    }
+
+    window.terimaPesananResto = function(orderId) {
+        if (!confirm('Terima pesanan ini? Mulai siapkan makanannya ya.')) return;
+        update(ref(database, 'orders/' + orderId), { status: 'diterima_resto' }).catch(e => alert('Error: ' + e));
+    }
+    window.tolakPesananResto = function(orderId) {
+        const alasan = prompt('Alasan ditolak (misal: bahan habis) -- opsional:') || '';
+        if (!confirm('Tolak pesanan ini?')) return;
+        update(ref(database, 'orders/' + orderId), { status: 'ditolak_resto', alasan_tolak_resto: alasan }).catch(e => alert('Error: ' + e));
+    }
+
+    // ── PANTAU & RENDER MENU ──
+    function pantauMenuResto() {
+        onValue(ref(database, 'restoran/' + waRestoAktif + '/menu'), snap => {
+            latestMenuResto = snap.val() || {};
+            renderMenuResto();
+        });
+    }
+
+    function renderMenuResto() {
+        const list = document.getElementById('listMenuResto');
+        list.innerHTML = '';
+        const keys = Object.keys(latestMenuResto);
+        if (keys.length === 0) {
+            list.innerHTML = `<div class="empty-state"><span class="empty-icon">📋</span><div class="empty-title">Belum ada menu. Yuk tambah menu pertamamu!</div></div>`;
+            return;
+        }
+        keys.forEach(id => {
+            const m = latestMenuResto[id];
+            const card = document.createElement('div');
+            card.className = 'menu-item-card' + (m.tersedia === false ? ' tidak-tersedia' : '');
+            card.innerHTML = `
+                <img class="menu-item-photo" src="${m.foto || 'https://placehold.co/100x100?text=🍽️'}" onerror="this.src='https://placehold.co/100x100?text=🍽️'">
+                <div class="menu-item-info">
+                    <div class="menu-item-nama">${m.nama}</div>
+                    <div class="menu-item-harga">${formatRupiah(m.harga)}</div>
+                </div>
+                <div class="menu-item-actions">
+                    <div class="switch-mini ${m.tersedia !== false ? 'on' : ''}" onclick="toggleTersediaMenu('${id}', ${m.tersedia === false})"></div>
+                    <div style="display:flex; gap:6px;">
+                        <button class="btn-icon-sm" onclick='bukaFormMenu("${id}")'>✏️</button>
+                        <button class="btn-icon-sm" onclick="hapusMenu('${id}')">🗑️</button>
+                    </div>
+                </div>`;
+            list.appendChild(card);
+        });
+    }
+
+    window.toggleTersediaMenu = function(id, jadiTersedia) {
+        update(ref(database, `restoran/${waRestoAktif}/menu/${id}`), { tersedia: jadiTersedia }).catch(e => alert('Error: ' + e));
+    }
+
+    window.hapusMenu = function(id) {
+        if (!confirm('Hapus menu ini?')) return;
+        remove(ref(database, `restoran/${waRestoAktif}/menu/${id}`)).catch(e => alert('Error: ' + e));
+    }
+
+    // ── FORM TAMBAH/EDIT MENU ──
+    window.bukaFormMenu = function(id) {
+        document.getElementById('menuEditId').value = id || '';
+        document.getElementById('txtStatusUploadFoto').textContent = '';
+        document.getElementById('inputFileFotoMenu').value = '';
+        const preview = document.getElementById('previewFotoMenu');
+        if (id && latestMenuResto[id]) {
+            const m = latestMenuResto[id];
+            document.getElementById('judulModalMenu').innerText = 'Edit Menu';
+            document.getElementById('menuNama').value = m.nama || '';
+            document.getElementById('menuHarga').value = m.harga || '';
+            document.getElementById('menuFoto').value = m.foto || '';
+            document.getElementById('switchTersedia').classList.toggle('on', m.tersedia !== false);
+            if (m.foto) { preview.src = m.foto; preview.classList.remove('hidden'); } else { preview.classList.add('hidden'); }
+        } else {
+            document.getElementById('judulModalMenu').innerText = 'Tambah Menu';
+            document.getElementById('menuNama').value = '';
+            document.getElementById('menuHarga').value = '';
+            document.getElementById('menuFoto').value = '';
+            document.getElementById('switchTersedia').classList.add('on');
+            preview.classList.add('hidden');
+        }
+        document.getElementById('modal-form-menu').classList.remove('hidden');
+    }
+    window.tutupFormMenu = function() { document.getElementById('modal-form-menu').classList.add('hidden'); }
+
+    // Upload foto ke ImgBB (gratis, tanpa perlu server sendiri) begitu resto pilih file.
+    // Hasil link gambarnya disimpan ke input hidden #menuFoto, dipakai saat simpanMenu().
+    window.uploadFotoMenu = function(inputEl) {
+        const file = inputEl.files[0];
+        if (!file) return;
+        if (IMGBB_API_KEY === 'GANTI_DENGAN_API_KEY_IMGBB') {
+            alert('API key ImgBB belum diisi. Hubungi admin/developer buat setup dulu.');
+            return;
+        }
+        const statusEl = document.getElementById('txtStatusUploadFoto');
+        const label = document.getElementById('labelUploadFoto');
+        statusEl.textContent = '⏳ Mengunggah foto...';
+        label.textContent = '⏳ Mengunggah...';
+
+        const reader = new FileReader();
+        reader.onload = function() {
+            // reader.result formatnya "data:image/xxx;base64,XXXXX" -- ImgBB cuma butuh bagian base64-nya
+            const base64 = reader.result.split(',')[1];
+            const formData = new FormData();
+            formData.append('image', base64);
+
+            fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData })
+                .then(res => res.json())
+                .then(hasil => {
+                    if (hasil.success) {
+                        const url = hasil.data.url;
+                        document.getElementById('menuFoto').value = url;
+                        document.getElementById('previewFotoMenu').src = url;
+                        document.getElementById('previewFotoMenu').classList.remove('hidden');
+                        statusEl.textContent = '✅ Foto berhasil diunggah.';
+                        label.textContent = '📷 Ganti Foto';
+                    } else {
+                        statusEl.textContent = '❌ Gagal unggah: ' + (hasil.error?.message || 'coba lagi.');
+                        label.textContent = '📷 Pilih Foto';
+                    }
+                })
+                .catch(e => {
+                    statusEl.textContent = '❌ Gagal unggah, cek koneksi internet.';
+                    label.textContent = '📷 Pilih Foto';
+                });
+        };
+        reader.readAsDataURL(file);
+    }
+
+    window.simpanMenu = function() {
+        const id = document.getElementById('menuEditId').value;
+        const nama = document.getElementById('menuNama').value.trim();
+        const harga = parseInt(document.getElementById('menuHarga').value);
+        const foto = document.getElementById('menuFoto').value.trim();
+        const tersedia = document.getElementById('switchTersedia').classList.contains('on');
+        if (!nama || !harga || harga <= 0) return alert('Nama menu & harga harus diisi dengan benar.');
+        const data = { nama, harga, foto, tersedia };
+        const promise = id
+            ? update(ref(database, `restoran/${waRestoAktif}/menu/${id}`), data)
+            : set(push(ref(database, `restoran/${waRestoAktif}/menu`)), data);
+        promise.then(() => tutupFormMenu()).catch(e => alert('Error: ' + e));
+    }
+
+    // ── INIT ──
+    cekSesiResto();
+</script>
+</body>
+</html>
