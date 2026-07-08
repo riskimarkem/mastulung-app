@@ -130,6 +130,11 @@
         .oc-note { background:var(--accent-light); border-radius:8px; padding:8px 12px; margin-bottom:12px; font-size:12px; color:#78350F; font-weight:600; }
         .oc-jarak-ongkos { display:flex; justify-content:space-between; align-items:center; background:#ECFDF5; border:1px solid #A7F3D0; border-radius:8px; padding:8px 12px; margin-bottom:12px; font-size:12px; font-weight:700; color:#065F46; }
         .oc-jarak-ongkos .oc-jo-harga { font-size:14px; font-weight:800; color:#047857; }
+        .oc-food-box { background:#FFF7ED; border:1px solid #FDBA74; border-radius:8px; padding:10px 12px; margin-bottom:12px; }
+        .oc-food-resto { font-size:12.5px; font-weight:800; color:#9A3412; margin-bottom:6px; }
+        .oc-food-item-row { display:flex; justify-content:space-between; font-size:12px; font-weight:600; color:#7C2D12; padding:2px 0; }
+        .oc-food-subtotal-row { display:flex; justify-content:space-between; font-size:13px; font-weight:800; color:#9A3412; margin-top:6px; padding-top:6px; border-top:1px dashed #FDBA74; }
+        .oc-food-cod-note { font-size:11px; font-weight:700; color:#9A3412; margin-top:6px; }
         
         .btn-wa-chat { width:100%; background:#25D366; color:white; border:none; border-radius:var(--radius-sm); padding:12px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:10px; }
         .btn-ambil { width:100%; background:var(--primary); color:white; border:none; border-radius:var(--radius-sm); padding:15px; font-size:15px; font-weight:800; cursor:pointer; font-family:inherit; position:relative; overflow:hidden; }
@@ -747,7 +752,10 @@
     if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw-driver.js').catch(()=>{}); }); }
 
     let namaDriverAktif = "", waDriverAktif = "", saldoDriverAktif = 0; let orderYangSudahBunyi = new Set(); let latestOrdersData = []; let currentLang = "ngapak";
-    const BIAYA_PLATFORM = 1000; 
+    const BIAYA_PLATFORM = 1000;
+    // Batas waktu customer boleh batal GRATIS setelah driver menerima order (auto-approve, saldo driver dikembalikan).
+    // Lewat batas ini, permintaan batal dari customer harus di-ACC/tolak manual oleh driver (lihat cekPermintaanBatalCustomer).
+    const GRACE_BATAL_MS = 90 * 1000; // 90 detik
 
     // SOUND SYSTEM
     const soundUrls = { 'default': 'https://actions.google.com/sounds/v1/alarms/beep_short.ogg', 'doorbell': 'https://actions.google.com/sounds/v1/doors/doorbell_1.ogg', 'chime': 'https://actions.google.com/sounds/v1/alarms/dinner_chimes.ogg', 'horn': 'https://actions.google.com/sounds/v1/transportation/car_horn.ogg' };
@@ -1037,7 +1045,36 @@
         onValue(ref(database,'orders'), snap => {
             const arr = []; snap.forEach(c => { let obj = c.val(); obj.id = c.key; arr.push(obj); });
             arr.reverse(); latestOrdersData = arr;
+            cekPermintaanBatalCustomer(arr);
             try { renderOrdersUI(); renderRiwayatSaldo(); if(!document.getElementById('page-history').classList.contains('hidden')) renderRiwayatDriver(); } catch(e){}
+        });
+    }
+
+    // Set berisi order id yang baru saja diproses otomatis, biar tidak diproses berkali-kali
+    // kalau listener sempat menembak beberapa kali sebelum update tersimpan ke Firebase.
+    let _batalOtomatisDiproses = new Set();
+
+    // Cek apakah ada permintaan pembatalan dari customer yang MASIH dalam masa grace period
+    // (≤90 detik sejak driver menerima order). Kalau iya, langsung disetujui otomatis:
+    // status jadi batal_cust & saldo driver dikembalikan -- driver tidak perlu tap apa-apa.
+    // Kalau grace period sudah lewat, permintaan dibiarkan tampil di kartu order supaya
+    // driver sendiri yang ACC/tolak (lihat tombol di renderOrdersUI).
+    function cekPermintaanBatalCustomer(arr) {
+        arr.forEach(data => {
+            if (data.driver_nama !== namaDriverAktif) return;
+            if (data.status !== 'diambil' || !data.minta_batal_customer) return;
+            if (_batalOtomatisDiproses.has(data.id)) return;
+
+            const waktuAmbil = data.waktu_diambil || 0;
+            const dalamGrace = waktuAmbil && (Date.now() - waktuAmbil) <= GRACE_BATAL_MS;
+            if (dalamGrace) {
+                _batalOtomatisDiproses.add(data.id);
+                update(ref(database,'orders/'+data.id), { status: 'batal_cust', minta_batal_customer: false })
+                    .then(() => {
+                        update(ref(database,`drivers/${waDriverAktif}`), { saldo: saldoDriverAktif + BIAYA_PLATFORM });
+                    })
+                    .catch(() => { _batalOtomatisDiproses.delete(data.id); });
+            }
         });
     }
 
@@ -1057,6 +1094,17 @@
         if(count === 0) { listDiv.innerHTML = `<div class="empty-state" style="padding: 20px;"><span class="empty-icon" style="font-size:36px;">💸</span><div class="empty-title">${t.mutasiEmpty}</div></div>`; }
     }
 
+    function renderItemsMakananHtml(data) {
+        if (!data.items) return '';
+        const rows = Object.values(data.items).map(it => `<div class="oc-food-item-row"><span>${it.qty}x ${it.nama}</span><span>${(it.harga*it.qty).toLocaleString('id-ID')}</span></div>`).join('');
+        return `<div class="oc-food-box">
+            <div class="oc-food-resto">🍜 Jemput di: ${data.resto_nama || '-'}</div>
+            ${rows}
+            <div class="oc-food-subtotal-row"><span>Subtotal Makanan</span><span>Rp ${(data.subtotal_makanan||0).toLocaleString('id-ID')}</span></div>
+            <div class="oc-food-cod-note">💵 Bayar tunai ke resto Rp ${(data.subtotal_makanan||0).toLocaleString('id-ID')} saat ambil, lalu tagih customer Rp ${((data.subtotal_makanan||0)+(data.estimasi_ongkos||0)).toLocaleString('id-ID')} (makanan + ongkir) saat antar.</div>
+        </div>`;
+    }
+
     function renderOrdersUI() {
         if(namaDriverAktif==='') return;
         const t = langDict[currentLang]; const listBaru = document.getElementById('listOrderan'); const listAktif = document.getElementById('listOrderanAktif');
@@ -1072,15 +1120,24 @@
                     <div class="oc-body">
                         <div class="oc-customer"><div class="oc-cust-avatar">👤</div><div><div class="oc-cust-name">${data.customer_nama||''}</div><div class="oc-cust-wa">${data.layanan||''}</div></div></div>
                         <div class="oc-route"><div class="oc-route-row"><div class="oc-route-icon" style="background:#DBEAFE;">📍</div><div><div class="oc-route-label">${t.lblDet1}</div><div class="oc-route-val">${data.detail_1||''}</div></div></div><div class="oc-route-row"><div class="oc-route-icon" style="background:#D1FAE5;">🏁</div><div><div class="oc-route-label">${t.lblDet2}</div><div class="oc-route-val">${data.detail_2||''}</div></div></div></div>
-                        ${data.jarak_km ? `<div class="oc-jarak-ongkos"><span>📏 ${data.jarak_km} km${data.durasi_menit ? ` (~${data.durasi_menit} menit)` : ''}</span><span class="oc-jo-harga">💰 Rp ${(data.estimasi_ongkos||0).toLocaleString('id-ID')}</span></div>` : ''}
+                        ${data.jarak_km ? `<div class="oc-jarak-ongkos"><span>📏 ${data.jarak_km} km${data.durasi_menit ? ' · ⏱️ ~'+data.durasi_menit+' mnt' : ''}</span><span class="oc-jo-harga">💰 Rp ${(data.estimasi_ongkos||0).toLocaleString('id-ID')}</span></div>` : ''}
+                        ${renderItemsMakananHtml(data)}
                         ${data.catatan ? `<div class="oc-note">📝 ${t.lblNote}: ${data.catatan}</div>` : ''}
+                        ${data.minta_batal_customer ? `
+                        <div class="oc-note" style="background:#FEF2F2;border-color:#FCA5A5;color:#991B1B;">⚠️ Customer mengajukan pembatalan. ACC kalau memang berhalangan/salah pesan, atau Tolak kalau kamu sudah otw/dekat lokasi.</div>
+                        <div class="action-grid">
+                            <button class="btn-cancel-order" onclick="tolakPembatalanCustomer('${data.id}')">✕ Tolak</button>
+                            <button class="btn-complete-order" onclick="setujuiPembatalanCustomer('${data.id}')">✓ ACC Batal</button>
+                        </div>
+                        ` : `
                         <div class="oc-note-bottom">${t.noteAktif}</div>
                         <button class="btn-wa-chat" onclick="chatUlang('${data.customer_wa}')">${t.btnWa}</button>
                         ${(data.pickup_lat && data.pickup_lng) ? `<button class="btn-wa-chat" style="background:#E8F5E9;color:#1B5E20;border-color:#A5D6A7;margin-top:6px;" onclick="bukaPetaOrderan('${data.pickup_lat}','${data.pickup_lng}','${data.dropoff_lat||''}','${data.dropoff_lng||''}','${(data.detail_1||'').replace(/'/g,'')}','${(data.detail_2||'').replace(/'/g,'')}')">🗺️ Lihat Peta & Navigasi</button>` : ''}
                         <div class="action-grid"><button class="btn-cancel-order" onclick="batalAmbilOrderan('${data.id}')">${t.btnCancelOrder}</button><button class="btn-complete-order" onclick="selesaikanOrderanDriver('${data.id}')">${t.btnCompleteOrder}</button></div>
+                        `}
                     </div>`; listAktif.appendChild(card);
             }
-            if(data.status==='terbuka'){
+            if(data.status==='terbuka' || data.status==='diterima_resto'){
                 adaBaru=true; if(!orderYangSudahBunyi.has(data.id)){ orderYangSudahBunyi.add(data.id); newSound=true; }
                 const card = document.createElement('div'); card.className='order-card order-card-new';
                 card.innerHTML=`
@@ -1088,7 +1145,8 @@
                     <div class="oc-body">
                         <div class="oc-customer"><div class="oc-cust-avatar">👤</div><div><div class="oc-cust-name">${data.customer_nama||''}</div><div class="oc-cust-wa">${t.lblCust}</div></div></div>
                         <div class="oc-route"><div class="oc-route-row"><div class="oc-route-icon" style="background:#FEF9E7;">📍</div><div><div class="oc-route-label">${t.lblDet1}</div><div class="oc-route-val">${data.detail_1||''}</div></div></div><div class="oc-route-row"><div class="oc-route-icon" style="background:#D1FAE5;">🏁</div><div><div class="oc-route-label">${t.lblDet2}</div><div class="oc-route-val">${data.detail_2||''}</div></div></div></div>
-                        ${data.jarak_km ? `<div class="oc-jarak-ongkos"><span>📏 ${data.jarak_km} km${data.durasi_menit ? ` (~${data.durasi_menit} menit)` : ''}</span><span class="oc-jo-harga">💰 Rp ${(data.estimasi_ongkos||0).toLocaleString('id-ID')}</span></div>` : ''}
+                        ${data.jarak_km ? `<div class="oc-jarak-ongkos"><span>📏 ${data.jarak_km} km${data.durasi_menit ? ' · ⏱️ ~'+data.durasi_menit+' mnt' : ''}</span><span class="oc-jo-harga">💰 Rp ${(data.estimasi_ongkos||0).toLocaleString('id-ID')}</span></div>` : ''}
+                        ${renderItemsMakananHtml(data)}
                         ${data.catatan ? `<div class="oc-note">📝 ${t.lblNote}: ${data.catatan}</div>` : ''}
                         ${(data.pickup_lat && data.pickup_lng) ? `<button class="btn-wa-chat" style="background:#E3F2FD;color:#0D47A1;border-color:#90CAF9;margin-bottom:6px;" onclick="bukaPetaOrderan('${data.pickup_lat}','${data.pickup_lng}','${data.dropoff_lat||''}','${data.dropoff_lng||''}','${(data.detail_1||'').replace(/'/g,'')}','${(data.detail_2||'').replace(/'/g,'')}')">🗺️ Preview Peta</button>` : ''}
                         <button class="btn-ambil" onclick="ambilOrderan('${data.id}','${data.customer_wa}','${data.customer_nama}')">${t.btnAmbil}</button>
@@ -1130,7 +1188,7 @@
                 <button class="hc-toggle-btn" id="hist-btn-${data.id}" onclick="toggleHistory('${data.id}')">${t.btnDetail}</button>
                 <div class="hc-details" id="hist-det-${data.id}">
                     <div class="hc-route-box">${data.detail_1||''}<br>⬇<br>${data.detail_2||''}</div>
-                    ${data.jarak_km ? `<div class="oc-jarak-ongkos" style="margin-top:8px;"><span>📏 ${data.jarak_km} km${data.durasi_menit ? ` (~${data.durasi_menit} menit)` : ''}</span><span class="oc-jo-harga">💰 Rp ${(data.estimasi_ongkos||0).toLocaleString('id-ID')}</span></div>` : ''}
+                    ${data.jarak_km ? `<div class="oc-jarak-ongkos" style="margin-top:8px;"><span>📏 ${data.jarak_km} km${data.durasi_menit ? ' · ⏱️ ~'+data.durasi_menit+' mnt' : ''}</span><span class="oc-jo-harga">💰 Rp ${(data.estimasi_ongkos||0).toLocaleString('id-ID')}</span></div>` : ''}
                     ${ratingHtml}
                 </div>`; listDiv.appendChild(card);
         });
@@ -1142,7 +1200,7 @@
 
     window.ambilOrderan = function(orderId, noWA, namaCust) {
         const t = langDict[currentLang]; if(saldoDriverAktif < BIAYA_PLATFORM){alert(t.alertSaldoHabis);return;}
-        runTransaction(ref(database,'orders/'+orderId), pesanan => { if(pesanan&&pesanan.status==='terbuka'){ pesanan.status='diambil'; pesanan.driver_nama=namaDriverAktif; return pesanan; } return; })
+        runTransaction(ref(database,'orders/'+orderId), pesanan => { if(pesanan&&(pesanan.status==='terbuka'||pesanan.status==='diterima_resto')){ pesanan.status='diambil'; pesanan.driver_nama=namaDriverAktif; pesanan.driver_wa=waDriverAktif; pesanan.waktu_diambil=Date.now(); return pesanan; } return; })
         .then(hasil => {
             if(hasil.committed){
                 update(ref(database,`drivers/${waDriverAktif}`),{saldo:saldoDriverAktif-BIAYA_PLATFORM});
@@ -1154,10 +1212,29 @@
     window.batalAmbilOrderan = function(orderId) {
         const t = langDict[currentLang];
         if(confirm(t.alertCancelConf)){
-            update(ref(database,'orders/'+orderId),{status:'terbuka',driver_nama:''}).then(()=>{ update(ref(database,`drivers/${waDriverAktif}`),{saldo:saldoDriverAktif+BIAYA_PLATFORM}); alert(t.alertCancelSucc); }).catch(e=>alert('Error: '+e));
+            // Order makanan kembali ke status 'diterima_resto' (resto sudah ACC, tinggal cari driver lain),
+            // bukan 'terbuka' -- supaya tidak nyasar balik minta konfirmasi resto lagi.
+            const dataOrder = latestOrdersData.find(o => o.id === orderId);
+            const statusKembali = (dataOrder && dataOrder.resto_id) ? 'diterima_resto' : 'terbuka';
+            update(ref(database,'orders/'+orderId),{status:statusKembali,driver_nama:''}).then(()=>{ update(ref(database,`drivers/${waDriverAktif}`),{saldo:saldoDriverAktif+BIAYA_PLATFORM}); alert(t.alertCancelSucc); }).catch(e=>alert('Error: '+e));
         }
     }
     window.selesaikanOrderanDriver = function(orderId) { const t = langDict[currentLang]; if(confirm(t.alertCompleteConf)){ update(ref(database,'orders/'+orderId),{status:'selesai'}); } }
+
+    // Driver ACC permintaan pembatalan dari customer (di luar masa grace period) --
+    // status jadi batal_cust & saldo driver dikembalikan, karena ini kesepakatan driver sendiri.
+    window.setujuiPembatalanCustomer = function(orderId) {
+        if (!confirm('ACC pembatalan? Saldo Rp' + BIAYA_PLATFORM.toLocaleString('id-ID') + ' yang terpotong akan dikembalikan ke saldo kamu.')) return;
+        update(ref(database,'orders/'+orderId), { status: 'batal_cust', minta_batal_customer: false })
+            .then(() => update(ref(database,`drivers/${waDriverAktif}`), { saldo: saldoDriverAktif + BIAYA_PLATFORM }))
+            .catch(e => alert('Error: ' + e));
+    }
+
+    // Driver tolak permintaan pembatalan -- orderan tetap berjalan seperti biasa.
+    window.tolakPembatalanCustomer = function(orderId) {
+        if (!confirm('Tolak permintaan pembatalan ini? Orderan akan tetap berjalan.')) return;
+        update(ref(database,'orders/'+orderId), { minta_batal_customer: false }).catch(e => alert('Error: ' + e));
+    }
 
     periksaSesiDriver();
     setLang('ngapak');
@@ -1173,6 +1250,7 @@
     let _driverMarker = null;
     let _directionsRenderer = null;
     let _directionsService = null;
+    let _straightLine = null; // fallback garis putus-putus kalau Directions API gagal
 
     function muatGoogleMapsDriver(callback) {
         if (_driverMapsLoaded && window.google && window.google.maps) { callback(); return; }
@@ -1228,19 +1306,26 @@
                 });
                 _directionsService = new google.maps.DirectionsService();
                 _directionsRenderer = new google.maps.DirectionsRenderer({
-                    suppressMarkers: false,
+                    suppressMarkers: true, // marker jemput/tujuan pakai marker kita sendiri (label J/T), bukan pin default A/B
+                    preserveViewport: true, // jangan override fitBounds kita sendiri
                     polylineOptions: { strokeColor: '#2c3e50', strokeWeight: 5 }
                 });
                 _directionsRenderer.setMap(_driverMap);
             } else {
                 _driverMap.setCenter(center);
                 _driverMap.setZoom(15);
-                // Hapus marker sebelumnya
+                // Hapus marker & garis rute sebelumnya (order lama)
                 if (_pickupMarker) _pickupMarker.setMap(null);
                 if (_dropoffMarker) _dropoffMarker.setMap(null);
                 if (_driverMarker) _driverMarker.setMap(null);
+                if (_straightLine) _straightLine.setMap(null);
+                _directionsRenderer.setDirections({ routes: [] }); // bersihkan garis rute lama
                 _directionsRenderer.setMap(_driverMap);
             }
+
+            // Pastikan peta di-render ulang dengan ukuran yang benar (modal baru saja ditampilkan)
+            google.maps.event.trigger(_driverMap, 'resize');
+            _driverMap.setCenter(center);
 
             // Marker titik jemput (merah)
             _pickupMarker = new google.maps.Marker({
@@ -1261,7 +1346,7 @@
                     icon: { path: google.maps.SymbolPath.CIRCLE, scale: 14, fillColor: '#10B981', fillOpacity: 1, strokeColor: 'white', strokeWeight: 2 }
                 });
 
-                // Gambar rute jemput → tujuan
+                // Gambar rute jemput → tujuan (marker J/T tetap tampil, cuma garis rutenya yang ditambahkan)
                 _directionsService.route({
                     origin: { lat: pLat, lng: pLng },
                     destination: { lat: dLat, lng: dLng },
@@ -1269,8 +1354,15 @@
                 }, (result, status) => {
                     if (status === 'OK') {
                         _directionsRenderer.setDirections(result);
-                        _pickupMarker.setMap(null); // Hapus marker manual, pakai marker directions
-                        _dropoffMarker.setMap(null);
+                    } else {
+                        // Rute gagal dimuat (misal offline) -- tetap tampilkan garis lurus penghubung
+                        if (_straightLine) _straightLine.setMap(null);
+                        _straightLine = new google.maps.Polyline({
+                            path: [{ lat: pLat, lng: pLng }, { lat: dLat, lng: dLng }],
+                            strokeColor: '#94A3B8', strokeOpacity: 0.8, strokeWeight: 3,
+                            icons: [{ icon: { path: 'M 0,-1 0,1', strokeOpacity: 1, scale: 3 }, offset: '0', repeat: '12px' }],
+                            map: _driverMap
+                        });
                     }
                 });
 
