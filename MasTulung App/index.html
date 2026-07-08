@@ -236,6 +236,39 @@
     .estimasi-value.estimasi-harga { font-size: 17px; color: #166534; }
     .estimasi-note { font-size: 11px; color: #4d7c5f; margin-top: 6px; font-style: italic; }
 
+    .keranjang-box { background: #FFF7ED; border: 1.5px solid #FDBA74; border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 18px; }
+    .keranjang-resto-nama { font-size: 14px; font-weight: 800; color: #9A3412; margin-bottom: 8px; }
+    .keranjang-item-row { display: flex; justify-content: space-between; font-size: 12.5px; font-weight: 600; color: #7C2D12; padding: 3px 0; }
+    .keranjang-subtotal-row { display: flex; justify-content: space-between; font-size: 14px; font-weight: 800; color: #9A3412; border-top: 1px dashed #FDBA74; margin-top: 8px; padding-top: 8px; }
+    .btn-ubah-keranjang { width: 100%; margin-top: 10px; background: white; border: 1.5px solid #FDBA74; color: #9A3412; border-radius: 8px; padding: 8px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit; }
+
+    /* ── DAFTAR RESTO ── */
+    .resto-card { background: var(--card); border-radius: var(--radius-sm); box-shadow: var(--shadow-sm); border: 1px solid var(--border); padding: 14px 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: transform 0.1s; }
+    .resto-card:active { transform: scale(0.98); }
+    .resto-card-icon { font-size: 32px; flex-shrink: 0; }
+    .resto-card-nama { font-size: 14.5px; font-weight: 800; color: var(--text); }
+    .resto-card-alamat { font-size: 11.5px; color: var(--text3); font-weight: 600; margin-top: 2px; }
+    .resto-card-arrow { margin-left: auto; color: var(--text3); font-size: 18px; }
+    .resto-empty { text-align: center; padding: 60px 20px; color: var(--text3); }
+
+    /* ── MENU RESTO ── */
+    .menu-cust-card { background: var(--card); border-radius: var(--radius-sm); box-shadow: var(--shadow-sm); border: 1px solid var(--border); padding: 12px 14px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; }
+    .menu-cust-photo { width: 56px; height: 56px; border-radius: 10px; object-fit: cover; background: var(--bg); flex-shrink: 0; }
+    .menu-cust-info { flex: 1; min-width: 0; }
+    .menu-cust-nama { font-size: 13.5px; font-weight: 800; color: var(--text); }
+    .menu-cust-harga { font-size: 13px; font-weight: 700; color: var(--primary); margin-top: 2px; }
+    .qty-stepper { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .qty-btn { width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--primary); background: white; color: var(--primary); font-size: 16px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .qty-btn:active { background: var(--primary-light); }
+    .qty-val { font-size: 14px; font-weight: 800; color: var(--text); min-width: 18px; text-align: center; }
+
+    /* ── CART FLOATING BAR ── */
+    .cart-float-bar { position: absolute; left: 16px; right: 16px; bottom: 90px; background: var(--primary); color: white; border-radius: var(--radius-sm); padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow-lg); cursor: pointer; z-index: 150; }
+    .cart-float-bar.hidden { display: none; }
+    .cart-float-info { font-size: 12.5px; font-weight: 700; }
+    .cart-float-total { font-size: 15px; font-weight: 800; }
+    .cart-float-btn { background: var(--accent); color: var(--primary-dark); border-radius: 8px; padding: 8px 14px; font-size: 13px; font-weight: 800; }
+
     /* Peta preview kecil menampilkan pin jemput (hijau) & tujuan (merah) + rutenya,
        supaya customer bisa cek visual sebelum order -- bukan cuma teks alamat. */
     .preview-route-map { width: 100%; height: 160px; border-radius: 10px; margin-top: 10px; overflow: hidden; position: relative; border: 1.5px solid #86efac; }
@@ -274,6 +307,11 @@
     .btn-cancel { background: #FEF2F2; color: var(--red); border: 1.5px solid #FECACA; border-radius: var(--radius-sm); padding: 14px; font-size: 14px; font-weight: 700; cursor: pointer; width: 100%; font-family: inherit; transition: all 0.15s; }
     .btn-cancel:active { background: #FEE2E2; }
     .btn-complete { background: #EFF6FF; color: var(--blue); border: 1.5px solid #BFDBFE; border-radius: var(--radius-sm); padding: 14px; font-size: 14px; font-weight: 700; cursor: pointer; width: 100%; font-family: inherit; transition: all 0.15s; }
+    .btn-wa-driver { background: #ECFDF5; color: #15803D; border: 1.5px solid #86EFAC; border-radius: var(--radius-sm); padding: 14px; font-size: 14px; font-weight: 700; cursor: pointer; width: 100%; font-family: inherit; transition: all 0.15s; }
+    .btn-wa-driver:active { background: #D1FAE5; }
+    .btn-ajukan-batal-link { background: none; border: none; color: var(--text3); font-size: 12px; font-weight: 700; text-decoration: underline; cursor: pointer; font-family: inherit; padding: 4px; }
+    .batal-pending-box { background: #FFFBEB; border: 1.5px solid #FDE68A; border-radius: var(--radius-sm); padding: 12px 14px; font-size: 12.5px; font-weight: 700; color: #92400E; line-height: 1.5; }
+    .batal-lock-note { font-size: 11px; color: var(--text3); font-weight: 600; text-align: center; margin-top: -2px; }
 
     /* ── RATING CARD ── */
     .rating-card { background: linear-gradient(135deg, #FFFBEB, #FEF3C7); border-radius: var(--radius); margin: 0; padding: 22px 22px 28px; text-align: center; border: 1px solid #FDE68A; }
@@ -517,6 +555,11 @@
 
                 <div class="section">
                     <div class="section-title"><span id="ui-section-layanan">Pilih Layanan</span></div>
+                    <div class="service-card mt8" onclick="bukaDaftarResto()" style="border-radius:var(--radius-sm); display:flex; align-items:center; gap:14px; padding:14px 16px; text-align:left; background:linear-gradient(135deg,#FFF7ED,#FEF3C7); border-color:#FDBA74; margin-bottom:10px;">
+                        <span style="font-size:28px;">🍜</span>
+                        <div><div class="service-label" id="cat-makanan" style="font-size:13px; margin-bottom:2px;">Pesan Makanan</div><div style="font-size:11px; color:var(--text3);" id="ui-cat-makanan-sub">Pesen panganan langsung ti warung sing cedak</div></div>
+                        <div style="margin-left:auto; color:var(--text3); font-size:16px;">›</div>
+                    </div>
                     <div class="service-grid">
                         <div class="service-card" onclick="bukaForm('Antar Jemput')"><span class="service-icon">🏍️</span><div class="service-label" id="cat-1">Ngeter & Methuk</div></div>
                         <div class="service-card" onclick="bukaForm('Kirim Barang')"><span class="service-icon">📦</span><div class="service-label" id="cat-2">Kirim Barang</div></div>
@@ -580,8 +623,15 @@
             <div class="form-page">
                 <div class="form-body">
                     <div id="boxInfoTarif" class="tarif-box"></div>
-                    
-                    <div class="form-group">
+
+                    <div id="boxKeranjangMakanan" class="keranjang-box hidden">
+                        <div class="keranjang-resto-nama" id="txtKeranjangResto">-</div>
+                        <div id="listKeranjangItems"></div>
+                        <div class="keranjang-subtotal-row"><span>Subtotal Makanan</span><span id="txtKeranjangSubtotal">Rp 0</span></div>
+                        <button class="btn-ubah-keranjang" onclick="kembaliKeMenu()">✏️ Ubah Pesanan</button>
+                    </div>
+
+                    <div class="form-group" id="groupDetail1">
                         <label class="form-section-label" id="labelDetail1">Detail 1</label>
                         <div class="input-with-btn">
                             <textarea class="form-textarea" id="inputDetail1" rows="2"></textarea>
@@ -624,6 +674,34 @@
                     
                     <button class="btn-primary mt16" id="btnKirim" onclick="kirimPesananFirebase()">Kirim Pesenan 🚀</button>
                 </div>
+            </div>
+        </div>
+
+        <!-- ═══ DAFTAR RESTO ═══ -->
+        <div id="page-resto-list" class="hidden" style="display:flex; flex-direction:column; height:100%;">
+            <div class="form-topbar" style="flex-shrink:0;">
+                <button class="back-btn" onclick="kembaliDariDaftarResto()">←</button>
+                <div class="form-topbar-title" style="flex:1;">🍜 Pesan Makanan</div>
+            </div>
+            <div class="form-page">
+                <div class="form-body" id="listRestoWrap">
+                    <div class="resto-empty">⏳ Memuat daftar warung...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ MENU RESTO ═══ -->
+        <div id="page-resto-menu" class="hidden" style="display:flex; flex-direction:column; height:100%; position:relative;">
+            <div class="form-topbar" style="flex-shrink:0;">
+                <button class="back-btn" onclick="kembaliKeDaftarResto()">←</button>
+                <div class="form-topbar-title" id="judulMenuResto" style="flex:1;">Menu Resto</div>
+            </div>
+            <div class="form-page">
+                <div class="form-body" id="listMenuRestoWrap" style="padding-bottom:90px;"></div>
+            </div>
+            <div class="cart-float-bar hidden" id="cartFloatBar" onclick="lanjutKeCheckoutMakanan()">
+                <div><div class="cart-float-info" id="txtCartInfo">0 item</div><div class="cart-float-total" id="txtCartTotal">Rp 0</div></div>
+                <div class="cart-float-btn">Checkout →</div>
             </div>
         </div>
 
@@ -777,7 +855,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getDatabase, ref, push, set, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+    import { getDatabase, ref, push, set, onValue, update, runTransaction } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
     import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-messaging.js";
 
     // ── FIREBASE TULANGTULUNG GOMBONG ──
@@ -882,6 +960,24 @@
                     new Notification(`${t.status3} — TulangTulung`, { body: `${o.layanan} ${t.notifSelesai}`, icon: '/logo-satria.png', tag: 'order-done-' + o.id });
                 }
             }
+            if (prev === 'menunggu_resto' && o.status === 'diterima_resto') {
+                showFloatingNotif(t.statusRestoTerima || 'Resto Menerima Pesanan', `${o.resto_nama || 'Resto'} sedang menyiapkan pesananmu.`);
+                if (document.hidden && Notification.permission === 'granted') {
+                    new Notification(`${t.statusRestoTerima || 'Resto Menerima Pesanan'} — TulangTulung`, { body: `${o.resto_nama || 'Resto'} sedang menyiapkan pesananmu.`, icon: '/logo-satria.png', tag: 'resto-terima-' + o.id });
+                }
+            }
+            if (prev === 'menunggu_resto' && o.status === 'ditolak_resto') {
+                showFloatingNotif(t.statusDitolakResto || 'Ditolak Resto', `${o.resto_nama || 'Resto'} tidak bisa memproses pesananmu.${o.alasan_tolak_resto ? ' Alasan: '+o.alasan_tolak_resto : ''}`);
+                if (document.hidden && Notification.permission === 'granted') {
+                    new Notification(`${t.statusDitolakResto || 'Ditolak Resto'} — TulangTulung`, { body: `${o.resto_nama || 'Resto'} tidak bisa memproses pesananmu.`, icon: '/logo-satria.png', tag: 'resto-tolak-' + o.id });
+                }
+            }
+            if (prev === 'diterima_resto' && o.status === 'diambil') {
+                showFloatingNotif(t.status2, `Driver ${o.driver_nama || ''} ${t.notifDiambil} ${o.layanan}.`);
+                if (document.hidden && Notification.permission === 'granted') {
+                    new Notification(`${t.status2} — TulangTulung`, { body: `Driver ${o.driver_nama || ''} ${t.notifDiambil} ${o.layanan}.`, icon: '/logo-satria.png', tag: 'driver-found-' + o.id });
+                }
+            }
             prevOrderStatus[o.id] = o.status;
         });
     }
@@ -918,6 +1014,14 @@
             t_formTitle: "Detail Pesenan", t_jemput: "Lokasi Methuk", t_antar: "Lokasi Ngeter", t_ambil: "Njukut Barang Nang", t_kirim: "Kirim Barang Maring", t_daftar: "Daftar Sing Arep Dituku", t_alamat: "Alamat Ngirim", t_resik: "Apa sing arep diresiki?", t_lokasi: "Lokasine nang endi?", t_unik: "Sebutna Penjalukmu", t_waktu: "Alamat / Jam Pira",
             ph_jemput: "Contoh: Pasar Gombong...", ph_antar: "Contoh: Stasiun Gombong...", ph_ambil: "Contoh: Umahku...", ph_kirim: "Contoh: JNE Gombong...", ph_daftar: "Contoh: Tuku sate ambal...", ph_alamat: "Contoh: Anterna maring...", ph_resik: "Contoh: Nyapu pekarangan...", ph_lokasi: "Contoh: Umah mburi kelurahan...", ph_unik: "Contoh: Tulung pindahna lemari...", ph_waktu: "Contoh: Dina kiye jam 2...",
             templateWA: "Halo Admin TulangTulung Gombong, nyong [NAMA]. Nyong arep takon: ", installTxt: "Pasang Aplikasi!", btnInstall: "INSTALL 📲", btnCancel: "❌ Batalna", btnComplete: "✅ Konfirmasi Beres", ratingTitle: "Kepiye pelayanan drivere?", ph_ulasan: "Tulis ulasan (opsional)...", btnRating: "Kirim Rating ⭐",
+            btnHubungiDriver: "💬 Hubungi Driver", btnBatalGratis: "❌ Batalna (Gratis)", btnAjukanBatal: "Njaluk Pembatalan", btnBatalkanPermintaan: "Batalna Panjaluk Iki",
+            txtMenungguBatal: "Panjaluk pembatalan wis dikirim, ngenteni driver ACC.", noteBatalTerkunci: "*Saldo driver wis kepotong. Njaluk batal kudu di-ACC driver disit.",
+            catMakanan: "Pesan Makanan", catMakananSub: "Pesen panganan langsung ti warung sing cedak",
+            tarifMakanan: "🍜 <b>Ongkos Ngeter:</b> Rp 2.000/km (padha karo Ngeter & Methuk), dibayar kesah teka rego panganan.",
+            t_antarMakanan: "Alamat Diteraken Maring", ph_antarMakanan: "Alamat lengkap sing arep dituju...",
+            statusMenungguResto: "Ngenteni Konfirmasi Resto", descMenungguResto: "Ngenteni resto ngonfirmasi pesenanmu.",
+            statusRestoTerima: "Resto Lagi Nyiapna Panganan", descRestoTerima: "Pesenanmu lagi disiapna, ngenteni driver njukut.",
+            statusDitolakResto: "Ditolak Resto",
             status1: "Lagi Golek Driver...", desc1: "Dienteni sedela ya lur...", status2: "Driver Wis Olih!", desc2: "Driver arep chat WA nggo konfirmasi.", status3: "Pesenan Beres!", desc3: "Suwun wis nganggo TulangTulung Gombong!", status4: "Dibatalna", desc4: "Pesenan kiye wis dibatalna.", alertRating: "Suwun rating & ulasane lur!", pillDone: "Beres ✓", pillOngoing: "Lagi Mlaku", emptyHistory: "Urung ana riwayat pesenan.",
             aboutTagline: "Layanan Asli Wong Gombong", aboutH1: "Tentang Kami", aboutP1: "TulangTulung Gombong adalah platform penyedia layanan transportasi dan jasa harian on-demand khusus warga lokal. Mengusung konsep dari warga untuk warga, saling menolong dan memberdayakan.",
             aboutH2: "Misi", aboutP2: "<li style='margin-bottom:6px;'><b>Kebutuhan Warga:</b> Layanan praktis & cepat tanggap.</li><li style='margin-bottom:6px;'><b>Adil:</b> Tanpa potongan persentase penghasilan yang merugikan.</li><li style='margin-bottom:6px;'><b>Aman:</b> Dilayani oleh sesama warga yang saling mengenal.</li>",
@@ -939,6 +1043,14 @@
             t_formTitle: "Detail Pesanan", t_jemput: "Titik Jemput", t_antar: "Titik Tujuan", t_ambil: "Ambil Barang Di", t_kirim: "Kirim Barang Ke", t_daftar: "Daftar Belanjaan", t_alamat: "Alamat Pengiriman", t_resik: "Apa yang dibersihkan?", t_lokasi: "Alamat Lokasi", t_unik: "Sebutkan Permintaanmu", t_waktu: "Alamat / Waktu",
             ph_jemput: "Contoh: Pasar Gombong...", ph_antar: "Contoh: Stasiun Gombong...", ph_ambil: "Contoh: Rumah saya...", ph_kirim: "Contoh: JNE Gombong...", ph_daftar: "Contoh: Beli sate...", ph_alamat: "Contoh: Antar ke...", ph_resik: "Contoh: Sapu halaman...", ph_lokasi: "Contoh: Rumah belakang...", ph_unik: "Contoh: Tolong pindahkan...", ph_waktu: "Contoh: Hari ini...",
             templateWA: "Halo Admin TulangTulung Gombong, saya [NAMA]. Saya ingin bertanya: ", installTxt: "Install Aplikasi!", btnInstall: "INSTALL 📲", btnCancel: "❌ Batalkan Pesanan", btnComplete: "✅ Konfirmasi Selesai", ratingTitle: "Bagaimana pelayanan driver kami?", ph_ulasan: "Tulis ulasan (opsional)...", btnRating: "Kirim Rating ⭐",
+            btnHubungiDriver: "💬 Hubungi Driver", btnBatalGratis: "❌ Batalkan (Gratis)", btnAjukanBatal: "Ajukan Pembatalan", btnBatalkanPermintaan: "Batalkan Permintaan Ini",
+            txtMenungguBatal: "Permintaan pembatalan sudah dikirim, menunggu ACC driver.", noteBatalTerkunci: "*Saldo driver sudah terpotong. Pembatalan perlu di-ACC driver dulu.",
+            catMakanan: "Pesan Makanan", catMakananSub: "Pesan makanan langsung dari warung terdekat",
+            tarifMakanan: "🍜 <b>Ongkos Antar:</b> Rp 2.000/km (sama seperti Antar Jemput), dibayar terpisah dari harga makanan.",
+            t_antarMakanan: "Alamat Pengantaran", ph_antarMakanan: "Alamat lengkap tujuan pengantaran...",
+            statusMenungguResto: "Menunggu Konfirmasi Resto", descMenungguResto: "Menunggu resto mengonfirmasi pesananmu.",
+            statusRestoTerima: "Resto Menyiapkan Pesanan", descRestoTerima: "Pesananmu sedang disiapkan, tunggu driver mengambilnya.",
+            statusDitolakResto: "Ditolak Resto",
             status1: "Mencari Driver...", desc1: "Mohon tunggu sebentar...", status2: "Driver Ditemukan!", desc2: "Driver akan chat WA.", status3: "Pesanan Selesai!", desc3: "Terima kasih sudah menggunakan layanan kami!", status4: "Dibatalkan", desc4: "Pesanan ini telah dibatalkan.", alertRating: "Terima kasih atas ulasan Anda!", pillDone: "Selesai ✓", pillOngoing: "Sedang Berjalan", emptyHistory: "Belum ada riwayat pesanan.",
             aboutTagline: "Layanan Asli Wong Gombong", aboutH1: "Tentang Kami", aboutP1: "TulangTulung Gombong adalah platform penyedia layanan transportasi dan jasa harian on-demand khusus warga lokal. Mengusung konsep dari warga untuk warga, saling menolong dan memberdayakan.",
             aboutH2: "Misi", aboutP2: "<li style='margin-bottom:6px;'><b>Kebutuhan Warga:</b> Layanan praktis & cepat tanggap.</li><li style='margin-bottom:6px;'><b>Adil:</b> Tanpa potongan persentase penghasilan yang merugikan.</li><li style='margin-bottom:6px;'><b>Aman:</b> Dilayani oleh sesama warga yang saling mengenal.</li>",
@@ -960,6 +1072,14 @@
             t_formTitle: "Order Details", t_jemput: "Pick-up Location", t_antar: "Drop-off Location", t_ambil: "Pick up from", t_kirim: "Deliver to", t_daftar: "Shopping List", t_alamat: "Delivery Address", t_resik: "What needs cleaning?", t_lokasi: "Location Address", t_unik: "State Your Request", t_waktu: "Address / Time",
             ph_jemput: "Example: Main Gate...", ph_antar: "Example: Station...", ph_ambil: "Example: My house...", ph_kirim: "Example: JNE...", ph_daftar: "Example: Buy satay...", ph_alamat: "Example: Deliver to...", ph_resik: "Example: Sweep yard...", ph_lokasi: "Example: House behind...", ph_unik: "Example: Move wardrobe...", ph_waktu: "Example: Today at 2 PM...",
             templateWA: "Hello Admin, my name is [NAMA]. I have a question: ", installTxt: "Install App!", btnInstall: "INSTALL 📲", btnCancel: "❌ Cancel", btnComplete: "✅ Confirm Completed", ratingTitle: "How was the service?", ph_ulasan: "Write feedback (optional)...", btnRating: "Submit Rating ⭐",
+            btnHubungiDriver: "💬 Contact Driver", btnBatalGratis: "❌ Cancel (Free)", btnAjukanBatal: "Request Cancellation", btnBatalkanPermintaan: "Withdraw This Request",
+            txtMenungguBatal: "Cancellation request sent, waiting for driver approval.", noteBatalTerkunci: "*Driver's balance already deducted. Cancellation needs driver approval.",
+            catMakanan: "Order Food", catMakananSub: "Order food directly from nearby restaurants",
+            tarifMakanan: "🍜 <b>Delivery Fee:</b> Rp 2,000/km (same as ride-hailing), paid separately from food price.",
+            t_antarMakanan: "Delivery Address", ph_antarMakanan: "Full delivery address...",
+            statusMenungguResto: "Waiting Restaurant Confirmation", descMenungguResto: "Waiting for the restaurant to confirm your order.",
+            statusRestoTerima: "Restaurant Preparing Order", descRestoTerima: "Your order is being prepared, waiting for a driver to pick it up.",
+            statusDitolakResto: "Rejected by Restaurant",
             status1: "Finding Driver...", desc1: "Please wait...", status2: "Driver Found!", desc2: "Driver will chat via WA.", status3: "Completed!", desc3: "Thank you!", status4: "Cancelled", desc4: "This order has been cancelled.", alertRating: "Thank you for your feedback!", pillDone: "Completed ✓", pillOngoing: "In Progress", emptyHistory: "No order history yet.",
             aboutTagline: "Authentic Local Services", aboutH1: "About Us", aboutP1: "TulangTulung Gombong is an on-demand transport and daily service platform exclusively for locals. Bringing the concept of 'from residents, for residents'.",
             aboutH2: "Mission", aboutP2: "<li style='margin-bottom:6px;'><b>Resident Needs:</b> Practical & fast service.</li><li style='margin-bottom:6px;'><b>Fair:</b> Zero percent commission, 100% to partners.</li><li style='margin-bottom:6px;'><b>Safe:</b> Served by verified local residents.</li>",
@@ -984,6 +1104,7 @@
         document.getElementById('inputNama').placeholder = t.ph_nama; document.getElementById('inputWA').placeholder = t.ph_wa;
         setText('ui-btn-admin-login', t.btnAdminLogin); setText('ui-greet-prefix', t.greetPrefix);
         ['c1','c2','c3','c4','c5'].forEach((c,i) => setText(`cat-${i+1}`, t[c])); setText('ui-cat5-sub', t.cat5sub);
+        setText('cat-makanan', t.catMakanan); setText('ui-cat-makanan-sub', t.catMakananSub);
         setText('ui-btn-admin', t.btnAdmin); setText('ui-admin-cta-title', t.adminCtaTitle); setText('ui-admin-cta-sub', t.adminCtaSub);
         setText('ui-section-layanan', t.sectionLayanan); setText('ui-section-promo', t.sectionPromo);
         setText('ui-hero-tag', t.heroTag); setText('ui-hero-title', t.heroTitle); setText('ui-hero-sub', t.heroSub); setText('ui-hero-price-sub', t.heroPriceSub);
@@ -1054,12 +1175,13 @@
     });
 
     window.navigasiKe = function(tab) {
-        ['page-home','page-form','page-tracking','page-history','page-profile','page-about'].forEach(p => { const el = document.getElementById(p); if(el) el.classList.add('hidden'); });
+        ['page-home','page-form','page-resto-list','page-resto-menu','page-tracking','page-history','page-profile','page-about'].forEach(p => { const el = document.getElementById(p); if(el) el.classList.add('hidden'); });
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         const pageMap = { home:'page-home', order:'page-tracking', history:'page-history', profile:'page-profile' };
         const tabMap = { home:'tab-home', order:'tab-order', history:'tab-history', profile:'tab-profile' };
         if(pageMap[tab]) document.getElementById(pageMap[tab]).classList.remove('hidden');
         if(tabMap[tab]) document.getElementById(tabMap[tab]).classList.add('active');
+        document.getElementById('bottom-nav').classList.add('visible'); // tab utama selalu tampil bottom-nav
     }
 
     window.bukaTentang = function() { document.getElementById('page-profile').classList.add('hidden'); document.getElementById('page-about').classList.remove('hidden'); }
@@ -1133,6 +1255,10 @@
         document.getElementById('inputDetail2').value = '';
         document.getElementById('inputCatatan').value = '';
 
+        // Pastikan tampilan form kembali normal (kalau sebelumnya sempat di alur Pesan Makanan)
+        document.getElementById('groupDetail1').classList.remove('hidden');
+        document.getElementById('boxKeranjangMakanan').classList.add('hidden');
+
         // Reset koordinat & estimasi jarak dari order sebelumnya (kalau ada & belum dikirim)
         window._mapCoords = {};
         const boxEst = document.getElementById('boxEstimasiJarak');
@@ -1141,11 +1267,185 @@
 
         document.getElementById('page-home').classList.add('hidden');
         document.getElementById('page-form').classList.remove('hidden');
+        document.getElementById('bottom-nav').classList.remove('visible');
     }
 
     window.kembaliKeMenu = function() {
         document.getElementById('page-form').classList.add('hidden');
-        navigasiKe('home');
+        if (layananAktif === 'Pesan Makanan') {
+            document.getElementById('page-resto-menu').classList.remove('hidden');
+        } else {
+            navigasiKe('home');
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    //   PESAN MAKANAN — daftar resto, menu, keranjang, checkout
+    // ═══════════════════════════════════════════════════════════
+    let _cartMakanan = { resto_id: null, resto_nama: '', resto_alamat: '', resto_lat: null, resto_lng: null, items: {} };
+    let _menuRestoAktif = {}; // cache menu resto yang sedang dibuka, keyed by menuId
+
+    window.bukaDaftarResto = function() {
+        document.getElementById('page-home').classList.add('hidden');
+        document.getElementById('page-resto-list').classList.remove('hidden');
+        document.getElementById('bottom-nav').classList.remove('visible');
+        renderDaftarResto();
+    }
+
+    window.kembaliDariDaftarResto = function() {
+        document.getElementById('page-resto-list').classList.add('hidden');
+        navigasiKe('home'); // navigasiKe otomatis tampilkan lagi bottom-nav
+    }
+
+    function renderDaftarResto() {
+        const wrap = document.getElementById('listRestoWrap');
+        onValue(ref(database, 'restoran'), snap => {
+            const data = snap.val() || {};
+            const daftar = Object.keys(data)
+                .map(wa => ({ wa, ...data[wa] }))
+                .filter(r => r.status === 'aktif' && r.buka !== false);
+
+            if (daftar.length === 0) {
+                wrap.innerHTML = `<div class="resto-empty">🍜 Belum ada warung yang buka saat ini. Coba lagi nanti ya.</div>`;
+                return;
+            }
+            wrap.innerHTML = '';
+            daftar.forEach(r => {
+                const card = document.createElement('div');
+                card.className = 'resto-card';
+                card.onclick = () => bukaMenuResto(r.wa);
+                card.innerHTML = `
+                    <span class="resto-card-icon">🍜</span>
+                    <div>
+                        <div class="resto-card-nama">${r.nama}</div>
+                        <div class="resto-card-alamat">📍 ${r.alamat || '-'}</div>
+                    </div>
+                    <span class="resto-card-arrow">›</span>
+                `;
+                wrap.appendChild(card);
+            });
+        }, { onlyOnce: false });
+    }
+
+    window.kembaliKeDaftarResto = function() {
+        document.getElementById('page-resto-menu').classList.add('hidden');
+        document.getElementById('page-resto-list').classList.remove('hidden');
+    }
+
+    window.bukaMenuResto = function(waResto) {
+        // Reset keranjang kalau pindah ke resto yang BEDA dari sebelumnya
+        if (_cartMakanan.resto_id !== waResto) {
+            _cartMakanan = { resto_id: waResto, resto_nama: '', resto_alamat: '', resto_lat: null, resto_lng: null, items: {} };
+        }
+        document.getElementById('page-resto-list').classList.add('hidden');
+        document.getElementById('page-resto-menu').classList.remove('hidden');
+        document.getElementById('listMenuRestoWrap').innerHTML = `<div class="resto-empty">⏳ Memuat menu...</div>`;
+
+        onValue(ref(database, 'restoran/' + waResto), snap => {
+            const r = snap.val();
+            if (!r) return;
+            _cartMakanan.resto_nama = r.nama;
+            _cartMakanan.resto_alamat = r.alamat || '';
+            _cartMakanan.resto_lat = r.lat || null;
+            _cartMakanan.resto_lng = r.lng || null;
+            document.getElementById('judulMenuResto').innerText = r.nama;
+            _menuRestoAktif = r.menu || {};
+            renderMenuResto();
+            updateCartFloatBar();
+        }, { onlyOnce: false });
+    }
+
+    function renderMenuResto() {
+        const wrap = document.getElementById('listMenuRestoWrap');
+        const keys = Object.keys(_menuRestoAktif).filter(id => _menuRestoAktif[id].tersedia !== false);
+        if (keys.length === 0) {
+            wrap.innerHTML = `<div class="resto-empty">📋 Resto ini belum ada menu yang tersedia.</div>`;
+            return;
+        }
+        wrap.innerHTML = '';
+        keys.forEach(id => {
+            const m = _menuRestoAktif[id];
+            const qty = _cartMakanan.items[id]?.qty || 0;
+            const card = document.createElement('div');
+            card.className = 'menu-cust-card';
+            card.id = 'menucard-' + id;
+            card.innerHTML = `
+                <img class="menu-cust-photo" src="${m.foto || 'https://placehold.co/100x100?text=🍽️'}" onerror="this.src='https://placehold.co/100x100?text=🍽️'">
+                <div class="menu-cust-info">
+                    <div class="menu-cust-nama">${m.nama}</div>
+                    <div class="menu-cust-harga">${formatRupiah(m.harga)}</div>
+                </div>
+                <div class="qty-stepper">
+                    <button class="qty-btn" onclick="ubahJumlahItem('${id}', -1)">−</button>
+                    <span class="qty-val" id="qtyval-${id}">${qty}</span>
+                    <button class="qty-btn" onclick="ubahJumlahItem('${id}', 1)">+</button>
+                </div>
+            `;
+            wrap.appendChild(card);
+        });
+    }
+
+    window.ubahJumlahItem = function(id, delta) {
+        const m = _menuRestoAktif[id];
+        if (!m) return;
+        const skrg = _cartMakanan.items[id]?.qty || 0;
+        const baru = Math.max(0, skrg + delta);
+        if (baru === 0) { delete _cartMakanan.items[id]; }
+        else { _cartMakanan.items[id] = { nama: m.nama, harga: m.harga, qty: baru }; }
+        const qtyEl = document.getElementById('qtyval-' + id);
+        if (qtyEl) qtyEl.textContent = baru;
+        updateCartFloatBar();
+    }
+
+    function hitungSubtotalKeranjang() {
+        return Object.values(_cartMakanan.items).reduce((sum, it) => sum + (it.harga * it.qty), 0);
+    }
+
+    function updateCartFloatBar() {
+        const bar = document.getElementById('cartFloatBar');
+        const totalItem = Object.values(_cartMakanan.items).reduce((sum, it) => sum + it.qty, 0);
+        if (totalItem === 0) { bar.classList.add('hidden'); return; }
+        bar.classList.remove('hidden');
+        document.getElementById('txtCartInfo').textContent = totalItem + ' item';
+        document.getElementById('txtCartTotal').textContent = formatRupiah(hitungSubtotalKeranjang());
+    }
+
+    function renderKeranjangBoxItems() {
+        document.getElementById('txtKeranjangResto').textContent = '🍜 ' + _cartMakanan.resto_nama;
+        const listEl = document.getElementById('listKeranjangItems');
+        listEl.innerHTML = Object.values(_cartMakanan.items)
+            .map(it => `<div class="keranjang-item-row"><span>${it.qty}x ${it.nama}</span><span>${formatRupiah(it.harga * it.qty)}</span></div>`)
+            .join('');
+        document.getElementById('txtKeranjangSubtotal').textContent = formatRupiah(hitungSubtotalKeranjang());
+    }
+
+    window.lanjutKeCheckoutMakanan = function() {
+        if (Object.keys(_cartMakanan.items).length === 0) return;
+        if (!_cartMakanan.resto_lat || !_cartMakanan.resto_lng) {
+            alert('Maaf, resto ini belum mengatur titik lokasinya sehingga ongkos antar belum bisa dihitung. Coba pilih resto lain dulu ya, atau hubungi admin.');
+            return;
+        }
+        layananAktif = 'Pesan Makanan';
+        const t = langDict[currentLang];
+
+        document.getElementById('judulFormTitle').innerText = (t.t_formTitle || 'Detail Pesanan') + ' — 🍜 Pesan Makanan';
+        document.getElementById('boxInfoTarif').innerHTML = t.tarifMakanan || '🍜 <b>Ongkos Antar:</b> Rp 2.000/km (sama seperti Antar Jemput), dibayar terpisah dari harga makanan.';
+        document.getElementById('labelDetail2').innerText = t.t_antarMakanan || 'Alamat Pengantaran';
+        document.getElementById('inputDetail2').placeholder = t.ph_antarMakanan || 'Alamat lengkap tujuan pengantaran...';
+        document.getElementById('inputDetail2').value = '';
+        document.getElementById('inputCatatan').value = '';
+
+        document.getElementById('groupDetail1').classList.add('hidden');
+        document.getElementById('boxKeranjangMakanan').classList.remove('hidden');
+        renderKeranjangBoxItems();
+
+        // Titik jemput (resto) sudah pasti -- pre-isi koordinatnya. Customer tinggal pilih titik antar (detail2).
+        window._mapCoords = { detail1: { lat: _cartMakanan.resto_lat, lng: _cartMakanan.resto_lng } };
+        document.getElementById('boxEstimasiJarak').classList.add('hidden');
+        sembunyikanPreviewRute();
+
+        document.getElementById('page-resto-menu').classList.add('hidden');
+        document.getElementById('page-form').classList.remove('hidden');
     }
 
     // ── FUNGSI AMBIL LOKASI (GPS) ──
@@ -1181,6 +1481,8 @@
         );
     }
 
+    let _latestOrdersCust = []; // dipakai buat re-render berkala (live countdown batal gratis)
+
     function pantauDataPesenanWarga() {
         if(userAktif.wa === "") return;
         onValue(ref(database, 'orders'), (snap) => {
@@ -1191,11 +1493,20 @@
                 if(obj.customer_wa === userAktif.wa) { arr.push(obj); }
             });
             arr.reverse();
+            _latestOrdersCust = arr;
             cekPerubahanStatusDanNotif(arr);
             renderHalamanHome(arr);
             renderHalamanTracking(arr);
             renderHalamanRiwayat(arr);
         });
+        // Re-render tracking tiap 5 detik supaya hitung mundur "batal gratis Xs lagi" jalan
+        // walau tidak ada perubahan data baru dari Firebase.
+        if (!window._trackingCountdownTimer) {
+            window._trackingCountdownTimer = setInterval(() => {
+                const adaDiambilBelumMintaBatal = _latestOrdersCust.some(o => o.status === 'diambil' && !o.minta_batal_customer);
+                if (adaDiambilBelumMintaBatal) renderHalamanTracking(_latestOrdersCust);
+            }, 5000);
+        }
     }
 
     function renderHalamanHome(orders) {
@@ -1232,7 +1543,7 @@
         const emptyDiv = document.getElementById('tracking-empty');
         listDiv.innerHTML = '';
 
-        const activeOrUnrated = orders.filter(o => o.status === 'terbuka' || o.status === 'diambil' || (o.status === 'selesai' && !o.rating));
+        const activeOrUnrated = orders.filter(o => o.status === 'terbuka' || o.status === 'menunggu_resto' || o.status === 'diterima_resto' || o.status === 'diambil' || (o.status === 'selesai' && !o.rating));
 
         if(activeOrUnrated.length === 0) {
             listDiv.classList.add('hidden');
@@ -1246,11 +1557,13 @@
         activeOrUnrated.forEach(data => {
             const isSelesai = data.status === 'selesai';
             const isDiambil = data.status === 'diambil';
-            
-            let statusIcon = isSelesai ? '✅' : (isDiambil ? '🛵' : '⏳');
-            let statusColor = isSelesai ? 'var(--blue)' : (isDiambil ? 'var(--accent-dark)' : 'var(--text)');
-            let statusText = isSelesai ? t.status3 : (isDiambil ? t.status2 : t.status1);
-            let descText = isSelesai ? t.desc3 : (isDiambil ? t.desc2 : t.desc1);
+            const isMenungguResto = data.status === 'menunggu_resto';
+            const isDiterimaResto = data.status === 'diterima_resto';
+
+            let statusIcon = isSelesai ? '✅' : (isDiambil ? '🛵' : (isDiterimaResto ? '🍳' : (isMenungguResto ? '🍜' : '⏳')));
+            let statusColor = isSelesai ? 'var(--blue)' : (isDiambil ? 'var(--accent-dark)' : (isDiterimaResto ? '#D97706' : 'var(--text)'));
+            let statusText = isSelesai ? t.status3 : (isDiambil ? t.status2 : (isDiterimaResto ? (t.statusRestoTerima||'Resto Menyiapkan Pesanan') : (isMenungguResto ? (t.statusMenungguResto||'Menunggu Konfirmasi Resto') : t.status1)));
+            let descText = isSelesai ? t.desc3 : (isDiambil ? t.desc2 : (isDiterimaResto ? (t.descRestoTerima||'Pesananmu sedang disiapkan, tunggu driver mengambilnya.') : (isMenungguResto ? (t.descMenungguResto||'Menunggu resto mengonfirmasi pesananmu.') : t.desc1)));
 
             let driverInfoHtml = isDiambil ? `
                 <div class="tracking-driver-row">
@@ -1263,10 +1576,38 @@
             ` : '';
 
             let actionsHtml = '';
-            if(data.status === 'terbuka') {
+            if(data.status === 'terbuka' || data.status === 'menunggu_resto' || data.status === 'diterima_resto') {
                 actionsHtml = `<button class="btn-cancel" onclick="batalPesenanRealtime('${data.id}')">${t.btnCancel}</button>`;
             } else if(data.status === 'diambil') {
-                actionsHtml = `<button class="btn-complete" onclick="selesaiPesenanRealtime('${data.id}')">${t.btnComplete}</button>`;
+                const tombolWA = data.driver_wa
+                    ? `<button class="btn-wa-driver" onclick="window.open('https://wa.me/62${data.driver_wa}','_blank')">${t.btnHubungiDriver}</button>`
+                    : '';
+
+                if (data.minta_batal_customer) {
+                    // Sudah mengajukan batal, menunggu driver ACC (atau auto-approve kalau masih grace period)
+                    actionsHtml = `
+                        <div class="batal-pending-box">⏳ ${t.txtMenungguBatal}</div>
+                        ${tombolWA}
+                        <button class="btn-ajukan-batal-link" onclick="batalkanPermintaanPembatalan('${data.id}')">${t.btnBatalkanPermintaan}</button>
+                    `;
+                } else {
+                    const waktuAmbil = data.waktu_diambil || 0;
+                    const sisaMs = waktuAmbil ? (GRACE_BATAL_MS - (Date.now() - waktuAmbil)) : -1;
+
+                    if (waktuAmbil && sisaMs > 0) {
+                        const sisaDetik = Math.ceil(sisaMs / 1000);
+                        actionsHtml = `
+                            <button class="btn-cancel" onclick="ajukanPembatalan('${data.id}')">${t.btnBatalGratis} (${sisaDetik}s)</button>
+                            ${tombolWA}
+                        `;
+                    } else {
+                        actionsHtml = `
+                            ${tombolWA}
+                            <button class="btn-ajukan-batal-link" onclick="ajukanPembatalan('${data.id}')">${t.btnAjukanBatal}</button>
+                            <div class="batal-lock-note">${t.noteBatalTerkunci}</div>
+                        `;
+                    }
+                }
             }
 
             let ratingHtml = isSelesai ? `
@@ -1323,13 +1664,14 @@
         listDiv.innerHTML = "";
         
         let ada = false;
-        const historyOrders = orders.filter(o => (o.status === 'selesai' && o.rating) || o.status === 'batal' || o.status === 'batal_cust');
+        const historyOrders = orders.filter(o => (o.status === 'selesai' && o.rating) || o.status === 'batal' || o.status === 'batal_cust' || o.status === 'ditolak_resto');
 
         historyOrders.forEach(data => {
             ada = true;
             let pillClass = 'pill-pending', statusTxt = t.status1;
             if(data.status==='selesai'){pillClass='pill-done';statusTxt=t.pillDone;}
             if(data.status==='batal'||data.status==='batal_cust'){pillClass='pill-cancelled';statusTxt=t.status4;}
+            if(data.status==='ditolak_resto'){pillClass='pill-cancelled';statusTxt=t.statusDitolakResto||'Ditolak Resto';}
 
             let ratingHtml = data.rating ? `<div class="hc-rating">⭐ ${data.rating} ${currentLang==='en'?'Stars':'Bintang'}${data.ulasan?` · "${data.ulasan}"`:''}</div>` : '';
 
@@ -1353,6 +1695,7 @@
                         <div class="hc-route-item"><span class="hc-route-icon" style="color:var(--primary);">🏁</span> <div class="hc-route-text"><span>${t.t_antar}</span><b>${data.detail_2}</b></div></div>
                     </div>
                     ${data.driver_nama ? `<div class="hc-driver">🛵 Driver: <b>${data.driver_nama}</b></div>` : ''}
+                    ${data.status==='ditolak_resto' && data.alasan_tolak_resto ? `<div class="hc-driver">🍜 Alasan resto: <b>${data.alasan_tolak_resto}</b></div>` : ''}
                     ${ratingHtml}
                 </div>
             `;
@@ -1363,10 +1706,13 @@
     }
 
     window.kirimPesananFirebase = function() {
-        const d1 = document.getElementById('inputDetail1').value.trim();
+        const isMakanan = layananAktif === 'Pesan Makanan';
+        const d1 = isMakanan ? `${_cartMakanan.resto_nama} — ${_cartMakanan.resto_alamat}` : document.getElementById('inputDetail1').value.trim();
         const d2 = document.getElementById('inputDetail2').value.trim();
-        if(!d1||!d2){alert(currentLang==='en'?"Data is incomplete!":"Data urung lengkap lur!");return;}
-        
+
+        if (isMakanan && Object.keys(_cartMakanan.items).length === 0) { alert('Keranjang masih kosong, pilih menu dulu ya.'); return; }
+        if (!d1 || !d2) { alert(currentLang==='en'?"Data is incomplete!":"Data urung lengkap lur!"); return; }
+
         const btn = document.getElementById('btnKirim');
         btn.innerText = "⏳..."; btn.disabled = true;
         
@@ -1376,13 +1722,17 @@
         // (lihat updateEstimasiJarak) -- supaya tidak panggil Directions API lagi di sini.
         const jarakKm = window._mapCoords?._jarakKm || null;
         const durasiMenit = window._mapCoords?._durasiMenit || null;
+        const ongkir = jarakKm ? hitungOngkosArgo(jarakKm) : null;
 
         const newRef = push(ref(database,'orders'));
         const data = {
             waktu_order: new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}),
             timestamp: Date.now(), customer_nama: userAktif.nama, customer_wa: userAktif.wa,
             layanan: layananAktif, detail_1: d1, detail_2: d2,
-            catatan: document.getElementById('inputCatatan').value, status:"terbuka", driver_nama:"",
+            catatan: document.getElementById('inputCatatan').value,
+            // Order makanan menunggu ACC resto dulu sebelum masuk pool driver; layanan lain langsung 'terbuka'.
+            status: isMakanan ? "menunggu_resto" : "terbuka",
+            driver_nama:"",
             // Simpan koordinat GPS untuk tampilan peta driver
             pickup_lat: c1?.lat || null,
             pickup_lng: c1?.lng || null,
@@ -1390,9 +1740,17 @@
             dropoff_lng: c2?.lng || null,
             // Jarak & ongkos dari Google Directions API (jarak jalan asli, sama seperti Google Maps)
             jarak_km: jarakKm ? Number(jarakKm.toFixed(1)) : null,
-            estimasi_ongkos: jarakKm ? hitungOngkosArgo(jarakKm) : null,
+            estimasi_ongkos: ongkir,
             durasi_menit: durasiMenit,
         };
+
+        if (isMakanan) {
+            data.resto_id = _cartMakanan.resto_id;
+            data.resto_nama = _cartMakanan.resto_nama;
+            data.items = _cartMakanan.items;
+            data.subtotal_makanan = hitungSubtotalKeranjang();
+            data.total_bayar = data.subtotal_makanan + (ongkir || 0);
+        }
         
         set(newRef, data).then(() => {
             btn.innerText = langDict[currentLang].btnOrder; btn.disabled = false;
@@ -1404,6 +1762,12 @@
             const boxEst = document.getElementById('boxEstimasiJarak');
             if (boxEst) boxEst.classList.add('hidden');
             sembunyikanPreviewRute();
+            if (isMakanan) {
+                // Reset keranjang & tampilan form kembali ke mode normal
+                _cartMakanan = { resto_id: null, resto_nama: '', resto_alamat: '', resto_lat: null, resto_lng: null, items: {} };
+                document.getElementById('groupDetail1').classList.remove('hidden');
+                document.getElementById('boxKeranjangMakanan').classList.add('hidden');
+            }
             document.getElementById('page-form').classList.add('hidden');
             navigasiKe('order');
         }).catch(e=>{alert("Error: "+e);btn.disabled=false;});
@@ -1419,8 +1783,11 @@
     const ARGO_KM_DASAR = 4;          // batas jarak yang kena tarif flat
     const ARGO_TARIF_DASAR = 8000;    // Rp 8.000 untuk jarak 1-4 km
     const ARGO_TARIF_TAMBAHAN = 2000; // Rp 2.000 / km untuk tiap km di atas 4 km
+    // Batas waktu customer boleh batal GRATIS setelah driver menerima order (harus SAMA dengan
+    // GRACE_BATAL_MS di driver.html, karena driver.html yang eksekusi auto-approve-nya).
+    const GRACE_BATAL_MS = 90 * 1000; // 90 detik
     // Layanan yang ongkosnya dihitung per-km. "Bantu Bersih" & "Jasa Lainnya" nego/fleksibel jadi tidak dihitung.
-    const LAYANAN_PER_KM = ['Antar Jemput', 'Kirim Barang', 'Titip Belanja'];
+    const LAYANAN_PER_KM = ['Antar Jemput', 'Kirim Barang', 'Titip Belanja', 'Pesan Makanan'];
     let _pickerMap = null;          // Instance Google Maps
     let _pickerGeocoder = null;     // Geocoder instance
     let _pickerInputId = null;      // inputDetail1 atau inputDetail2
@@ -1902,14 +2269,42 @@
 
 
 
+    // Batal LANGSUNG hanya sah selagi belum ada driver yang menangani (order masih 'terbuka',
+    // atau untuk order makanan masih 'menunggu_resto'/'diterima_resto'). Pakai transaction supaya
+    // aman dari race condition -- kalau ternyata pas diklik driver baru saja menerima orderan ini
+    // (status sudah 'diambil'), pembatalan dibatalkan otomatis & customer diarahkan ke alur
+    // "ajukan pembatalan" saja, supaya driver tidak dirugikan kena potong saldo tanpa sepengetahuannya.
     window.batalPesenanRealtime = function(orderId) {
-        if(confirm(currentLang==='en'?'Are you sure you want to cancel?':(currentLang==='ngapak'?'Tenane arep dibatalna?':'Naha leres badé ngabolaykeun pesenan ieu?')))
-            update(ref(database,'orders/'+orderId),{status:'batal_cust'});
+        if(!confirm(currentLang==='en'?'Are you sure you want to cancel?':(currentLang==='ngapak'?'Tenane arep dibatalna?':'Naha leres badé ngabolaykeun pesenan ieu?'))) return;
+        const statusBolehBatalLangsung = ['terbuka', 'menunggu_resto', 'diterima_resto'];
+        runTransaction(ref(database,'orders/'+orderId), pesanan => {
+            if (pesanan && statusBolehBatalLangsung.includes(pesanan.status)) { pesanan.status = 'batal_cust'; return pesanan; }
+            return; // batal transaksi -- biarkan data apa adanya (order sudah diambil driver)
+        }).then(hasil => {
+            if (!hasil.committed) {
+                alert(currentLang==='en' ? 'A driver just accepted this order. Please use "Request Cancellation" instead.' :
+                      (currentLang==='ngapak' ? 'Lagi bae ana driver sing nampa orderan iki. Nggo tombol "Njaluk Pembatalan" wae.' :
+                       'Baru saja ada driver yang menerima order ini. Silakan pakai tombol "Ajukan Pembatalan".'));
+            }
+        }).catch(e => alert('Error: ' + e));
     }
-    
-    window.selesaiPesenanRealtime = function(orderId) {
-        if(confirm(currentLang==='en'?'Is the order fully completed?':(currentLang==='ngapak'?'Pesenane wis bener-bener beres?':'Driver parantos ngabéréskeun pesenan anjeun?')))
-            update(ref(database,'orders/'+orderId),{status:'selesai'});
+
+    // Customer mengajukan pembatalan setelah driver menerima order. Order TIDAK langsung
+    // batal di sini -- cuma pasang flag. driver.html yang memutuskan: auto-approve kalau
+    // masih dalam masa grace period (GRACE_BATAL_MS), atau tampilkan ke driver buat di-ACC/tolak.
+    window.ajukanPembatalan = function(orderId) {
+        const t = langDict[currentLang];
+        const pesanKonfirmasi = currentLang==='en' ? 'Send cancellation request to driver?' :
+            (currentLang==='ngapak' ? 'Kirim panjaluk pembatalan menyang driver?' : 'Kirim permintaan pembatalan ke driver?');
+        if (!confirm(pesanKonfirmasi)) return;
+        update(ref(database,'orders/'+orderId), { minta_batal_customer: true, minta_batal_waktu: Date.now() })
+            .catch(e => alert('Error: ' + e));
+    }
+
+    // Customer batalkan/tarik lagi permintaan pembatalan yang sudah dikirim (berubah pikiran,
+    // misal ternyata mau lanjut order).
+    window.batalkanPermintaanPembatalan = function(orderId) {
+        update(ref(database,'orders/'+orderId), { minta_batal_customer: false }).catch(e => alert('Error: ' + e));
     }
 
     window.setRating = function(orderId, skor) {
