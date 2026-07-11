@@ -6,6 +6,7 @@
     <title>Portal Resto - TulangTulung Gombong</title>
 
     <meta name="theme-color" content="#2c3e50">
+    <link rel="manifest" href="manifest-resto.json?v=1">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -100,6 +101,25 @@
         .switch-mini.on { background: var(--green); }
         .switch-mini::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; background: white; border-radius: 50%; transition: transform 0.15s; }
         .switch-mini.on::after { transform: translateX(16px); }
+        .menu-item-harga-row { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+        .menu-item-harga-coret { font-size: 11px; color: var(--text3); font-weight: 700; text-decoration: line-through; }
+        .badge-diskon { background: var(--red); color: white; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 6px; }
+        .menu-item-opsi-tag { font-size: 11px; color: var(--primary); font-weight: 700; background: var(--primary-light); display: inline-block; padding: 2px 8px; border-radius: 6px; margin-top: 4px; }
+
+        /* ── OPSI/VARIAN MENU (form) ── */
+        .grup-opsi-card { background: var(--bg); border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 10px; }
+        .grup-opsi-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+        .grup-opsi-head input.form-input { margin-bottom: 0; flex: 1; padding: 10px 12px; font-size: 13px; }
+        .btn-x-kecil { background: var(--red-light); color: var(--red); border: none; border-radius: 8px; width: 30px; height: 30px; font-size: 13px; font-weight: 800; cursor: pointer; flex-shrink: 0; }
+        .grup-opsi-sub { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; }
+        .grup-opsi-sub label { font-size: 12px; font-weight: 700; color: var(--text2); display: flex; align-items: center; gap: 5px; cursor: pointer; }
+        .pilihan-opsi-row { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+        .pilihan-opsi-row input.form-input { margin-bottom: 0; padding: 10px 12px; font-size: 13px; }
+        .pilihan-opsi-row input.pilihan-nama { flex: 2; }
+        .pilihan-opsi-row input.pilihan-tambahan { flex: 1; }
+        .btn-tambah-pilihan { width: 100%; background: none; border: 1.5px dashed var(--text3); color: var(--text2); border-radius: 8px; padding: 8px; font-size: 12px; font-weight: 700; font-family: inherit; cursor: pointer; margin-top: 2px; }
+        .btn-tambah-grup-opsi { width: 100%; background: var(--primary-light); color: var(--primary); border: 1.5px dashed var(--primary); border-radius: var(--radius-sm); padding: 12px; font-size: 13px; font-weight: 700; font-family: inherit; cursor: pointer; }
+        .hint-kecil { font-size: 11px; color: var(--text3); font-weight: 600; margin-top: 4px; margin-bottom: 10px; }
 
         /* ── MODAL FORM MENU ── */
         .modal-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: flex-end; z-index: 50; }
@@ -176,9 +196,20 @@
         <!-- TAB: PROFIL -->
         <div id="tab-profil" class="page-body hidden">
             <div class="profil-card">
-                <div class="profil-avatar">🍜</div>
+                <div class="profil-avatar" id="profAvatarWrap">🍜</div>
                 <div class="profil-nama" id="profDisplayNama">-</div>
                 <div class="profil-wa" id="profDisplayWA">-</div>
+            </div>
+            <div class="profil-card" style="text-align:left;">
+                <div style="font-size:14px; font-weight:800; color:var(--text); margin-bottom:6px;">🖼️ Foto Profil Warung</div>
+                <div style="font-size:12px; color:var(--text3); font-weight:600; margin-bottom:12px;">Foto ini tampil sebagai banner warungmu di daftar resto milik customer. Pakai foto warung/etalase/makanan andalan yang menarik.</div>
+                <input type="hidden" id="restoFotoProfil">
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <img id="previewFotoProfilResto" src="" class="hidden" style="width:60px; height:60px; border-radius:10px; object-fit:cover; background:var(--bg); flex-shrink:0;">
+                    <label for="inputFileFotoProfilResto" style="flex:1; text-align:center; padding:12px; border:1.5px dashed var(--border); border-radius:var(--radius-sm); font-size:13px; font-weight:700; color:var(--text2); cursor:pointer;" id="labelUploadFotoProfilResto">📷 Pilih Foto</label>
+                    <input type="file" id="inputFileFotoProfilResto" accept="image/*" class="hidden" onchange="uploadFotoProfilResto(this)">
+                </div>
+                <div id="txtStatusUploadFotoProfilResto" style="font-size:11px; color:var(--text3); font-weight:600; margin-top:6px;"></div>
             </div>
             <div class="profil-card" style="text-align:left;">
                 <div style="font-size:14px; font-weight:800; color:var(--text); margin-bottom:6px;">📍 Titik Lokasi Warung</div>
@@ -202,7 +233,18 @@
             <div class="modal-title" id="judulModalMenu">Tambah Menu</div>
             <input type="hidden" id="menuEditId">
             <div class="form-group"><label class="form-label">Nama Menu</label><input class="form-input" id="menuNama" placeholder="Contoh: Mie Ayam Spesial"></div>
-            <div class="form-group"><label class="form-label">Harga (Rp)</label><input class="form-input" id="menuHarga" type="number" placeholder="15000"></div>
+            <div class="form-group"><label class="form-label">Harga Jual (Rp)</label><input class="form-input" id="menuHarga" type="number" placeholder="15000"></div>
+            <div class="form-group">
+                <label class="form-label">Harga Coret (opsional)</label>
+                <input class="form-input" id="menuHargaCoret" type="number" placeholder="Contoh: 20000">
+                <div class="hint-kecil" style="margin-bottom:0;">Isi kalau mau tampilkan harga coret sebagai perbandingan (misal harga normal Rp 20.000 dicoret, harga jual Rp 15.000 muncul lebih besar). Kosongkan kalau tidak ada promo diskon.</div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Opsi / Varian Menu (opsional)</label>
+                <div class="hint-kecil">Contoh: "Level Pedas" (Tidak Pedas / Sedang / Extra Pedas), "Ukuran", atau "Tambahan Gratis" (misal Es Teh +Rp 0). Pembeli wajib/boleh pilih saat pesan.</div>
+                <div id="listOpsiMenu"></div>
+                <button type="button" class="btn-tambah-grup-opsi" onclick="tambahGrupOpsi()">➕ Tambah Grup Opsi</button>
+            </div>
             <div class="form-group">
                 <label class="form-label">Foto Menu (opsional)</label>
                 <input type="hidden" id="menuFoto">
@@ -227,6 +269,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getDatabase, ref, onValue, get, child, set, update, remove, push } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyC04vDd6Z1NnrMx5gK7nMCyDceaGZj_bQw",
@@ -240,6 +283,10 @@
     };
     const app = initializeApp(firebaseConfig);
     const database = getDatabase(app);
+    const auth = getAuth(app);
+    // Firebase Auth wajib format email, jadi nomor WA "disamarkan" jadi alamat email semu.
+    // Ini cuma format teknis -- isinya tetap nomor WA, bukan email beneran, dan tidak pernah dipakai buat kirim email.
+    function emailSemuDariWA(wa) { return wa.replace(/[^0-9]/g, '') + '@resto.mastulung.app'; }
 
     const NOMOR_ADMIN_DRIVER = "6285870422464"; // dipakai juga buat verifikasi resto baru
     // API key gratis dari https://api.imgbb.com/ -- ganti "GANTI_DENGAN_API_KEY_IMGBB" dengan key aslimu.
@@ -280,13 +327,21 @@
         const btn = document.getElementById('ui-btn-reg'); btn.disabled = true; btn.innerText = 'Loading... ⏳';
         get(child(ref(database), `restoran/${wa}`)).then(snap => {
             if (snap.exists()) { btn.disabled = false; btn.innerText = 'Daftar Sekarang'; return alert('No. WA ini sudah terdaftar sebagai resto.'); }
-            set(ref(database, 'restoran/' + wa), { nama, wa, alamat, password: pass, status: 'pending', buka: true, tanggal_daftar: new Date().toLocaleDateString('id-ID') }).then(() => {
+            // Bikin akun Firebase Auth asli dulu -- password-nya dikelola & di-hash oleh Firebase sendiri,
+            // TIDAK disimpan sebagai teks polos ke database kita lagi (beda dari sistem lama).
+            return createUserWithEmailAndPassword(auth, emailSemuDariWA(wa), pass).then(() => {
+                return set(ref(database, 'restoran/' + wa), { nama, wa, alamat, status: 'pending', buka: true, tanggal_daftar: new Date().toLocaleDateString('id-ID') });
+            }).then(() => {
                 alert('Pendaftaran terkirim! Tunggu verifikasi admin ya (biasanya cepat, apalagi kalau kamu konfirmasi via WA).');
                 tampilLogin(); document.getElementById('loginWA').value = wa; btn.disabled = false; btn.innerText = 'Daftar Sekarang';
                 const pesan = `Halo Admin TulangTulung Gombong, saya ${nama} (WA: ${wa}) baru saja mendaftar sebagai Mitra Resto melalui aplikasi. Mohon segera diverifikasi/di-ACC ya. Terima kasih!`;
                 window.open(`https://wa.me/${NOMOR_ADMIN_DRIVER}?text=${encodeURIComponent(pesan)}`, '_blank');
             });
-        }).catch(e => { alert('Error: ' + e); btn.disabled = false; btn.innerText = 'Daftar Sekarang'; });
+        }).catch(e => {
+            btn.disabled = false; btn.innerText = 'Daftar Sekarang';
+            if (e.code === 'auth/email-already-in-use') return alert('No. WA ini sudah pernah dipakai daftar sebelumnya.');
+            alert('Error: ' + e.message);
+        });
     }
 
     window.prosesLogin = function() {
@@ -294,21 +349,56 @@
         const pass = document.getElementById('loginPass').value;
         if (!wa || !pass) return alert('Mohon isi No. WA & kata sandi.');
         const btn = document.getElementById('ui-btn-login'); btn.disabled = true; btn.innerText = 'Loading... ⏳';
+
+        // Coba cara baru dulu: login lewat Firebase Auth asli (password dicek aman di server Google).
+        signInWithEmailAndPassword(auth, emailSemuDariWA(wa), pass).then(() => {
+            lanjutkanSetelahLoginAuth(wa, btn);
+        }).catch(e => {
+            if (e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential') {
+                // Akun ini belum pernah migrasi ke Firebase Auth (resto lama sebelum fitur ini ada).
+                // Cek cara lama (cocokin password polos di database) sebagai fallback.
+                get(child(ref(database), `restoran/${wa}`)).then(snap => {
+                    if (!snap.exists() || snap.val().password !== pass) { btn.disabled = false; btn.innerText = 'Masuk'; return alert('No. WA atau kata sandi salah.'); }
+                    // Password lama cocok -> migrasi diam-diam: bikinkan akun Auth asli sekarang,
+                    // supaya login berikutnya sudah lewat jalur aman.
+                    createUserWithEmailAndPassword(auth, emailSemuDariWA(wa), pass).then(() => {
+                        lanjutkanSetelahLoginAuth(wa, btn);
+                    }).catch(err => { btn.disabled = false; btn.innerText = 'Masuk'; alert('Error migrasi akun: ' + err.message); });
+                }).catch(err => { btn.disabled = false; btn.innerText = 'Masuk'; alert('Error: ' + err.message); });
+            } else if (e.code === 'auth/wrong-password') {
+                btn.disabled = false; btn.innerText = 'Masuk'; alert('No. WA atau kata sandi salah.');
+            } else {
+                btn.disabled = false; btn.innerText = 'Masuk'; alert('Error: ' + e.message);
+            }
+        });
+    }
+
+    // Dipanggil setelah Auth berhasil (baik lewat jalur baru maupun setelah migrasi) --
+    // ambil data profil resto dari database seperti biasa, lalu masuk dashboard.
+    function lanjutkanSetelahLoginAuth(wa, btn) {
         get(child(ref(database), `restoran/${wa}`)).then(snap => {
-            if (!snap.exists() || snap.val().password !== pass) { btn.disabled = false; btn.innerText = 'Masuk'; return alert('No. WA atau kata sandi salah.'); }
+            if (!snap.exists()) { btn.disabled = false; btn.innerText = 'Masuk'; return alert('Data resto tidak ditemukan. Hubungi admin.'); }
             const d = snap.val();
             if (d.status === 'pending') { btn.disabled = false; btn.innerText = 'Masuk'; return alert('Akun kamu masih menunggu verifikasi admin.'); }
             if (d.status === 'suspend') { btn.disabled = false; btn.innerText = 'Masuk'; return alert('Akun kamu sedang disuspend. Hubungi admin.'); }
             simpanSesiResto(wa, d.nama);
             masukDashboard(wa, d);
-        }).catch(e => { alert('Error: ' + e); btn.disabled = false; btn.innerText = 'Masuk'; });
+        }).catch(e => { btn.disabled = false; btn.innerText = 'Masuk'; alert('Error: ' + e.message); });
     }
+
 
     function masukDashboard(wa, d) {
         namaRestoAktif = d.nama; waRestoAktif = wa; statusBukaAktif = d.buka !== false;
         document.getElementById('displayNamaResto').innerText = d.nama;
         document.getElementById('profDisplayNama').innerText = d.nama;
         document.getElementById('profDisplayWA').innerText = wa;
+        if (d.foto_profil) {
+            document.getElementById('restoFotoProfil').value = d.foto_profil;
+            document.getElementById('previewFotoProfilResto').src = d.foto_profil;
+            document.getElementById('previewFotoProfilResto').classList.remove('hidden');
+            document.getElementById('labelUploadFotoProfilResto').textContent = '📷 Ganti Foto';
+            document.getElementById('profAvatarWrap').innerHTML = `<img src="${d.foto_profil}" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">`;
+        }
         updateLokasiWarungUI(d.lat, d.lng);
         updateToggleBukaUI();
         document.getElementById('page-login').classList.add('hidden');
@@ -399,7 +489,7 @@
         }
         relevan.forEach(data => {
             const itemsArr = data.items ? Object.values(data.items) : [];
-            const itemsHtml = itemsArr.map(it => `<div class="oc-item-row"><span>${it.qty}x ${it.nama}</span><b>${formatRupiah(it.harga * it.qty)}</b></div>`).join('');
+            const itemsHtml = itemsArr.map(it => `<div class="oc-item-row"><span>${it.qty}x ${it.nama}${it.opsi_text ? `<br><small style="font-weight:600; color:var(--text3);">${it.opsi_text}</small>` : ''}</span><b>${formatRupiah(it.harga * it.qty)}</b></div>`).join('');
 
             let pillHtml = '', actionsHtml = '';
             if (data.status === 'menunggu_resto') {
@@ -462,11 +552,18 @@
             const m = latestMenuResto[id];
             const card = document.createElement('div');
             card.className = 'menu-item-card' + (m.tersedia === false ? ' tidak-tersedia' : '');
+            const adaDiskon = m.harga_coret && m.harga_coret > m.harga;
+            const persenDiskon = adaDiskon ? Math.round((1 - m.harga / m.harga_coret) * 100) : 0;
+            const hargaHtml = adaDiskon
+                ? `<div class="menu-item-harga-row"><span class="menu-item-harga-coret">${formatRupiah(m.harga_coret)}</span><span class="menu-item-harga">${formatRupiah(m.harga)}</span><span class="badge-diskon">-${persenDiskon}%</span></div>`
+                : `<div class="menu-item-harga">${formatRupiah(m.harga)}</div>`;
+            const opsiHtml = (m.opsi && m.opsi.length > 0) ? `<div class="menu-item-opsi-tag">🔧 ${m.opsi.length} grup opsi</div>` : '';
             card.innerHTML = `
                 <img class="menu-item-photo" src="${m.foto || 'https://placehold.co/100x100?text=🍽️'}" onerror="this.src='https://placehold.co/100x100?text=🍽️'">
                 <div class="menu-item-info">
                     <div class="menu-item-nama">${m.nama}</div>
-                    <div class="menu-item-harga">${formatRupiah(m.harga)}</div>
+                    ${hargaHtml}
+                    ${opsiHtml}
                 </div>
                 <div class="menu-item-actions">
                     <div class="switch-mini ${m.tersedia !== false ? 'on' : ''}" onclick="toggleTersediaMenu('${id}', ${m.tersedia === false})"></div>
@@ -488,6 +585,57 @@
         remove(ref(database, `restoran/${waRestoAktif}/menu/${id}`)).catch(e => alert('Error: ' + e));
     }
 
+    // ── OPSI/VARIAN MENU (state form sementara sebelum disimpan) ──
+    // Struktur: [{ nama, wajib, tipe: 'single'|'multi', pilihan: [{ nama, tambahan }] }]
+    let formOpsiMenu = [];
+
+    function renderFormOpsiMenu() {
+        const wrap = document.getElementById('listOpsiMenu');
+        wrap.innerHTML = '';
+        formOpsiMenu.forEach((grup, gi) => {
+            const card = document.createElement('div');
+            card.className = 'grup-opsi-card';
+            let pilihanHtml = '';
+            grup.pilihan.forEach((p, pi) => {
+                pilihanHtml += `
+                <div class="pilihan-opsi-row">
+                    <input class="form-input pilihan-nama" placeholder="Nama pilihan (misal: Extra Pedas)" value="${p.nama || ''}" oninput="formOpsiMenu[${gi}].pilihan[${pi}].nama = this.value">
+                    <input class="form-input pilihan-tambahan" type="number" placeholder="+Rp 0" value="${p.tambahan || 0}" oninput="formOpsiMenu[${gi}].pilihan[${pi}].tambahan = parseInt(this.value)||0">
+                    <button type="button" class="btn-x-kecil" onclick="hapusPilihanOpsi(${gi}, ${pi})">✕</button>
+                </div>`;
+            });
+            card.innerHTML = `
+                <div class="grup-opsi-head">
+                    <input class="form-input" placeholder="Nama grup opsi (misal: Level Pedas)" value="${grup.nama || ''}" oninput="formOpsiMenu[${gi}].nama = this.value">
+                    <button type="button" class="btn-x-kecil" onclick="hapusGrupOpsi(${gi})">✕</button>
+                </div>
+                <div class="grup-opsi-sub">
+                    <label><input type="checkbox" ${grup.wajib ? 'checked' : ''} onchange="formOpsiMenu[${gi}].wajib = this.checked"> Wajib dipilih</label>
+                    <label><input type="checkbox" ${grup.tipe === 'multi' ? 'checked' : ''} onchange="formOpsiMenu[${gi}].tipe = this.checked ? 'multi' : 'single'"> Boleh pilih lebih dari satu</label>
+                </div>
+                ${pilihanHtml}
+                <button type="button" class="btn-tambah-pilihan" onclick="tambahPilihanOpsi(${gi})">➕ Tambah Pilihan</button>`;
+            wrap.appendChild(card);
+        });
+    }
+
+    window.tambahGrupOpsi = function() {
+        formOpsiMenu.push({ nama: '', wajib: false, tipe: 'single', pilihan: [{ nama: '', tambahan: 0 }] });
+        renderFormOpsiMenu();
+    }
+    window.hapusGrupOpsi = function(gi) {
+        formOpsiMenu.splice(gi, 1);
+        renderFormOpsiMenu();
+    }
+    window.tambahPilihanOpsi = function(gi) {
+        formOpsiMenu[gi].pilihan.push({ nama: '', tambahan: 0 });
+        renderFormOpsiMenu();
+    }
+    window.hapusPilihanOpsi = function(gi, pi) {
+        formOpsiMenu[gi].pilihan.splice(pi, 1);
+        renderFormOpsiMenu();
+    }
+
     // ── FORM TAMBAH/EDIT MENU ──
     window.bukaFormMenu = function(id) {
         document.getElementById('menuEditId').value = id || '';
@@ -499,22 +647,72 @@
             document.getElementById('judulModalMenu').innerText = 'Edit Menu';
             document.getElementById('menuNama').value = m.nama || '';
             document.getElementById('menuHarga').value = m.harga || '';
+            document.getElementById('menuHargaCoret').value = m.harga_coret || '';
             document.getElementById('menuFoto').value = m.foto || '';
             document.getElementById('switchTersedia').classList.toggle('on', m.tersedia !== false);
+            formOpsiMenu = m.opsi ? JSON.parse(JSON.stringify(m.opsi)) : [];
             if (m.foto) { preview.src = m.foto; preview.classList.remove('hidden'); } else { preview.classList.add('hidden'); }
         } else {
             document.getElementById('judulModalMenu').innerText = 'Tambah Menu';
             document.getElementById('menuNama').value = '';
             document.getElementById('menuHarga').value = '';
+            document.getElementById('menuHargaCoret').value = '';
             document.getElementById('menuFoto').value = '';
             document.getElementById('switchTersedia').classList.add('on');
+            formOpsiMenu = [];
             preview.classList.add('hidden');
         }
+        renderFormOpsiMenu();
         document.getElementById('modal-form-menu').classList.remove('hidden');
     }
     window.tutupFormMenu = function() { document.getElementById('modal-form-menu').classList.add('hidden'); }
 
-    // Upload foto ke ImgBB (gratis, tanpa perlu server sendiri) begitu resto pilih file.
+    // Upload foto profil warung (banner) -- polanya sama kaya upload foto menu di atas,
+    // tapi hasilnya disimpan langsung ke restoran/{wa}/foto_profil begitu selesai upload.
+    window.uploadFotoProfilResto = function(inputEl) {
+        const file = inputEl.files[0];
+        if (!file) return;
+        if (IMGBB_API_KEY === 'GANTI_DENGAN_API_KEY_IMGBB') {
+            alert('API key ImgBB belum diisi. Hubungi admin/developer buat setup dulu.');
+            return;
+        }
+        const statusEl = document.getElementById('txtStatusUploadFotoProfilResto');
+        const label = document.getElementById('labelUploadFotoProfilResto');
+        statusEl.textContent = '⏳ Mengunggah foto...';
+        label.textContent = '⏳ Mengunggah...';
+
+        const reader = new FileReader();
+        reader.onload = function() {
+            const base64 = reader.result.split(',')[1];
+            const formData = new FormData();
+            formData.append('image', base64);
+
+            fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData })
+                .then(res => res.json())
+                .then(hasil => {
+                    if (hasil.success) {
+                        const url = hasil.data.url;
+                        document.getElementById('restoFotoProfil').value = url;
+                        document.getElementById('previewFotoProfilResto').src = url;
+                        document.getElementById('previewFotoProfilResto').classList.remove('hidden');
+                        document.getElementById('profAvatarWrap').innerHTML = `<img src="${url}" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">`;
+                        statusEl.textContent = '✅ Foto berhasil diunggah.';
+                        label.textContent = '📷 Ganti Foto';
+                        update(ref(database, 'restoran/' + waRestoAktif), { foto_profil: url }).catch(e => alert('Error simpan foto: ' + e));
+                    } else {
+                        statusEl.textContent = '❌ Gagal unggah: ' + (hasil.error?.message || 'coba lagi.');
+                        label.textContent = '📷 Pilih Foto';
+                    }
+                })
+                .catch(e => {
+                    statusEl.textContent = '❌ Gagal unggah, cek koneksi internet.';
+                    label.textContent = '📷 Pilih Foto';
+                });
+        };
+        reader.readAsDataURL(file);
+    }
+
+
     // Hasil link gambarnya disimpan ke input hidden #menuFoto, dipakai saat simpanMenu().
     window.uploadFotoMenu = function(inputEl) {
         const file = inputEl.files[0];
@@ -561,11 +759,21 @@
     window.simpanMenu = function() {
         const id = document.getElementById('menuEditId').value;
         const nama = document.getElementById('menuNama').value.trim();
-        const harga = parseInt(document.getElementById('menuHarga').value);
+        const hargaRaw = document.getElementById('menuHarga').value.trim();
+        const harga = hargaRaw === '' ? NaN : parseInt(hargaRaw);
+        const hargaCoretRaw = document.getElementById('menuHargaCoret').value.trim();
+        const harga_coret = hargaCoretRaw ? parseInt(hargaCoretRaw) : null;
         const foto = document.getElementById('menuFoto').value.trim();
         const tersedia = document.getElementById('switchTersedia').classList.contains('on');
-        if (!nama || !harga || harga <= 0) return alert('Nama menu & harga harus diisi dengan benar.');
-        const data = { nama, harga, foto, tersedia };
+        if (!nama || isNaN(harga) || harga < 0) return alert('Nama menu & harga harus diisi dengan benar (boleh isi 0 kalau memang mau bikin item gratis/bonus promo).');
+        if (harga_coret !== null && harga_coret <= harga) return alert('Harga coret harus lebih besar dari harga jual (kalau tidak, tidak akan terlihat seperti diskon).');
+
+        // Bersihkan grup opsi: buang grup tanpa nama, buang pilihan tanpa nama, pastikan tiap grup punya minimal 1 pilihan valid.
+        const opsiBersih = formOpsiMenu
+            .map(g => ({ nama: (g.nama || '').trim(), wajib: !!g.wajib, tipe: g.tipe === 'multi' ? 'multi' : 'single', pilihan: (g.pilihan || []).map(p => ({ nama: (p.nama || '').trim(), tambahan: parseInt(p.tambahan) || 0 })).filter(p => p.nama) }))
+            .filter(g => g.nama && g.pilihan.length > 0);
+
+        const data = { nama, harga, foto, tersedia, harga_coret: harga_coret, opsi: opsiBersih };
         const promise = id
             ? update(ref(database, `restoran/${waRestoAktif}/menu/${id}`), data)
             : set(push(ref(database, `restoran/${waRestoAktif}/menu`)), data);
@@ -574,6 +782,10 @@
 
     // ── INIT ──
     cekSesiResto();
+</script>
+
+<script>
+    if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw-resto.js').catch(() => {}); }); }
 </script>
 </body>
 </html>
