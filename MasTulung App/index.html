@@ -231,6 +231,8 @@
     .estimasi-jarak-box.hidden { display: none; }
     @keyframes estimasiPopIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
     .estimasi-row { display: flex; justify-content: space-between; align-items: center; padding: 3px 0; }
+    .estimasi-row-grandtotal { border-top: 1px dashed #86c299; margin-top: 4px; padding-top: 8px; }
+    .estimasi-row-grandtotal .estimasi-label, .estimasi-row-grandtotal .estimasi-value { font-weight: 700; font-size: 17px; }
     .estimasi-label { font-size: 13px; font-weight: 700; color: #166534; }
     .estimasi-value { font-size: 14px; font-weight: 800; color: #15803d; }
     .estimasi-value.estimasi-harga { font-size: 17px; color: #166534; }
@@ -243,24 +245,68 @@
     .btn-ubah-keranjang { width: 100%; margin-top: 10px; background: white; border: 1.5px solid #FDBA74; color: #9A3412; border-radius: 8px; padding: 8px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit; }
 
     /* ── DAFTAR RESTO ── */
-    .resto-card { background: var(--card); border-radius: var(--radius-sm); box-shadow: var(--shadow-sm); border: 1px solid var(--border); padding: 14px 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: transform 0.1s; }
+    .resto-search-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .resto-search-input-wrap { flex: 1; position: relative; }
+    .resto-search-input-wrap input { width: 100%; padding: 13px 16px 13px 40px; border-radius: 999px; border: 1.5px solid var(--border); background: var(--card); font-size: 13.5px; font-family: inherit; outline: none; box-shadow: var(--shadow-sm); }
+    .resto-search-input-wrap input:focus { border-color: var(--primary); }
+    .resto-search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 15px; opacity: 0.5; }
+    .resto-sort-btn { flex-shrink: 0; width: 44px; height: 44px; border-radius: 50%; background: var(--card); border: 1.5px solid var(--border); box-shadow: var(--shadow-sm); font-size: 17px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .resto-sort-btn:active { transform: scale(0.94); }
+
+    .resto-card { background: var(--card); border-radius: 16px; box-shadow: var(--shadow-sm); border: 1px solid var(--border); margin-bottom: 14px; overflow: hidden; cursor: pointer; transition: transform 0.1s; }
     .resto-card:active { transform: scale(0.98); }
-    .resto-card-icon { font-size: 32px; flex-shrink: 0; }
-    .resto-card-nama { font-size: 14.5px; font-weight: 800; color: var(--text); }
-    .resto-card-alamat { font-size: 11.5px; color: var(--text3); font-weight: 600; margin-top: 2px; }
-    .resto-card-arrow { margin-left: auto; color: var(--text3); font-size: 18px; }
+    .resto-card-banner { width: 100%; height: 130px; object-fit: cover; background: linear-gradient(135deg, #FFE8D6, #FFD3B0); display: block; }
+    .resto-card-banner-fallback { width: 100%; height: 130px; background: linear-gradient(135deg, #FFE8D6, #FFD3B0); display: flex; align-items: center; justify-content: center; font-size: 42px; }
+    .resto-card-body { padding: 12px 14px; }
+    .resto-card-top-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+    .resto-card-nama { font-size: 15px; font-weight: 800; color: var(--text); line-height: 1.25; }
+    .resto-card-badge-tutup { flex-shrink: 0; background: #FEE2E2; color: #B91C1C; font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 999px; }
+    .resto-card-rating-row { display: flex; align-items: center; gap: 5px; margin-top: 5px; font-size: 12.5px; font-weight: 700; color: #B45309; }
+    .resto-card-rating-row .resto-card-baru-badge { background: var(--primary-light); color: var(--primary); font-size: 10.5px; font-weight: 800; padding: 2px 8px; border-radius: 999px; }
+    .resto-card-alamat { font-size: 11.5px; color: var(--text3); font-weight: 600; margin-top: 6px; }
     .resto-empty { text-align: center; padding: 60px 20px; color: var(--text3); }
 
+    /* ── SORT MODAL ── */
+    .sort-modal-sheet { background: var(--card); border-radius: 18px 18px 0 0; padding: 20px; width: 100%; max-width: 480px; box-shadow: 0 -4px 24px rgba(0,0,0,0.15); }
+    .sort-modal-sheet .modal-title { font-size: 15.5px; font-weight: 800; color: var(--text); margin-bottom: 10px; }
+    .sort-option { padding: 14px 4px; font-size: 14px; font-weight: 700; color: var(--text); border-bottom: 1px solid var(--border); cursor: pointer; display: flex; align-items: center; justify-content: space-between; }
+    .sort-option:last-child { border-bottom: none; }
+    .sort-option.active { color: var(--primary); }
+
     /* ── MENU RESTO ── */
+
     .menu-cust-card { background: var(--card); border-radius: var(--radius-sm); box-shadow: var(--shadow-sm); border: 1px solid var(--border); padding: 12px 14px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; }
     .menu-cust-photo { width: 56px; height: 56px; border-radius: 10px; object-fit: cover; background: var(--bg); flex-shrink: 0; }
     .menu-cust-info { flex: 1; min-width: 0; }
     .menu-cust-nama { font-size: 13.5px; font-weight: 800; color: var(--text); }
+    .menu-cust-harga-row { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; margin-top: 2px; }
     .menu-cust-harga { font-size: 13px; font-weight: 700; color: var(--primary); margin-top: 2px; }
+    .menu-cust-harga-coret { font-size: 11px; color: var(--text3); font-weight: 700; text-decoration: line-through; }
+    .badge-diskon-cust { background: #dc2626; color: white; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 6px; }
+    .btn-pilih-opsi { background: var(--primary); color: white; border: none; border-radius: 999px; padding: 8px 16px; font-size: 12.5px; font-weight: 700; font-family: inherit; cursor: pointer; flex-shrink: 0; }
+    .badge-qty-opsi { font-size: 10.5px; font-weight: 800; color: var(--primary); margin-top: 4px; }
     .qty-stepper { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
     .qty-btn { width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--primary); background: white; color: var(--primary); font-size: 16px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; }
     .qty-btn:active { background: var(--primary-light); }
     .qty-val { font-size: 14px; font-weight: 800; color: var(--text); min-width: 18px; text-align: center; }
+    .keranjang-item-opsi-text { font-size: 11px; color: var(--text3); font-weight: 600; padding-left: 8px; }
+    .keranjang-item-row-wrap { display: flex; align-items: flex-start; justify-content: space-between; gap: 6px; padding: 4px 0; }
+    .btn-hapus-item-kecil { background: none; border: none; color: #dc2626; font-size: 15px; font-weight: 800; cursor: pointer; flex-shrink: 0; padding: 0 4px; }
+
+    /* ── MODAL PILIH OPSI MENU ── */
+    .opsi-modal-sheet { background: var(--card); border-radius: 18px 18px 0 0; padding: 20px; width: 100%; max-width: 480px; max-height: 85vh; overflow-y: auto; box-shadow: 0 -4px 24px rgba(0,0,0,0.15); }
+    .opsi-modal-head { display: flex; gap: 12px; margin-bottom: 14px; }
+    .opsi-modal-head img { width: 64px; height: 64px; border-radius: 10px; object-fit: cover; background: var(--bg); flex-shrink: 0; }
+    .opsi-grup-title { font-size: 13.5px; font-weight: 800; color: var(--text); margin: 16px 0 4px; display: flex; align-items: center; gap: 6px; }
+    .opsi-grup-wajib-tag { font-size: 10px; font-weight: 800; color: #dc2626; background: #fee2e2; padding: 2px 7px; border-radius: 999px; }
+    .opsi-grup-opsional-tag { font-size: 10px; font-weight: 700; color: var(--text3); background: var(--bg); padding: 2px 7px; border-radius: 999px; }
+    .opsi-pilihan-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 4px; border-bottom: 1px solid var(--border); cursor: pointer; }
+    .opsi-pilihan-row:last-child { border-bottom: none; }
+    .opsi-pilihan-nama { font-size: 13px; font-weight: 600; color: var(--text); }
+    .opsi-pilihan-tambahan { font-size: 12px; font-weight: 700; color: var(--primary); }
+    .opsi-modal-footer { position: sticky; bottom: -20px; background: var(--card); margin: 16px -20px -20px; padding: 14px 20px; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+    .opsi-modal-qty { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .btn-tambah-opsi-final { flex: 1; background: var(--primary); color: white; border: none; border-radius: var(--radius-sm); padding: 13px; font-size: 13.5px; font-weight: 800; font-family: inherit; cursor: pointer; }
 
     /* ── CART FLOATING BAR ── */
     .cart-float-bar { position: absolute; left: 16px; right: 16px; bottom: 90px; background: var(--primary); color: white; border-radius: var(--radius-sm); padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow-lg); cursor: pointer; z-index: 150; }
@@ -627,7 +673,9 @@
                     <div id="boxKeranjangMakanan" class="keranjang-box hidden">
                         <div class="keranjang-resto-nama" id="txtKeranjangResto">-</div>
                         <div id="listKeranjangItems"></div>
-                        <div class="keranjang-subtotal-row"><span>Subtotal Makanan</span><span id="txtKeranjangSubtotal">Rp 0</span></div>
+                        <div class="keranjang-item-row"><span>Subtotal Makanan</span><span id="txtKeranjangSubtotal">Rp 0</span></div>
+                        <div class="keranjang-item-row"><span>Biaya Layanan Aplikasi</span><span id="txtKeranjangBiayaLayanan">Rp 0</span></div>
+                        <div class="keranjang-subtotal-row"><span>Total Makanan</span><span id="txtKeranjangTotal">Rp 0</span></div>
                         <button class="btn-ubah-keranjang" onclick="kembaliKeMenu()">✏️ Ubah Pesanan</button>
                     </div>
 
@@ -655,8 +703,12 @@
                             <span class="estimasi-value" id="txtEstimasiJarak">-</span>
                         </div>
                         <div class="estimasi-row">
-                            <span class="estimasi-label">💰 Estimasi Ongkos</span>
+                            <span class="estimasi-label">🛵 Ongkos Ngeter</span>
                             <span class="estimasi-value estimasi-harga" id="txtEstimasiHarga">-</span>
+                        </div>
+                        <div class="estimasi-row estimasi-row-grandtotal hidden" id="rowGrandTotalMakanan">
+                            <span class="estimasi-label">🧾 Total Keseluruhan</span>
+                            <span class="estimasi-value estimasi-harga" id="txtGrandTotalMakanan">-</span>
                         </div>
                         <div id="previewRouteMap" class="preview-route-map hidden">
                             <div class="preview-route-legend">
@@ -684,8 +736,47 @@
                 <div class="form-topbar-title" style="flex:1;">🍜 Pesan Makanan</div>
             </div>
             <div class="form-page">
-                <div class="form-body" id="listRestoWrap">
-                    <div class="resto-empty">⏳ Memuat daftar warung...</div>
+                <div class="form-body">
+                    <div class="resto-search-bar">
+                        <div class="resto-search-input-wrap">
+                            <span class="resto-search-icon">🔍</span>
+                            <input type="text" id="inputCariResto" placeholder="Cari warung atau menu..." oninput="renderDaftarResto()">
+                        </div>
+                        <button class="resto-sort-btn" onclick="bukaModalSort()" title="Urutkan">⚙️</button>
+                    </div>
+                    <div id="listRestoWrap">
+                        <div class="resto-empty">⏳ Memuat daftar warung...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ MODAL SORT DAFTAR RESTO ═══ -->
+        <div id="modal-sort-resto" class="map-modal-overlay hidden" onclick="if(event.target===this) tutupModalSort()">
+            <div class="sort-modal-sheet">
+                <div class="modal-title">🔽 Urutkan Warung</div>
+                <div id="listSortOption"></div>
+            </div>
+        </div>
+
+        <!-- ═══ MODAL PILIH OPSI MENU ═══ -->
+        <div id="modal-opsi-menu" class="map-modal-overlay hidden" onclick="if(event.target===this) tutupModalOpsiMenu()">
+            <div class="opsi-modal-sheet">
+                <div class="opsi-modal-head">
+                    <img id="opsiModalFoto" src="" onerror="this.src='https://placehold.co/100x100?text=🍽️'">
+                    <div>
+                        <div class="modal-title" style="margin-bottom:2px;" id="opsiModalNama">-</div>
+                        <div class="menu-cust-harga-row" id="opsiModalHargaRow"></div>
+                    </div>
+                </div>
+                <div id="opsiModalGrupList"></div>
+                <div class="opsi-modal-footer">
+                    <div class="opsi-modal-qty">
+                        <button class="qty-btn" onclick="ubahQtyModalOpsi(-1)">−</button>
+                        <span class="qty-val" id="opsiModalQty">1</span>
+                        <button class="qty-btn" onclick="ubahQtyModalOpsi(1)">+</button>
+                    </div>
+                    <button class="btn-tambah-opsi-final" onclick="tambahKeKeranjangDenganOpsi()">Tambah • <span id="opsiModalTotalHarga">Rp 0</span></button>
                 </div>
             </div>
         </div>
@@ -1013,7 +1104,7 @@
             tarif1: "🚗 <b>Rega Dasar:</b> Rp 2.000 / Kilo.<br>Rega dirembug via WA karo driver.", tarif2: "📦 <b>Rega Kurir:</b> Rp 2.000 / Kilo.<br>Rega dirembug via WA karo driver.", tarif3: "🛒 <b>Rega Jasa:</b> Rp 2.000 / Kilo.<br>Rega dirembug via WA karo driver.", tarif4: "🧹 <b>Rega Resik-resik:</b> Bebas (Nego).<br>Mangga nego via WA karo driver.", tarif5: "✨ <b>Jasa Liya-liyane:</b> Bebas (Nego).<br>Rembugan rego via WA bae.",
             t_formTitle: "Detail Pesenan", t_jemput: "Lokasi Methuk", t_antar: "Lokasi Ngeter", t_ambil: "Njukut Barang Nang", t_kirim: "Kirim Barang Maring", t_daftar: "Daftar Sing Arep Dituku", t_alamat: "Alamat Ngirim", t_resik: "Apa sing arep diresiki?", t_lokasi: "Lokasine nang endi?", t_unik: "Sebutna Penjalukmu", t_waktu: "Alamat / Jam Pira",
             ph_jemput: "Contoh: Pasar Gombong...", ph_antar: "Contoh: Stasiun Gombong...", ph_ambil: "Contoh: Umahku...", ph_kirim: "Contoh: JNE Gombong...", ph_daftar: "Contoh: Tuku sate ambal...", ph_alamat: "Contoh: Anterna maring...", ph_resik: "Contoh: Nyapu pekarangan...", ph_lokasi: "Contoh: Umah mburi kelurahan...", ph_unik: "Contoh: Tulung pindahna lemari...", ph_waktu: "Contoh: Dina kiye jam 2...",
-            templateWA: "Halo Admin TulangTulung Gombong, nyong [NAMA]. Nyong arep takon: ", installTxt: "Pasang Aplikasi!", btnInstall: "INSTALL 📲", btnCancel: "❌ Batalna", btnComplete: "✅ Konfirmasi Beres", ratingTitle: "Kepiye pelayanan drivere?", ph_ulasan: "Tulis ulasan (opsional)...", btnRating: "Kirim Rating ⭐",
+            templateWA: "Halo Admin TulangTulung Gombong, nyong [NAMA]. Nyong arep takon: ", installTxt: "Pasang Aplikasi!", btnInstall: "INSTALL 📲", btnCancel: "❌ Batalna", btnComplete: "✅ Konfirmasi Beres", ratingTitle: "Kepiye pelayanan drivere?", ratingTitleResto: "Kepiye rasa panganane?", ph_ulasan: "Tulis ulasan (opsional)...", btnRating: "Kirim Rating ⭐",
             btnHubungiDriver: "💬 Hubungi Driver", btnBatalGratis: "❌ Batalna (Gratis)", btnAjukanBatal: "Njaluk Pembatalan", btnBatalkanPermintaan: "Batalna Panjaluk Iki",
             txtMenungguBatal: "Panjaluk pembatalan wis dikirim, ngenteni driver ACC.", noteBatalTerkunci: "*Saldo driver wis kepotong. Njaluk batal kudu di-ACC driver disit.",
             catMakanan: "Pesan Makanan", catMakananSub: "Pesen panganan langsung ti warung sing cedak",
@@ -1042,7 +1133,7 @@
             tarif1: "🚗 <b>Tarif Dasar:</b> Rp 2.000 / Kilometer.<br>Harga disepakati via WA dengan driver.", tarif2: "📦 <b>Tarif Kurir:</b> Rp 2.000 / Kilometer.<br>Harga disepakati via WA dengan driver.", tarif3: "🛒 <b>Tarif Jasa:</b> Rp 2.000 / Kilometer.<br>Harga disepakati via WA dengan driver.", tarif4: "🧹 <b>Tarif Bersih-bersih:</b> Fleksibel (Nego).<br>Silakan nego via WA dengan petugas.", tarif5: "✨ <b>Jasa Lainnya:</b> Fleksibel (Nego).<br>Diskusikan harga via WA.",
             t_formTitle: "Detail Pesanan", t_jemput: "Titik Jemput", t_antar: "Titik Tujuan", t_ambil: "Ambil Barang Di", t_kirim: "Kirim Barang Ke", t_daftar: "Daftar Belanjaan", t_alamat: "Alamat Pengiriman", t_resik: "Apa yang dibersihkan?", t_lokasi: "Alamat Lokasi", t_unik: "Sebutkan Permintaanmu", t_waktu: "Alamat / Waktu",
             ph_jemput: "Contoh: Pasar Gombong...", ph_antar: "Contoh: Stasiun Gombong...", ph_ambil: "Contoh: Rumah saya...", ph_kirim: "Contoh: JNE Gombong...", ph_daftar: "Contoh: Beli sate...", ph_alamat: "Contoh: Antar ke...", ph_resik: "Contoh: Sapu halaman...", ph_lokasi: "Contoh: Rumah belakang...", ph_unik: "Contoh: Tolong pindahkan...", ph_waktu: "Contoh: Hari ini...",
-            templateWA: "Halo Admin TulangTulung Gombong, saya [NAMA]. Saya ingin bertanya: ", installTxt: "Install Aplikasi!", btnInstall: "INSTALL 📲", btnCancel: "❌ Batalkan Pesanan", btnComplete: "✅ Konfirmasi Selesai", ratingTitle: "Bagaimana pelayanan driver kami?", ph_ulasan: "Tulis ulasan (opsional)...", btnRating: "Kirim Rating ⭐",
+            templateWA: "Halo Admin TulangTulung Gombong, saya [NAMA]. Saya ingin bertanya: ", installTxt: "Install Aplikasi!", btnInstall: "INSTALL 📲", btnCancel: "❌ Batalkan Pesanan", btnComplete: "✅ Konfirmasi Selesai", ratingTitle: "Bagaimana pelayanan driver kami?", ratingTitleResto: "Bagaimana rasa makanannya?", ph_ulasan: "Tulis ulasan (opsional)...", btnRating: "Kirim Rating ⭐",
             btnHubungiDriver: "💬 Hubungi Driver", btnBatalGratis: "❌ Batalkan (Gratis)", btnAjukanBatal: "Ajukan Pembatalan", btnBatalkanPermintaan: "Batalkan Permintaan Ini",
             txtMenungguBatal: "Permintaan pembatalan sudah dikirim, menunggu ACC driver.", noteBatalTerkunci: "*Saldo driver sudah terpotong. Pembatalan perlu di-ACC driver dulu.",
             catMakanan: "Pesan Makanan", catMakananSub: "Pesan makanan langsung dari warung terdekat",
@@ -1071,7 +1162,7 @@
             tarif1: "🚗 <b>Base Fare:</b> Rp 2,000 / Kilometer.<br>Final price via WA.", tarif2: "📦 <b>Delivery Fare:</b> Rp 2,000 / Kilometer.<br>Final price via WA.", tarif3: "🛒 <b>Service Fee:</b> Rp 2,000 / Kilometer.<br>Final price via WA.", tarif4: "🧹 <b>Cleaning Fee:</b> Flexible (Negotiable).<br>Please negotiate via WA.", tarif5: "✨ <b>Custom Service:</b> Flexible price (Negotiable).<br>Discuss via WA.",
             t_formTitle: "Order Details", t_jemput: "Pick-up Location", t_antar: "Drop-off Location", t_ambil: "Pick up from", t_kirim: "Deliver to", t_daftar: "Shopping List", t_alamat: "Delivery Address", t_resik: "What needs cleaning?", t_lokasi: "Location Address", t_unik: "State Your Request", t_waktu: "Address / Time",
             ph_jemput: "Example: Main Gate...", ph_antar: "Example: Station...", ph_ambil: "Example: My house...", ph_kirim: "Example: JNE...", ph_daftar: "Example: Buy satay...", ph_alamat: "Example: Deliver to...", ph_resik: "Example: Sweep yard...", ph_lokasi: "Example: House behind...", ph_unik: "Example: Move wardrobe...", ph_waktu: "Example: Today at 2 PM...",
-            templateWA: "Hello Admin, my name is [NAMA]. I have a question: ", installTxt: "Install App!", btnInstall: "INSTALL 📲", btnCancel: "❌ Cancel", btnComplete: "✅ Confirm Completed", ratingTitle: "How was the service?", ph_ulasan: "Write feedback (optional)...", btnRating: "Submit Rating ⭐",
+            templateWA: "Hello Admin, my name is [NAMA]. I have a question: ", installTxt: "Install App!", btnInstall: "INSTALL 📲", btnCancel: "❌ Cancel", btnComplete: "✅ Confirm Completed", ratingTitle: "How was the service?", ratingTitleResto: "How was the food?", ph_ulasan: "Write feedback (optional)...", btnRating: "Submit Rating ⭐",
             btnHubungiDriver: "💬 Contact Driver", btnBatalGratis: "❌ Cancel (Free)", btnAjukanBatal: "Request Cancellation", btnBatalkanPermintaan: "Withdraw This Request",
             txtMenungguBatal: "Cancellation request sent, waiting for driver approval.", noteBatalTerkunci: "*Driver's balance already deducted. Cancellation needs driver approval.",
             catMakanan: "Order Food", catMakananSub: "Order food directly from nearby restaurants",
@@ -1297,16 +1388,40 @@
         navigasiKe('home'); // navigasiKe otomatis tampilkan lagi bottom-nav
     }
 
+    let _sortRestoAktif = 'default'; // default | rating | nama
+    let _daftarRestoCache = [];
+
+    function renderBintangResto(r) {
+        const count = r.rating_count || 0;
+        if (count === 0) {
+            return `<span class="resto-card-baru-badge">✨ Baru</span>`;
+        }
+        const avg = (r.rating_total / count).toFixed(1);
+        return `⭐ ${avg} <span style="color:var(--text3); font-weight:600;">(${count} ulasan)</span>`;
+    }
+
     function renderDaftarResto() {
         const wrap = document.getElementById('listRestoWrap');
-        onValue(ref(database, 'restoran'), snap => {
-            const data = snap.val() || {};
-            const daftar = Object.keys(data)
-                .map(wa => ({ wa, ...data[wa] }))
-                .filter(r => r.status === 'aktif' && r.buka !== false);
+        const keyword = (document.getElementById('inputCariResto')?.value || '').trim().toLowerCase();
+
+        const tampilkan = () => {
+            let daftar = _daftarRestoCache.slice();
+            if (keyword) daftar = daftar.filter(r => r.nama.toLowerCase().includes(keyword));
+
+            if (_sortRestoAktif === 'rating') {
+                daftar.sort((a, b) => {
+                    const avgA = a.rating_count ? a.rating_total / a.rating_count : -1;
+                    const avgB = b.rating_count ? b.rating_total / b.rating_count : -1;
+                    return avgB - avgA;
+                });
+            } else if (_sortRestoAktif === 'nama') {
+                daftar.sort((a, b) => a.nama.localeCompare(b.nama));
+            }
 
             if (daftar.length === 0) {
-                wrap.innerHTML = `<div class="resto-empty">🍜 Belum ada warung yang buka saat ini. Coba lagi nanti ya.</div>`;
+                wrap.innerHTML = keyword
+                    ? `<div class="resto-empty">🔍 Warung "${keyword}" ora ketemu.</div>`
+                    : `<div class="resto-empty">🍜 Belum ada warung yang buka saat ini. Coba lagi nanti ya.</div>`;
                 return;
             }
             wrap.innerHTML = '';
@@ -1314,17 +1429,58 @@
                 const card = document.createElement('div');
                 card.className = 'resto-card';
                 card.onclick = () => bukaMenuResto(r.wa);
+                const bannerHtml = r.foto_profil
+                    ? `<img class="resto-card-banner" src="${r.foto_profil}" onerror="this.outerHTML='<div class=&quot;resto-card-banner-fallback&quot;>🍜</div>'">`
+                    : `<div class="resto-card-banner-fallback">🍜</div>`;
                 card.innerHTML = `
-                    <span class="resto-card-icon">🍜</span>
-                    <div>
-                        <div class="resto-card-nama">${r.nama}</div>
+                    ${bannerHtml}
+                    <div class="resto-card-body">
+                        <div class="resto-card-top-row">
+                            <div class="resto-card-nama">${r.nama}</div>
+                        </div>
+                        <div class="resto-card-rating-row">${renderBintangResto(r)}</div>
                         <div class="resto-card-alamat">📍 ${r.alamat || '-'}</div>
                     </div>
-                    <span class="resto-card-arrow">›</span>
                 `;
                 wrap.appendChild(card);
             });
-        }, { onlyOnce: false });
+        };
+
+        if (_daftarRestoCache.length === 0) {
+            onValue(ref(database, 'restoran'), snap => {
+                const data = snap.val() || {};
+                _daftarRestoCache = Object.keys(data)
+                    .map(wa => ({ wa, ...data[wa] }))
+                    .filter(r => r.status === 'aktif' && r.buka !== false);
+                tampilkan();
+            }, { onlyOnce: false });
+        } else {
+            tampilkan();
+        }
+    }
+
+    window.bukaModalSort = function() {
+        const opsi = [
+            { key: 'default', label: '📋 Bawaan' },
+            { key: 'rating', label: '⭐ Rating Tertinggi' },
+            { key: 'nama', label: '🔤 Nama A-Z' }
+        ];
+        document.getElementById('listSortOption').innerHTML = opsi.map(o => `
+            <div class="sort-option ${_sortRestoAktif === o.key ? 'active' : ''}" onclick="pilihSortResto('${o.key}')">
+                <span>${o.label}</span>${_sortRestoAktif === o.key ? '<span>✓</span>' : ''}
+            </div>
+        `).join('');
+        document.getElementById('modal-sort-resto').classList.remove('hidden');
+    }
+
+    window.tutupModalSort = function() {
+        document.getElementById('modal-sort-resto').classList.add('hidden');
+    }
+
+    window.pilihSortResto = function(key) {
+        _sortRestoAktif = key;
+        tutupModalSort();
+        renderDaftarResto();
     }
 
     window.kembaliKeDaftarResto = function() {
@@ -1355,6 +1511,13 @@
         }, { onlyOnce: false });
     }
 
+    function jumlahDiKeranjangUntukMenu(menuId) {
+        return Object.entries(_cartMakanan.items).reduce((sum, [key, it]) => {
+            const idAsli = key.split('#')[0];
+            return idAsli === menuId ? sum + it.qty : sum;
+        }, 0);
+    }
+
     function renderMenuResto() {
         const wrap = document.getElementById('listMenuRestoWrap');
         const keys = Object.keys(_menuRestoAktif).filter(id => _menuRestoAktif[id].tersedia !== false);
@@ -1365,21 +1528,43 @@
         wrap.innerHTML = '';
         keys.forEach(id => {
             const m = _menuRestoAktif[id];
-            const qty = _cartMakanan.items[id]?.qty || 0;
+            const punyaOpsi = m.opsi && m.opsi.length > 0;
+            const adaDiskon = m.harga_coret && m.harga_coret > m.harga;
+            const persenDiskon = adaDiskon ? Math.round((1 - m.harga / m.harga_coret) * 100) : 0;
+            const hargaHtml = adaDiskon
+                ? `<span class="menu-cust-harga-coret">${formatRupiah(m.harga_coret)}</span><span class="menu-cust-harga">${formatRupiah(m.harga)}</span><span class="badge-diskon-cust">-${persenDiskon}%</span>`
+                : `<span class="menu-cust-harga">${formatRupiah(m.harga)}</span>`;
+
             const card = document.createElement('div');
             card.className = 'menu-cust-card';
             card.id = 'menucard-' + id;
+
+            let kananHtml;
+            if (punyaOpsi) {
+                const qtyTotal = jumlahDiKeranjangUntukMenu(id);
+                kananHtml = `
+                    <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+                        <button class="btn-pilih-opsi" onclick="bukaModalOpsiMenu('${id}')">➕ Pilih</button>
+                        ${qtyTotal > 0 ? `<span class="badge-qty-opsi">${qtyTotal} di keranjang</span>` : ''}
+                    </div>`;
+            } else {
+                const qty = _cartMakanan.items[id]?.qty || 0;
+                kananHtml = `
+                    <div class="qty-stepper">
+                        <button class="qty-btn" onclick="ubahJumlahItem('${id}', -1)">−</button>
+                        <span class="qty-val" id="qtyval-${id}">${qty}</span>
+                        <button class="qty-btn" onclick="ubahJumlahItem('${id}', 1)">+</button>
+                    </div>`;
+            }
+
             card.innerHTML = `
                 <img class="menu-cust-photo" src="${m.foto || 'https://placehold.co/100x100?text=🍽️'}" onerror="this.src='https://placehold.co/100x100?text=🍽️'">
                 <div class="menu-cust-info">
                     <div class="menu-cust-nama">${m.nama}</div>
-                    <div class="menu-cust-harga">${formatRupiah(m.harga)}</div>
+                    <div class="menu-cust-harga-row">${hargaHtml}</div>
+                    ${punyaOpsi ? `<div style="font-size:10.5px; color:var(--text3); font-weight:600; margin-top:2px;">🔧 Ada pilihan (${m.opsi.map(g=>g.nama).join(', ')})</div>` : ''}
                 </div>
-                <div class="qty-stepper">
-                    <button class="qty-btn" onclick="ubahJumlahItem('${id}', -1)">−</button>
-                    <span class="qty-val" id="qtyval-${id}">${qty}</span>
-                    <button class="qty-btn" onclick="ubahJumlahItem('${id}', 1)">+</button>
-                </div>
+                ${kananHtml}
             `;
             wrap.appendChild(card);
         });
@@ -1397,8 +1582,126 @@
         updateCartFloatBar();
     }
 
+    // ── MODAL PILIH OPSI/VARIAN MENU ──
+    let _opsiModalState = { menuId: null, pilihan: {}, qty: 1 };
+
+    window.bukaModalOpsiMenu = function(menuId) {
+        const m = _menuRestoAktif[menuId];
+        if (!m) return;
+        _opsiModalState = { menuId, pilihan: {}, qty: 1 };
+        document.getElementById('opsiModalFoto').src = m.foto || 'https://placehold.co/100x100?text=🍽️';
+        document.getElementById('opsiModalNama').innerText = m.nama;
+        const adaDiskon = m.harga_coret && m.harga_coret > m.harga;
+        document.getElementById('opsiModalHargaRow').innerHTML = adaDiskon
+            ? `<span class="menu-cust-harga-coret">${formatRupiah(m.harga_coret)}</span><span class="menu-cust-harga">${formatRupiah(m.harga)}</span>`
+            : `<span class="menu-cust-harga">${formatRupiah(m.harga)}</span>`;
+        document.getElementById('opsiModalQty').textContent = '1';
+        renderModalOpsiGrup();
+        updateTotalModalOpsi();
+        document.getElementById('modal-opsi-menu').classList.remove('hidden');
+    }
+
+    window.tutupModalOpsiMenu = function() { document.getElementById('modal-opsi-menu').classList.add('hidden'); }
+
+    function renderModalOpsiGrup() {
+        const m = _menuRestoAktif[_opsiModalState.menuId];
+        const wrap = document.getElementById('opsiModalGrupList');
+        wrap.innerHTML = (m.opsi || []).map((grup, gi) => `
+            <div class="opsi-grup-title">
+                <span>${grup.nama}</span>
+                ${grup.wajib ? '<span class="opsi-grup-wajib-tag">Wajib pilih</span>' : '<span class="opsi-grup-opsional-tag">Opsional</span>'}
+            </div>
+            ${grup.pilihan.map((p, pi) => `
+                <div class="opsi-pilihan-row" onclick="pilihOpsiMenu(${gi}, ${pi}, '${grup.tipe}')">
+                    <span class="opsi-pilihan-nama">
+                        <input type="${grup.tipe === 'multi' ? 'checkbox' : 'radio'}" name="grup-opsi-${gi}" id="opsi-${gi}-${pi}" style="margin-right:8px; pointer-events:none;">
+                        ${p.nama}
+                    </span>
+                    <span class="opsi-pilihan-tambahan">${p.tambahan > 0 ? '+' + formatRupiah(p.tambahan) : ''}</span>
+                </div>
+            `).join('')}
+        `).join('');
+    }
+
+    window.pilihOpsiMenu = function(gi, pi, tipe) {
+        if (!_opsiModalState.pilihan[gi]) _opsiModalState.pilihan[gi] = [];
+        if (tipe === 'multi') {
+            const idx = _opsiModalState.pilihan[gi].indexOf(pi);
+            if (idx > -1) _opsiModalState.pilihan[gi].splice(idx, 1); else _opsiModalState.pilihan[gi].push(pi);
+        } else {
+            _opsiModalState.pilihan[gi] = [pi];
+        }
+        // Sinkronkan tampilan centang/radio
+        const m = _menuRestoAktif[_opsiModalState.menuId];
+        m.opsi[gi].pilihan.forEach((_, i) => {
+            const el = document.getElementById(`opsi-${gi}-${i}`);
+            if (el) el.checked = _opsiModalState.pilihan[gi].includes(i);
+        });
+        updateTotalModalOpsi();
+    }
+
+    window.ubahQtyModalOpsi = function(delta) {
+        _opsiModalState.qty = Math.max(1, _opsiModalState.qty + delta);
+        document.getElementById('opsiModalQty').textContent = _opsiModalState.qty;
+        updateTotalModalOpsi();
+    }
+
+    function hitungHargaSatuanOpsi() {
+        const m = _menuRestoAktif[_opsiModalState.menuId];
+        let tambahan = 0;
+        Object.entries(_opsiModalState.pilihan).forEach(([gi, pilihanArr]) => {
+            pilihanArr.forEach(pi => { tambahan += m.opsi[gi].pilihan[pi].tambahan || 0; });
+        });
+        return m.harga + tambahan;
+    }
+
+    function updateTotalModalOpsi() {
+        const total = hitungHargaSatuanOpsi() * _opsiModalState.qty;
+        document.getElementById('opsiModalTotalHarga').textContent = formatRupiah(total);
+    }
+
+    window.tambahKeKeranjangDenganOpsi = function() {
+        const m = _menuRestoAktif[_opsiModalState.menuId];
+        // Validasi semua grup wajib sudah dipilih
+        for (let gi = 0; gi < (m.opsi || []).length; gi++) {
+            if (m.opsi[gi].wajib && (!_opsiModalState.pilihan[gi] || _opsiModalState.pilihan[gi].length === 0)) {
+                alert(`Mohon pilih "${m.opsi[gi].nama}" dulu ya.`);
+                return;
+            }
+        }
+        const opsiTerpilihTeks = (m.opsi || [])
+            .filter((g, gi) => _opsiModalState.pilihan[gi] && _opsiModalState.pilihan[gi].length > 0)
+            .map((g, gi) => `${g.nama}: ${_opsiModalState.pilihan[gi].map(pi => g.pilihan[pi].nama).join(', ')}`)
+            .join(' | ');
+        const hargaSatuan = hitungHargaSatuanOpsi();
+
+        // Gabungkan dengan baris keranjang yang persis sama kombinasinya (biar gak numpuk baris duplikat)
+        const kunciKombinasi = _opsiModalState.menuId + '#' + JSON.stringify(_opsiModalState.pilihan);
+        if (_cartMakanan.items[kunciKombinasi]) {
+            _cartMakanan.items[kunciKombinasi].qty += _opsiModalState.qty;
+        } else {
+            _cartMakanan.items[kunciKombinasi] = { nama: m.nama, harga: hargaSatuan, qty: _opsiModalState.qty, opsi_text: opsiTerpilihTeks };
+        }
+        tutupModalOpsiMenu();
+        renderMenuResto();
+        updateCartFloatBar();
+    }
+
+    // Biaya Layanan: markup dari aplikasi di atas harga asli resto (harga asli resto tetap utuh,
+    // driver tetap bayar resto sejumlah harga asli -- markup ini murni margin aplikasi).
+    const MARKUP_LAYANAN_PERSEN = 10;
+
     function hitungSubtotalKeranjang() {
         return Object.values(_cartMakanan.items).reduce((sum, it) => sum + (it.harga * it.qty), 0);
+    }
+
+    function hitungBiayaLayanan() {
+        // Dibulatkan ke Rp 100 terdekat biar rapi (tidak ada recehan Rp 1-99).
+        return Math.round((hitungSubtotalKeranjang() * MARKUP_LAYANAN_PERSEN / 100) / 100) * 100;
+    }
+
+    function hitungTotalMakanan() {
+        return hitungSubtotalKeranjang() + hitungBiayaLayanan();
     }
 
     function updateCartFloatBar() {
@@ -1407,16 +1710,33 @@
         if (totalItem === 0) { bar.classList.add('hidden'); return; }
         bar.classList.remove('hidden');
         document.getElementById('txtCartInfo').textContent = totalItem + ' item';
-        document.getElementById('txtCartTotal').textContent = formatRupiah(hitungSubtotalKeranjang());
+        document.getElementById('txtCartTotal').textContent = formatRupiah(hitungTotalMakanan());
     }
 
     function renderKeranjangBoxItems() {
         document.getElementById('txtKeranjangResto').textContent = '🍜 ' + _cartMakanan.resto_nama;
         const listEl = document.getElementById('listKeranjangItems');
-        listEl.innerHTML = Object.values(_cartMakanan.items)
-            .map(it => `<div class="keranjang-item-row"><span>${it.qty}x ${it.nama}</span><span>${formatRupiah(it.harga * it.qty)}</span></div>`)
+        listEl.innerHTML = Object.entries(_cartMakanan.items)
+            .map(([key, it]) => `
+                <div class="keranjang-item-row-wrap">
+                    <div style="flex:1; min-width:0;">
+                        <div class="keranjang-item-row" style="padding:0;"><span>${it.qty}x ${it.nama}</span><span>${formatRupiah(it.harga * it.qty)}</span></div>
+                        ${it.opsi_text ? `<div class="keranjang-item-opsi-text">${it.opsi_text}</div>` : ''}
+                    </div>
+                    <button class="btn-hapus-item-kecil" onclick="hapusItemKeranjang('${key}')">✕</button>
+                </div>`)
             .join('');
         document.getElementById('txtKeranjangSubtotal').textContent = formatRupiah(hitungSubtotalKeranjang());
+        document.getElementById('txtKeranjangBiayaLayanan').textContent = formatRupiah(hitungBiayaLayanan());
+        document.getElementById('txtKeranjangTotal').textContent = formatRupiah(hitungTotalMakanan());
+    }
+
+    window.hapusItemKeranjang = function(key) {
+        delete _cartMakanan.items[key];
+        renderKeranjangBoxItems();
+        updateCartFloatBar();
+        // Kalau keranjang jadi kosong total, balik ke halaman menu biar gak nyangkut di kotak keranjang kosong.
+        if (Object.keys(_cartMakanan.items).length === 0) kembaliKeMenu();
     }
 
     window.lanjutKeCheckoutMakanan = function() {
@@ -1543,7 +1863,7 @@
         const emptyDiv = document.getElementById('tracking-empty');
         listDiv.innerHTML = '';
 
-        const activeOrUnrated = orders.filter(o => o.status === 'terbuka' || o.status === 'menunggu_resto' || o.status === 'diterima_resto' || o.status === 'diambil' || (o.status === 'selesai' && !o.rating));
+        const activeOrUnrated = orders.filter(o => o.status === 'terbuka' || o.status === 'menunggu_resto' || o.status === 'diterima_resto' || o.status === 'diambil' || (o.status === 'selesai' && (!o.rating || (o.layanan === 'Pesan Makanan' && o.resto_id && !o.rating_resto))));
 
         if(activeOrUnrated.length === 0) {
             listDiv.classList.add('hidden');
@@ -1610,7 +1930,10 @@
                 }
             }
 
-            let ratingHtml = isSelesai ? `
+            const perluRatingDriver = isSelesai && !data.rating;
+            const perluRatingResto = isSelesai && data.layanan === 'Pesan Makanan' && data.resto_id && !data.rating_resto;
+
+            let ratingHtml = perluRatingDriver ? `
                 <div class="rating-card" id="rating-container-${data.id}">
                     <div class="rating-title" style="font-weight:800; color:var(--text); margin-bottom:8px;">${t.ratingTitle}</div>
                     <div class="stars">
@@ -1622,6 +1945,21 @@
                     </div>
                     <textarea id="ulasan-${data.id}" class="rating-textarea" rows="2" placeholder="${t.ph_ulasan}"></textarea>
                     <button class="btn-rating" onclick="kirimRating('${data.id}')">${t.btnRating}</button>
+                </div>
+            ` : '';
+
+            let ratingRestoHtml = perluRatingResto ? `
+                <div class="rating-card" id="rating-resto-container-${data.id}" data-resto-wa="${data.resto_id}">
+                    <div class="rating-title" style="font-weight:800; color:var(--text); margin-bottom:8px;">🍜 ${t.ratingTitleResto || 'Kepiye rasa panganane?'}</div>
+                    <div class="stars">
+                        <span class="star star-resto-${data.id}" onclick="setRatingResto('${data.id}', 1)">★</span>
+                        <span class="star star-resto-${data.id}" onclick="setRatingResto('${data.id}', 2)">★</span>
+                        <span class="star star-resto-${data.id}" onclick="setRatingResto('${data.id}', 3)">★</span>
+                        <span class="star star-resto-${data.id}" onclick="setRatingResto('${data.id}', 4)">★</span>
+                        <span class="star star-resto-${data.id}" onclick="setRatingResto('${data.id}', 5)">★</span>
+                    </div>
+                    <textarea id="ulasan-resto-${data.id}" class="rating-textarea" rows="2" placeholder="${t.ph_ulasan}"></textarea>
+                    <button class="btn-rating" onclick="kirimRatingResto('${data.id}')">${t.btnRating}</button>
                 </div>
             ` : '';
 
@@ -1641,6 +1979,7 @@
                     ${actionsHtml ? `<div class="tracking-actions">${actionsHtml}</div>` : ''}
                 </div>
                 ${ratingHtml}
+                ${ratingRestoHtml}
             `;
             listDiv.appendChild(card);
         });
@@ -1664,7 +2003,7 @@
         listDiv.innerHTML = "";
         
         let ada = false;
-        const historyOrders = orders.filter(o => (o.status === 'selesai' && o.rating) || o.status === 'batal' || o.status === 'batal_cust' || o.status === 'ditolak_resto');
+        const historyOrders = orders.filter(o => (o.status === 'selesai' && o.rating && (o.layanan !== 'Pesan Makanan' || !o.resto_id || o.rating_resto)) || o.status === 'batal' || o.status === 'batal_cust' || o.status === 'ditolak_resto');
 
         historyOrders.forEach(data => {
             ada = true;
@@ -1673,7 +2012,8 @@
             if(data.status==='batal'||data.status==='batal_cust'){pillClass='pill-cancelled';statusTxt=t.status4;}
             if(data.status==='ditolak_resto'){pillClass='pill-cancelled';statusTxt=t.statusDitolakResto||'Ditolak Resto';}
 
-            let ratingHtml = data.rating ? `<div class="hc-rating">⭐ ${data.rating} ${currentLang==='en'?'Stars':'Bintang'}${data.ulasan?` · "${data.ulasan}"`:''}</div>` : '';
+            let ratingHtml = data.rating ? `<div class="hc-rating">⭐ ${data.rating} ${currentLang==='en'?'Stars (driver)':'Bintang (driver)'}${data.ulasan?` · "${data.ulasan}"`:''}</div>` : '';
+            if (data.rating_resto) ratingHtml += `<div class="hc-rating">🍜 ${data.rating_resto} ${currentLang==='en'?'Stars (food)':'Bintang (makanan)'}${data.ulasan_resto?` · "${data.ulasan_resto}"`:''}</div>`;
 
             const card = document.createElement('div');
             card.className = 'hist-card';
@@ -1749,7 +2089,8 @@
             data.resto_nama = _cartMakanan.resto_nama;
             data.items = _cartMakanan.items;
             data.subtotal_makanan = hitungSubtotalKeranjang();
-            data.total_bayar = data.subtotal_makanan + (ongkir || 0);
+            data.biaya_layanan_makanan = hitungBiayaLayanan();
+            data.total_bayar = data.subtotal_makanan + data.biaya_layanan_makanan + (ongkir || 0);
         }
         
         set(newRef, data).then(() => {
@@ -2175,6 +2516,17 @@
             const durasiTeks = durasiMenit ? ` (~${durasiMenit} menit)` : '';
             document.getElementById('txtEstimasiJarak').textContent = jarakKm.toFixed(1) + ' km' + durasiTeks;
             document.getElementById('txtEstimasiHarga').textContent = formatRupiah(ongkos);
+
+            // Khusus Pesan Makanan: tampilkan total keseluruhan (makanan + biaya layanan + ongkir)
+            // supaya customer lihat angka final sebelum kirim pesanan, tidak cuma ongkir doang.
+            const rowGrandTotal = document.getElementById('rowGrandTotalMakanan');
+            if (layananAktif === 'Pesan Makanan') {
+                rowGrandTotal.classList.remove('hidden');
+                document.getElementById('txtGrandTotalMakanan').textContent = formatRupiah(hitungTotalMakanan() + ongkos);
+            } else {
+                rowGrandTotal.classList.add('hidden');
+            }
+
             // Simpan hasil Directions API supaya dipakai lagi saat order dikirim (tidak panggil API 2x)
             window._mapCoords._jarakKm = jarakKm;
             window._mapCoords._durasiMenit = durasiMenit;
@@ -2306,6 +2658,38 @@
     window.batalkanPermintaanPembatalan = function(orderId) {
         update(ref(database,'orders/'+orderId), { minta_batal_customer: false }).catch(e => alert('Error: ' + e));
     }
+
+    window.setRatingResto = function(orderId, skor) {
+        document.querySelectorAll(`.star-resto-${orderId}`).forEach((s,i)=>s.classList.toggle('selected',i<skor));
+        const container = document.getElementById(`rating-resto-container-${orderId}`);
+        if(container) container.dataset.skor = skor;
+    }
+
+    window.kirimRatingResto = function(orderId) {
+        const container = document.getElementById(`rating-resto-container-${orderId}`);
+        const skor = parseInt(container.dataset.skor || "0");
+        if(skor === 0) {
+            alert(currentLang==='en'?'Please select stars first!':'Pilih bintang disit!');
+            return;
+        }
+        const waResto = container.dataset.restoWa;
+        const ulasan = document.getElementById(`ulasan-resto-${orderId}`).value.trim();
+
+        // Transaction supaya rating_total & rating_count resto ke-update dengan aman
+        // walau banyak customer ngirim rating bersamaan (hindari race condition).
+        runTransaction(ref(database, 'restoran/' + waResto), (resto) => {
+            if (resto) {
+                resto.rating_total = (resto.rating_total || 0) + skor;
+                resto.rating_count = (resto.rating_count || 0) + 1;
+            }
+            return resto;
+        }).then(() => {
+            return update(ref(database, 'orders/' + orderId), { rating_resto: skor, ulasan_resto: ulasan });
+        }).then(() => {
+            alert(langDict[currentLang].alertRating);
+        }).catch(e => alert('Error: ' + e));
+    }
+
 
     window.setRating = function(orderId, skor) {
         document.querySelectorAll(`.star-${orderId}`).forEach((s,i)=>s.classList.toggle('selected',i<skor));
