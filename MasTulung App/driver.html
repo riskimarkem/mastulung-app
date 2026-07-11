@@ -801,7 +801,7 @@
             emptyAktif:"Kowe urung nyekel garapan apa-apa.", emptyRadar:"Urung ana pesenan mlebu.<br>Ambi ngopi disit bae lur ☕",
             lblCust:"Pelanggan", lblDet1:"Methuk/Njukut", lblDet2:"Ngeter/Tujuan", lblNote:"Catetan", badgeAktif:"KUDU NDANG DIBERESNA", badgeNew:"PESENAN ANYAR",
             noteAktif:"Pesenan kiye arep ilang nek wis dikonfirmasi Selesai nang pelanggan.",
-            btnWa:"💬 Chat WA Pelanggone", btnAmbil:"Jikot Orderan Kiye ⚡",
+            btnWa:"💬 Chat WA Pelanggone", btnWaResto:"💬 Chat WA Resto", btnAmbil:"Jikot Orderan Kiye ⚡",
             lblSaldo:"Sisa Saldo Koin", saldoSub:"Kepotong Rp 1.000 saben njikot orderan", btnTopup:"➕ Isi Saldo (Top-Up)",
             lblSound:"🔊 Swara Notif", optCustom:"🎵 Swara Dewek (Upload)",
             btnLogout:"🚪 Metu (Logout)", histTitle:"Riwayat Tarikan", lblAvg:"Rating Rata-rata",
@@ -832,7 +832,7 @@
             txtSetuju:"Saya menyetujui aturan di atas", btnReg:"Kirim Pendaftaran 📝", txtYesReg:"Sudah punya akun?", linkLogin:"Masuk sekarang",
             statusTxt:"AKTIF MENCARI ORDER", lblSaldoTop:"SISA KOIN", statJalan:"Sedang Jalan", statBeres:"Total Selesai", titleAktif:"Pekerjaan Aktif", titleRadar:"Radar Pesanan Baru",
             emptyAktif:"Anda belum memegang pesanan apapun.", emptyRadar:"Belum ada orderan masuk.<br>Sambil ngopi dulu aja ☕", lblCust:"Pelanggan", lblDet1:"Ambil/Jemput", lblDet2:"Tujuan/Antar", lblNote:"Catatan", badgeAktif:"SEGERA SELESAIKAN", badgeNew:"PESANAN BARU",
-            noteAktif:"Orderan ini akan hilang saat dikonfirmasi Selesai oleh pelanggan.", btnWa:"💬 Chat WA Pelanggan", btnAmbil:"Ambil Pesanan Ini ⚡",
+            noteAktif:"Orderan ini akan hilang saat dikonfirmasi Selesai oleh pelanggan.", btnWa:"💬 Chat WA Pelanggan", btnWaResto:"💬 Chat WA Resto", btnAmbil:"Ambil Pesanan Ini ⚡",
             lblSaldo:"Sisa Saldo Koin", saldoSub:"Dipotong Rp 1.000 tiap orderan", btnTopup:"➕ Isi Saldo (Top-Up)", lblSound:"🔊 Suara Notif", optCustom:"🎵 Suara Sendiri",
             btnLogout:"🚪 Keluar (Logout)", histTitle:"Riwayat Pekerjaan", lblAvg:"Rating Rata-rata", navRadar:"Radar", navWallet:"Dompet", navHistory:"Riwayat", navProfile:"Profil",
             profHist:"Riwayat & Rating Saya", profWallet:"Dompet Saldo", titleRiwayatSaldo:"Riwayat Potongan Saldo",
@@ -859,7 +859,7 @@
             txtSetuju:"I agree to the rules", btnReg:"Submit 📝", txtYesReg:"Have an account?", linkLogin:"Login here",
             statusTxt:"ACTIVE & SEARCHING", lblSaldoTop:"COIN BALANCE", statJalan:"In Progress", statBeres:"Total Done", titleAktif:"Active Job", titleRadar:"New Order Radar",
             emptyAktif:"No active orders.", emptyRadar:"No new orders.<br>Grab a coffee ☕", lblCust:"Customer", lblDet1:"Pick-up", lblDet2:"Drop-off", lblNote:"Note", badgeAktif:"COMPLETE ASAP", badgeNew:"NEW ORDER",
-            noteAktif:"Order disappears when customer confirms completed.", btnWa:"💬 Chat Customer", btnAmbil:"Take Order ⚡",
+            noteAktif:"Order disappears when customer confirms completed.", btnWa:"💬 Chat Customer", btnWaResto:"💬 Chat Restaurant", btnAmbil:"Take Order ⚡",
             lblSaldo:"Coin Balance", saldoSub:"Rp 1,000 deducted per order", btnTopup:"➕ Top-Up", lblSound:"🔊 Alert Sound", optCustom:"🎵 Custom Sound",
             btnLogout:"🚪 Logout", histTitle:"Job History", lblAvg:"Average Rating", navRadar:"Radar", navWallet:"Wallet", navHistory:"History", navProfile:"Profile",
             profHist:"My History & Ratings", profWallet:"Coin Wallet", titleRiwayatSaldo:"Balance Deduction History",
@@ -1133,6 +1133,7 @@
                         ` : `
                         <div class="oc-note-bottom">${t.noteAktif}</div>
                         <button class="btn-wa-chat" onclick="chatUlang('${data.customer_wa}')">${t.btnWa}</button>
+                        ${data.resto_id ? `<button class="btn-wa-chat" style="background:#FFF3E0;color:#E65100;border-color:#FFCC80;" onclick="chatUlang('${data.resto_id}')">${t.btnWaResto}</button>` : ''}
                         ${(data.pickup_lat && data.pickup_lng) ? `<button class="btn-wa-chat" style="background:#E8F5E9;color:#1B5E20;border-color:#A5D6A7;margin-top:6px;" onclick="bukaPetaOrderan('${data.pickup_lat}','${data.pickup_lng}','${data.dropoff_lat||''}','${data.dropoff_lng||''}','${(data.detail_1||'').replace(/'/g,'')}','${(data.detail_2||'').replace(/'/g,'')}')">🗺️ Lihat Peta & Navigasi</button>` : ''}
                         <div class="action-grid"><button class="btn-cancel-order" onclick="batalAmbilOrderan('${data.id}')">${t.btnCancelOrder}</button><button class="btn-complete-order" onclick="selesaikanOrderanDriver('${data.id}')">${t.btnCompleteOrder}</button></div>
                         `}
