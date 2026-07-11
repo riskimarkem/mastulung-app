@@ -3,7 +3,7 @@
   "name": "TulangTulung Gombong",
   "short_name": "TulangTulung",
   "start_url": "/index.html",
-  "scope": "/",
+  "scope": "/index.html",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#F3F5F8",
