@@ -201,6 +201,22 @@
                 <div class="profil-wa" id="profDisplayWA">-</div>
             </div>
             <div class="profil-card" style="text-align:left;">
+                <div style="font-size:14px; font-weight:800; color:var(--text); margin-bottom:6px;">💰 Pendapatan</div>
+                <div style="font-size:12px; color:var(--text3); font-weight:600; margin-bottom:12px;">Rekap dari pesanan yang sudah selesai diantar. Uangnya kamu terima tunai langsung dari driver, ini cuma catatan digital biar mudah dipantau.</div>
+                <div style="display:flex; gap:10px;">
+                    <div style="flex:1; background:var(--bg); border-radius:var(--radius-sm); padding:12px; text-align:center;">
+                        <div style="font-size:11px; color:var(--text3); font-weight:700; margin-bottom:4px;">HARI INI</div>
+                        <div style="font-size:16px; font-weight:800; color:var(--text);" id="txtPendapatanHarian">Rp 0</div>
+                        <div style="font-size:10px; color:var(--text3); font-weight:600;" id="txtJumlahOrderHarian">0 pesanan</div>
+                    </div>
+                    <div style="flex:1; background:var(--bg); border-radius:var(--radius-sm); padding:12px; text-align:center;">
+                        <div style="font-size:11px; color:var(--text3); font-weight:700; margin-bottom:4px;">BULAN INI</div>
+                        <div style="font-size:16px; font-weight:800; color:var(--text);" id="txtPendapatanBulanan">Rp 0</div>
+                        <div style="font-size:10px; color:var(--text3); font-weight:600;" id="txtJumlahOrderBulanan">0 pesanan</div>
+                    </div>
+                </div>
+            </div>
+            <div class="profil-card" style="text-align:left;">
                 <div style="font-size:14px; font-weight:800; color:var(--text); margin-bottom:6px;">🖼️ Foto Profil Warung</div>
                 <div style="font-size:12px; color:var(--text3); font-weight:600; margin-bottom:12px;">Foto ini tampil sebagai banner warungmu di daftar resto milik customer. Pakai foto warung/etalase/makanan andalan yang menarik.</div>
                 <input type="hidden" id="restoFotoProfil">
@@ -270,6 +286,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getDatabase, ref, onValue, get, child, set, update, remove, push } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+    import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-storage.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCO4vDd6Z1NnrMx5gK7nMCyDceaGZj_bQw",
@@ -284,13 +301,41 @@
     const app = initializeApp(firebaseConfig);
     const database = getDatabase(app);
     const auth = getAuth(app);
+    const storage = getStorage(app);
     // Firebase Auth wajib format email, jadi nomor WA "disamarkan" jadi alamat email semu.
     // Ini cuma format teknis -- isinya tetap nomor WA, bukan email beneran, dan tidak pernah dipakai buat kirim email.
     function emailSemuDariWA(wa) { return wa.replace(/[^0-9]/g, '') + '@resto.mastulung.app'; }
 
     const NOMOR_ADMIN_DRIVER = "6285870422464"; // dipakai juga buat verifikasi resto baru
-    // API key gratis dari https://api.imgbb.com/ -- ganti "GANTI_DENGAN_API_KEY_IMGBB" dengan key aslimu.
-    const IMGBB_API_KEY = "306bb6eb3e0d066fa5d8c7aaada78dad";
+
+    // Kompres & resize gambar di browser sebelum upload, biar hemat kuota Firebase Storage.
+    // maxWidth: lebar maksimal hasil akhir (px), kualitas: 0-1 (0.75 = kualitas JPEG 75%, cukup bagus tapi jauh lebih ringan).
+    function kompresGambar(file, maxWidth = 800, kualitas = 0.75) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onerror = () => reject(new Error('Gagal membaca file.'));
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onerror = () => reject(new Error('File bukan gambar yang valid.'));
+                img.onload = () => {
+                    let { width, height } = img;
+                    if (width > maxWidth) {
+                        height = Math.round(height * (maxWidth / width));
+                        width = maxWidth;
+                    }
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+                    canvas.toBlob((blob) => {
+                        if (blob) resolve(blob); else reject(new Error('Gagal memproses gambar.'));
+                    }, 'image/jpeg', kualitas);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+    }
 
     let namaRestoAktif = "", waRestoAktif = "", statusBukaAktif = true;
     let latestOrdersResto = [];
@@ -473,7 +518,31 @@
             arr.reverse();
             latestOrdersResto = arr;
             renderPesananResto();
+            renderPendapatanResto();
         });
+    }
+
+    // Rekap pendapatan dari pesanan berstatus 'selesai'.
+    // Yang dihitung adalah subtotal_makanan (harga makanan asli), karena itu yang benar-benar
+    // masuk ke kantong resto -- bukan biaya_layanan_makanan atau ongkir (itu bagian driver/platform).
+    function renderPendapatanResto() {
+        const sekarang = new Date();
+        const selesai = latestOrdersResto.filter(o => o.status === 'selesai' && o.timestamp);
+
+        let totalHarian = 0, jumlahHarian = 0, totalBulanan = 0, jumlahBulanan = 0;
+        selesai.forEach(o => {
+            const t = new Date(o.timestamp);
+            const sHariIni = t.getDate() === sekarang.getDate() && t.getMonth() === sekarang.getMonth() && t.getFullYear() === sekarang.getFullYear();
+            const sBulanIni = t.getMonth() === sekarang.getMonth() && t.getFullYear() === sekarang.getFullYear();
+            const nominal = o.subtotal_makanan || 0;
+            if (sHariIni) { totalHarian += nominal; jumlahHarian++; }
+            if (sBulanIni) { totalBulanan += nominal; jumlahBulanan++; }
+        });
+
+        document.getElementById('txtPendapatanHarian').textContent = formatRupiah(totalHarian);
+        document.getElementById('txtJumlahOrderHarian').textContent = jumlahHarian + ' pesanan';
+        document.getElementById('txtPendapatanBulanan').textContent = formatRupiah(totalBulanan);
+        document.getElementById('txtJumlahOrderBulanan').textContent = jumlahBulanan + ' pesanan';
     }
 
     function formatRupiah(n) { return 'Rp ' + (n || 0).toLocaleString('id-ID'); }
@@ -587,12 +656,12 @@
 
     // ── OPSI/VARIAN MENU (state form sementara sebelum disimpan) ──
     // Struktur: [{ nama, wajib, tipe: 'single'|'multi', pilihan: [{ nama, tambahan }] }]
-    let formOpsiMenu = [];
+    window.formOpsiMenu = [];
 
     function renderFormOpsiMenu() {
         const wrap = document.getElementById('listOpsiMenu');
         wrap.innerHTML = '';
-        formOpsiMenu.forEach((grup, gi) => {
+        window.formOpsiMenu.forEach((grup, gi) => {
             const card = document.createElement('div');
             card.className = 'grup-opsi-card';
             let pilihanHtml = '';
@@ -620,19 +689,19 @@
     }
 
     window.tambahGrupOpsi = function() {
-        formOpsiMenu.push({ nama: '', wajib: false, tipe: 'single', pilihan: [{ nama: '', tambahan: 0 }] });
+        window.formOpsiMenu.push({ nama: '', wajib: false, tipe: 'single', pilihan: [{ nama: '', tambahan: 0 }] });
         renderFormOpsiMenu();
     }
     window.hapusGrupOpsi = function(gi) {
-        formOpsiMenu.splice(gi, 1);
+        window.formOpsiMenu.splice(gi, 1);
         renderFormOpsiMenu();
     }
     window.tambahPilihanOpsi = function(gi) {
-        formOpsiMenu[gi].pilihan.push({ nama: '', tambahan: 0 });
+        window.formOpsiMenu[gi].pilihan.push({ nama: '', tambahan: 0 });
         renderFormOpsiMenu();
     }
     window.hapusPilihanOpsi = function(gi, pi) {
-        formOpsiMenu[gi].pilihan.splice(pi, 1);
+        window.formOpsiMenu[gi].pilihan.splice(pi, 1);
         renderFormOpsiMenu();
     }
 
@@ -650,7 +719,7 @@
             document.getElementById('menuHargaCoret').value = m.harga_coret || '';
             document.getElementById('menuFoto').value = m.foto || '';
             document.getElementById('switchTersedia').classList.toggle('on', m.tersedia !== false);
-            formOpsiMenu = m.opsi ? JSON.parse(JSON.stringify(m.opsi)) : [];
+            window.formOpsiMenu = m.opsi ? JSON.parse(JSON.stringify(m.opsi)) : [];
             if (m.foto) { preview.src = m.foto; preview.classList.remove('hidden'); } else { preview.classList.add('hidden'); }
         } else {
             document.getElementById('judulModalMenu').innerText = 'Tambah Menu';
@@ -659,7 +728,7 @@
             document.getElementById('menuHargaCoret').value = '';
             document.getElementById('menuFoto').value = '';
             document.getElementById('switchTersedia').classList.add('on');
-            formOpsiMenu = [];
+            window.formOpsiMenu = [];
             preview.classList.add('hidden');
         }
         renderFormOpsiMenu();
@@ -669,91 +738,72 @@
 
     // Upload foto profil warung (banner) -- polanya sama kaya upload foto menu di atas,
     // tapi hasilnya disimpan langsung ke restoran/{wa}/foto_profil begitu selesai upload.
-    window.uploadFotoProfilResto = function(inputEl) {
+    window.uploadFotoProfilResto = async function(inputEl) {
         const file = inputEl.files[0];
         if (!file) return;
-        if (IMGBB_API_KEY === 'GANTI_DENGAN_API_KEY_IMGBB') {
-            alert('API key ImgBB belum diisi. Hubungi admin/developer buat setup dulu.');
+        if (file.size > 15 * 1024 * 1024) {
+            alert('Ukuran file terlalu besar (maks 15MB). Pilih foto lain ya.');
+            inputEl.value = '';
             return;
         }
         const statusEl = document.getElementById('txtStatusUploadFotoProfilResto');
         const label = document.getElementById('labelUploadFotoProfilResto');
-        statusEl.textContent = '⏳ Mengunggah foto...';
+        statusEl.textContent = '⏳ Mengompres & mengunggah foto...';
         label.textContent = '⏳ Mengunggah...';
 
-        const reader = new FileReader();
-        reader.onload = function() {
-            const base64 = reader.result.split(',')[1];
-            const formData = new FormData();
-            formData.append('image', base64);
+        try {
+            const blob = await kompresGambar(file, 800, 0.75);
+            const path = `resto-profil/${waRestoAktif}.jpg`;
+            const fileRef = storageRef(storage, path);
+            await uploadBytes(fileRef, blob, { contentType: 'image/jpeg' });
+            const url = await getDownloadURL(fileRef);
 
-            fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData })
-                .then(res => res.json())
-                .then(hasil => {
-                    if (hasil.success) {
-                        const url = hasil.data.url;
-                        document.getElementById('restoFotoProfil').value = url;
-                        document.getElementById('previewFotoProfilResto').src = url;
-                        document.getElementById('previewFotoProfilResto').classList.remove('hidden');
-                        document.getElementById('profAvatarWrap').innerHTML = `<img src="${url}" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">`;
-                        statusEl.textContent = '✅ Foto berhasil diunggah.';
-                        label.textContent = '📷 Ganti Foto';
-                        update(ref(database, 'restoran/' + waRestoAktif), { foto_profil: url }).catch(e => alert('Error simpan foto: ' + e));
-                    } else {
-                        statusEl.textContent = '❌ Gagal unggah: ' + (hasil.error?.message || 'coba lagi.');
-                        label.textContent = '📷 Pilih Foto';
-                    }
-                })
-                .catch(e => {
-                    statusEl.textContent = '❌ Gagal unggah, cek koneksi internet.';
-                    label.textContent = '📷 Pilih Foto';
-                });
-        };
-        reader.readAsDataURL(file);
+            document.getElementById('restoFotoProfil').value = url;
+            document.getElementById('previewFotoProfilResto').src = url;
+            document.getElementById('previewFotoProfilResto').classList.remove('hidden');
+            document.getElementById('profAvatarWrap').innerHTML = `<img src="${url}" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">`;
+            statusEl.textContent = `✅ Foto berhasil diunggah (${Math.round(blob.size/1024)} KB).`;
+            label.textContent = '📷 Ganti Foto';
+            await update(ref(database, 'restoran/' + waRestoAktif), { foto_profil: url });
+        } catch (e) {
+            statusEl.textContent = '❌ Gagal unggah: ' + (e.message || 'coba lagi.');
+            label.textContent = '📷 Pilih Foto';
+        }
     }
 
 
     // Hasil link gambarnya disimpan ke input hidden #menuFoto, dipakai saat simpanMenu().
-    window.uploadFotoMenu = function(inputEl) {
+    // Hasil link gambarnya disimpan ke input hidden #menuFoto, dipakai saat simpanMenu().
+    window.uploadFotoMenu = async function(inputEl) {
         const file = inputEl.files[0];
         if (!file) return;
-        if (IMGBB_API_KEY === 'GANTI_DENGAN_API_KEY_IMGBB') {
-            alert('API key ImgBB belum diisi. Hubungi admin/developer buat setup dulu.');
+        if (file.size > 15 * 1024 * 1024) {
+            alert('Ukuran file terlalu besar (maks 15MB). Pilih foto lain ya.');
+            inputEl.value = '';
             return;
         }
         const statusEl = document.getElementById('txtStatusUploadFoto');
         const label = document.getElementById('labelUploadFoto');
-        statusEl.textContent = '⏳ Mengunggah foto...';
+        statusEl.textContent = '⏳ Mengompres & mengunggah foto...';
         label.textContent = '⏳ Mengunggah...';
 
-        const reader = new FileReader();
-        reader.onload = function() {
-            // reader.result formatnya "data:image/xxx;base64,XXXXX" -- ImgBB cuma butuh bagian base64-nya
-            const base64 = reader.result.split(',')[1];
-            const formData = new FormData();
-            formData.append('image', base64);
+        try {
+            const blob = await kompresGambar(file, 600, 0.75);
+            // Nama file dibuat unik per-upload (pakai timestamp) supaya foto menu lama tidak ketiban/tertimpa
+            const path = `menu-foto/${waRestoAktif}/${Date.now()}.jpg`;
+            const fileRef = storageRef(storage, path);
+            await uploadBytes(fileRef, blob, { contentType: 'image/jpeg' });
+            const url = await getDownloadURL(fileRef);
 
-            fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData })
-                .then(res => res.json())
-                .then(hasil => {
-                    if (hasil.success) {
-                        const url = hasil.data.url;
-                        document.getElementById('menuFoto').value = url;
-                        document.getElementById('previewFotoMenu').src = url;
-                        document.getElementById('previewFotoMenu').classList.remove('hidden');
-                        statusEl.textContent = '✅ Foto berhasil diunggah.';
-                        label.textContent = '📷 Ganti Foto';
-                    } else {
-                        statusEl.textContent = '❌ Gagal unggah: ' + (hasil.error?.message || 'coba lagi.');
-                        label.textContent = '📷 Pilih Foto';
-                    }
-                })
-                .catch(e => {
-                    statusEl.textContent = '❌ Gagal unggah, cek koneksi internet.';
-                    label.textContent = '📷 Pilih Foto';
-                });
-        };
-        reader.readAsDataURL(file);
+            document.getElementById('menuFoto').value = url;
+            document.getElementById('previewFotoMenu').src = url;
+            document.getElementById('previewFotoMenu').classList.remove('hidden');
+            statusEl.textContent = `✅ Foto berhasil diunggah (${Math.round(blob.size/1024)} KB).`;
+            label.textContent = '📷 Ganti Foto';
+        } catch (e) {
+            statusEl.textContent = '❌ Gagal unggah: ' + (e.message || 'coba lagi.');
+            label.textContent = '📷 Pilih Foto';
+        }
     }
 
     window.simpanMenu = function() {
@@ -769,7 +819,7 @@
         if (harga_coret !== null && harga_coret <= harga) return alert('Harga coret harus lebih besar dari harga jual (kalau tidak, tidak akan terlihat seperti diskon).');
 
         // Bersihkan grup opsi: buang grup tanpa nama, buang pilihan tanpa nama, pastikan tiap grup punya minimal 1 pilihan valid.
-        const opsiBersih = formOpsiMenu
+        const opsiBersih = window.formOpsiMenu
             .map(g => ({ nama: (g.nama || '').trim(), wajib: !!g.wajib, tipe: g.tipe === 'multi' ? 'multi' : 'single', pilihan: (g.pilihan || []).map(p => ({ nama: (p.nama || '').trim(), tambahan: parseInt(p.tambahan) || 0 })).filter(p => p.nama) }))
             .filter(g => g.nama && g.pilihan.length > 0);
 
