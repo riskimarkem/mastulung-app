@@ -1689,15 +1689,19 @@
 
     // Biaya Layanan: markup dari aplikasi di atas harga asli resto (harga asli resto tetap utuh,
     // driver tetap bayar resto sejumlah harga asli -- markup ini murni margin aplikasi).
-    const MARKUP_LAYANAN_PERSEN = 10;
+    // Dihitung per ITEM (per qty), bukan per orderan -- jadi order isi 5 item = Rp 5.000, order isi 1 item = Rp 1.000.
+    const BIAYA_LAYANAN_PER_ITEM = 1000;
 
     function hitungSubtotalKeranjang() {
         return Object.values(_cartMakanan.items).reduce((sum, it) => sum + (it.harga * it.qty), 0);
     }
 
+    function hitungTotalItemKeranjang() {
+        return Object.values(_cartMakanan.items).reduce((sum, it) => sum + it.qty, 0);
+    }
+
     function hitungBiayaLayanan() {
-        // Dibulatkan ke Rp 100 terdekat biar rapi (tidak ada recehan Rp 1-99).
-        return Math.round((hitungSubtotalKeranjang() * MARKUP_LAYANAN_PERSEN / 100) / 100) * 100;
+        return hitungTotalItemKeranjang() * BIAYA_LAYANAN_PER_ITEM;
     }
 
     function hitungTotalMakanan() {
