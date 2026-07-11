@@ -1,0 +1,32 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.tulangtulung.customer",
+      "sha256_cert_fingerprints": [
+        "FF:13:8C:BF:4D:DB:0E:95:98:3D:4F:DE:C4:75:75:63:C8:71:21:55:BE:29:BD:65:74:B9:8D:44:59:33:27:FA"
+      ]
+    }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "GANTI_DENGAN_PACKAGE_NAME_DRIVER",
+      "sha256_cert_fingerprints": [
+        "GANTI_DENGAN_SHA256_FINGERPRINT_DRIVER"
+      ]
+    }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "GANTI_DENGAN_PACKAGE_NAME_RESTO",
+      "sha256_cert_fingerprints": [
+        "GANTI_DENGAN_SHA256_FINGERPRINT_RESTO"
+      ]
+    }
+  }
+]
