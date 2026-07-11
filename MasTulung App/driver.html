@@ -1096,12 +1096,13 @@
 
     function renderItemsMakananHtml(data) {
         if (!data.items) return '';
-        const rows = Object.values(data.items).map(it => `<div class="oc-food-item-row"><span>${it.qty}x ${it.nama}</span><span>${(it.harga*it.qty).toLocaleString('id-ID')}</span></div>`).join('');
+        const rows = Object.values(data.items).map(it => `<div class="oc-food-item-row"><div><span>${it.qty}x ${it.nama}</span>${it.opsi_text ? `<div style="font-size:10.5px; color:var(--text3); font-weight:600; margin-top:1px;">${it.opsi_text}</div>` : ''}</div><span>${(it.harga*it.qty).toLocaleString('id-ID')}</span></div>`).join('');
         return `<div class="oc-food-box">
             <div class="oc-food-resto">🍜 Jemput di: ${data.resto_nama || '-'}</div>
             ${rows}
             <div class="oc-food-subtotal-row"><span>Subtotal Makanan</span><span>Rp ${(data.subtotal_makanan||0).toLocaleString('id-ID')}</span></div>
-            <div class="oc-food-cod-note">💵 Bayar tunai ke resto Rp ${(data.subtotal_makanan||0).toLocaleString('id-ID')} saat ambil, lalu tagih customer Rp ${((data.subtotal_makanan||0)+(data.estimasi_ongkos||0)).toLocaleString('id-ID')} (makanan + ongkir) saat antar.</div>
+            <div class="oc-food-subtotal-row"><span>Biaya Layanan (app)</span><span>Rp ${(data.biaya_layanan_makanan||0).toLocaleString('id-ID')}</span></div>
+            <div class="oc-food-cod-note">💵 Bayar tunai ke resto Rp ${(data.subtotal_makanan||0).toLocaleString('id-ID')} saat ambil (harga asli, TANPA biaya layanan). Lalu tagih customer Rp ${((data.subtotal_makanan||0)+(data.biaya_layanan_makanan||0)+(data.estimasi_ongkos||0)).toLocaleString('id-ID')} (makanan + biaya layanan + ongkir) saat antar. Biaya layanan Rp ${(data.biaya_layanan_makanan||0).toLocaleString('id-ID')} akan otomatis dipotong dari saldomu saat orderan ditandai selesai.</div>
         </div>`;
     }
 
@@ -1219,7 +1220,21 @@
             update(ref(database,'orders/'+orderId),{status:statusKembali,driver_nama:''}).then(()=>{ update(ref(database,`drivers/${waDriverAktif}`),{saldo:saldoDriverAktif+BIAYA_PLATFORM}); alert(t.alertCancelSucc); }).catch(e=>alert('Error: '+e));
         }
     }
-    window.selesaikanOrderanDriver = function(orderId) { const t = langDict[currentLang]; if(confirm(t.alertCompleteConf)){ update(ref(database,'orders/'+orderId),{status:'selesai'}); } }
+    window.selesaikanOrderanDriver = function(orderId) {
+        const t = langDict[currentLang];
+        const data = latestOrdersData.find(o => o.id === orderId);
+        const biayaLayanan = data?.biaya_layanan_makanan || 0;
+        let pesanKonfirmasi = t.alertCompleteConf;
+        if (biayaLayanan > 0) {
+            pesanKonfirmasi += `\n\nSaldomu akan terpotong Rp ${biayaLayanan.toLocaleString('id-ID')} (biaya layanan makanan yang sudah kamu tagih ke customer).`;
+        }
+        if (confirm(pesanKonfirmasi)) {
+            update(ref(database, 'orders/' + orderId), { status: 'selesai' });
+            if (biayaLayanan > 0) {
+                update(ref(database, `drivers/${waDriverAktif}`), { saldo: saldoDriverAktif - biayaLayanan });
+            }
+        }
+    }
 
     // Driver ACC permintaan pembatalan dari customer (di luar masa grace period) --
     // status jadi batal_cust & saldo driver dikembalikan, karena ini kesepakatan driver sendiri.
