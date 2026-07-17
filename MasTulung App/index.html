@@ -1676,7 +1676,7 @@
         const hargaSatuan = hitungHargaSatuanOpsi();
 
         // Gabungkan dengan baris keranjang yang persis sama kombinasinya (biar gak numpuk baris duplikat)
-        const kunciKombinasi = _opsiModalState.menuId + '#' + JSON.stringify(_opsiModalState.pilihan);
+        const kunciKombinasi = (_opsiModalState.menuId + '_' + JSON.stringify(_opsiModalState.pilihan)).replace(/[.#$\/\[\]"]/g, '_');
         if (_cartMakanan.items[kunciKombinasi]) {
             _cartMakanan.items[kunciKombinasi].qty += _opsiModalState.qty;
         } else {
