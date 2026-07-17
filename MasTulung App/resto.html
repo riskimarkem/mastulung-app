@@ -56,6 +56,11 @@
         .toggle-label { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.85); }
 
         .page-body { flex: 1; overflow-y: auto; padding: 16px; padding-bottom: 90px; }
+
+        /* ── INSTALL PWA ── */
+        .install-bar { background: var(--primary-light); border: 1.5px dashed var(--primary); border-radius: var(--radius-sm); padding: 14px 16px; text-align: center; margin: 16px 16px 0; display: none; }
+        .install-bar p { font-size: 13px; font-weight: 800; color: var(--primary); margin-bottom: 8px; }
+        @media all and (display-mode: standalone) { .install-bar { display: none !important; } #row-install-app-resto { display: none !important; } }
         .empty-state { text-align: center; padding: 60px 20px; color: var(--text3); }
         .empty-icon { font-size: 44px; display: block; margin-bottom: 10px; }
         .empty-title { font-size: 13px; font-weight: 700; }
@@ -183,6 +188,11 @@
             </div>
         </div>
 
+        <div id="install-banner-resto" class="install-bar">
+            <p>Pasang Aplikasi Portal Resto TulangTulung Gombong!</p>
+            <button id="btn-install-pwa-resto" class="btn-primary" style="padding:10px;" onclick="installAplikasiResto()">INSTALL 📲</button>
+        </div>
+
         <!-- TAB: PESANAN -->
         <div id="tab-pesanan" class="page-body">
             <div id="listPesananResto"></div>
@@ -233,6 +243,13 @@
                 <div style="font-size:12px; color:var(--text3); font-weight:600; margin-bottom:12px;" id="txtLokasiWarungStatus">Belum diatur -- driver & customer belum bisa lihat lokasimu di peta.</div>
                 <button class="btn-primary" onclick="aturLokasiWarung()" id="btnAturLokasi">🎯 Pakai Lokasi Saat Ini (GPS)</button>
                 <div style="font-size:11px; color:var(--text3); font-weight:600; margin-top:8px;">*Pastikan kamu berdiri di warung/lokasi jualan saat pencet tombol ini.</div>
+            </div>
+            <div class="profil-card" style="text-align:left; display:none;" id="row-install-app-resto" onclick="installAplikasiResto()">
+                <div style="display:flex; align-items:center; gap:12px; cursor:pointer;">
+                    <div style="font-size:24px;">📲</div>
+                    <div style="flex:1; font-size:14px; font-weight:800; color:var(--text);">Pasang Aplikasi</div>
+                    <div style="color:var(--text3); font-size:18px;">›</div>
+                </div>
             </div>
             <button class="btn-logout" onclick="logoutResto()">🚪 Keluar Akun</button>
         </div>
@@ -926,6 +943,45 @@
 
     // ── INIT ──
     cekSesiResto();
+
+    // ── INSTALL PWA ──
+    const installBannerResto = document.getElementById('install-banner-resto');
+    const rowInstallAppResto = document.getElementById('row-install-app-resto');
+    let deferredPromptResto = null;
+
+    if (!window.matchMedia('(display-mode: standalone)').matches && window.navigator.standalone !== true) {
+        if (installBannerResto) installBannerResto.style.display = 'block';
+        if (rowInstallAppResto) rowInstallAppResto.style.display = 'block';
+    } else {
+        if (installBannerResto) installBannerResto.style.display = 'none';
+        if (rowInstallAppResto) rowInstallAppResto.style.display = 'none';
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault(); deferredPromptResto = e;
+        if (installBannerResto) installBannerResto.style.display = 'block';
+        if (rowInstallAppResto) rowInstallAppResto.style.display = 'block';
+    });
+
+    window.installAplikasiResto = async function() {
+        if (deferredPromptResto) {
+            deferredPromptResto.prompt();
+            const { outcome } = await deferredPromptResto.userChoice;
+            if (outcome === 'accepted') {
+                if (installBannerResto) installBannerResto.style.display = 'none';
+                if (rowInstallAppResto) rowInstallAppResto.style.display = 'none';
+            }
+            deferredPromptResto = null;
+        } else {
+            alert("Untuk menginstal, klik menu browser (titik tiga) lalu pilih 'Tambahkan ke Layar Utama'.");
+        }
+    }
+
+    window.addEventListener('appinstalled', () => {
+        if (installBannerResto) installBannerResto.style.display = 'none';
+        if (rowInstallAppResto) rowInstallAppResto.style.display = 'none';
+        deferredPromptResto = null;
+    });
 </script>
 
 <script>
