@@ -135,6 +135,7 @@
     </style>
 </head>
 <body>
+<audio id="suaraNotifResto" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" preload="auto"></audio>
 <div class="app">
 
     <!-- ═══ LOGIN ═══ -->
@@ -287,6 +288,7 @@
     import { getDatabase, ref, onValue, get, child, set, update, remove, push } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
     import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-storage.js";
+    import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-messaging.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCO4vDd6Z1NnrMx5gK7nMCyDceaGZj_bQw",
@@ -302,6 +304,73 @@
     const database = getDatabase(app);
     const auth = getAuth(app);
     const storage = getStorage(app);
+    let messaging;
+    try { messaging = getMessaging(app); } catch(e) { console.log('FCM not supported'); }
+
+    // ── VAPID KEY TULANGTULUNG GOMBONG (sama dengan index.html & driver.html) ──
+    const VAPID_KEY = "BHrjLUSNG-h2NcRw_ypWBHTr3cc-iEZ7jCA8fYzjrWO6Yh4Sqg3xTevCEAcUAbncnWwrZZfOXkuFeWMQCHnkLDs";
+
+    // ── SETUP PUSH NOTIFICATION (FCM) UNTUK RESTO ──
+    async function setupPushNotificationResto() {
+        if (!('serviceWorker' in navigator) || !('Notification' in window) || !messaging) return;
+        let swReg;
+        try { swReg = await navigator.serviceWorker.register('/firebase-messaging-sw.js'); }
+        catch(e) { console.error('SW gagal:', e); return; }
+
+        const permission = await Notification.requestPermission();
+        if (permission !== 'granted') return;
+
+        try {
+            const fcmToken = await getToken(messaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: swReg });
+            if (fcmToken && waRestoAktif) {
+                const tokenKey = waRestoAktif.replace(/\D/g, '');
+                await set(ref(database, 'fcm_tokens_resto/' + tokenKey), {
+                    token: fcmToken, nama: namaRestoAktif, wa: waRestoAktif, updated: Date.now()
+                });
+            }
+        } catch(e) { console.error('FCM token gagal:', e); }
+
+        onMessage(messaging, (payload) => {
+            const title = payload.notification?.title || '🍽️ Pesanan Baru!';
+            const body = payload.notification?.body || 'Ada pesanan masuk, cek dashboard ya.';
+            showFloatingNotifResto(title, body);
+            const a = document.getElementById('suaraNotifResto');
+            if (a) { a.currentTime = 0; a.play().catch(() => {}); }
+        });
+    }
+
+    // ── FLOATING TOAST NOTIFICATION (RESTO) ──
+    function showFloatingNotifResto(title, body) {
+        const old = document.getElementById('ttg-resto-notif');
+        if (old) old.remove();
+        const notif = document.createElement('div');
+        notif.id = 'ttg-resto-notif';
+        notif.innerHTML = `
+            <div style="display:flex;align-items:center;gap:12px;">
+                <span style="font-size:28px;">🍽️</span>
+                <div style="flex:1;">
+                    <div style="font-weight:800;font-size:14px;color:#fff;">${title}</div>
+                    <div style="font-size:12.5px;color:rgba(255,255,255,0.88);margin-top:3px;font-weight:600;">${body}</div>
+                </div>
+                <button onclick="document.getElementById('ttg-resto-notif').remove()" style="background:rgba(255,255,255,0.2);border:none;color:white;width:28px;height:28px;border-radius:50%;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">✕</button>
+            </div>
+        `;
+        Object.assign(notif.style, {
+            position: 'fixed', top: '14px', left: '50%', transform: 'translateX(-50%)',
+            width: 'calc(100% - 28px)', maxWidth: '450px',
+            background: 'linear-gradient(135deg, #C2410C, #EA580C)',
+            borderRadius: '14px', padding: '15px 16px',
+            boxShadow: '0 8px 32px rgba(194,65,12,0.45)',
+            zIndex: '9999', animation: 'restoNotifIn 0.4s cubic-bezier(0.34,1.56,0.64,1)', cursor: 'pointer'
+        });
+        notif.onclick = function(e) { if (e.target.tagName !== 'BUTTON') { window.pindahTab('pesanan'); notif.remove(); } };
+        document.body.appendChild(notif);
+        setTimeout(() => { if (notif.parentNode) notif.remove(); }, 7000);
+    }
+
+    const _restoNotifStyle = document.createElement('style');
+    _restoNotifStyle.textContent = `@keyframes restoNotifIn { from { opacity:0; transform:translateX(-50%) translateY(-18px) scale(0.92); } to { opacity:1; transform:translateX(-50%) translateY(0) scale(1); } }`;
+    document.head.appendChild(_restoNotifStyle);
     // Firebase Auth wajib format email, jadi nomor WA "disamarkan" jadi alamat email semu.
     // Ini cuma format teknis -- isinya tetap nomor WA, bukan email beneran, dan tidak pernah dipakai buat kirim email.
     function emailSemuDariWA(wa) { return wa.replace(/[^0-9]/g, '') + '@resto.mastulung.app'; }
@@ -451,6 +520,7 @@
         document.getElementById('page-dashboard').classList.remove('hidden');
         pantauPesananResto();
         pantauMenuResto();
+        setupPushNotificationResto();
     }
 
     function updateLokasiWarungUI(lat, lng) {
@@ -511,12 +581,36 @@
     }
 
     // ── PANTAU & RENDER PESANAN MASUK ──
+    // orderResto YangSudahNotif: id pesanan yang sudah pernah dibunyikan/dinotifkan,
+    // biar tidak berulang tiap kali listener onValue menembak ulang.
+    const orderRestoYangSudahNotif = new Set();
+    let pantauPesananRestoPertamaKali = true;
+
     function pantauPesananResto() {
         onValue(ref(database, 'orders'), snap => {
             const arr = [];
             snap.forEach(c => { let obj = c.val(); obj.id = c.key; if (obj.resto_id === waRestoAktif) arr.push(obj); });
             arr.reverse();
             latestOrdersResto = arr;
+
+            // Deteksi pesanan baru yang masuk (status menunggu_resto) untuk resto ini.
+            // Saat pertama kali listener nyala (baru login/reload), semua id yang sudah ada
+            // ditandai "sudah dilihat" dulu supaya tidak ikut bunyi notif pesanan lama.
+            arr.forEach(o => {
+                if (o.status === 'menunggu_resto' && !orderRestoYangSudahNotif.has(o.id)) {
+                    orderRestoYangSudahNotif.add(o.id);
+                    if (!pantauPesananRestoPertamaKali) {
+                        const a = document.getElementById('suaraNotifResto');
+                        if (a) { a.currentTime = 0; a.play().catch(() => {}); }
+                        showFloatingNotifResto('🍽️ Pesanan Baru Masuk!', `${o.customer_nama || 'Pelanggan'} pesan ${o.layanan || 'makanan'}.`);
+                        if (document.hidden && Notification.permission === 'granted') {
+                            new Notification('🍽️ Pesanan Baru — TulangTulung', { body: `${o.customer_nama || 'Pelanggan'} pesan ${o.layanan || 'makanan'}.`, icon: '/logo-resto.png', tag: 'resto-order-' + o.id });
+                        }
+                    }
+                }
+            });
+            pantauPesananRestoPertamaKali = false;
+
             renderPesananResto();
             renderPendapatanResto();
         });
