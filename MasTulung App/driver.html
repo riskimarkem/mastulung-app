@@ -1140,7 +1140,13 @@
                     </div>`; listAktif.appendChild(card);
             }
             if(data.status==='terbuka' || data.status==='diterima_resto'){
-                adaBaru=true; if(!orderYangSudahBunyi.has(data.id)){ orderYangSudahBunyi.add(data.id); newSound=true; }
+                adaBaru=true;
+                if(!orderYangSudahBunyi.has(data.id)){
+                    orderYangSudahBunyi.add(data.id); newSound=true;
+                    if (document.hidden && Notification.permission === 'granted') {
+                        new Notification(`${t.toastNewOrderTitle || '🛵 Orderan Baru!'} — TulangTulung`, { body: `${data.customer_nama||''} ${t.toastNewOrderDesc || 'butuh driver untuk'} ${data.layanan||''}.`, icon: '/logo-driver.png', tag: 'driver-new-order-' + data.id });
+                    }
+                }
                 const card = document.createElement('div'); card.className='order-card order-card-new';
                 card.innerHTML=`
                     <div class="oc-header"><span class="oc-badge oc-badge-new">${data.layanan||''}</span><span class="oc-time">⏱️ ${data.waktu_order||''}</span></div>
